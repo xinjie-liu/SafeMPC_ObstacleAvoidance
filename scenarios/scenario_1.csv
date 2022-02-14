@@ -1,0 +1,34 @@
+Scenario Description:
+
+In this scenario, the drone must get to the other side of a mini maze.
+
+
+# ALWAYS KEEP FIVE LINES ABOVE THIS ONE ##############################################################################
+
+xlim (min / max), 0, 8
+ylim (min / max), 0, 8
+zlim (min / max), 0, 8
+figsize (width / height), 16, 16
+xlabel (label string), x
+ylabel (label string), y
+zlabel (label string), z
+title (title string), 3D animation: scenario 1
+view_init (elev / azim), 30, 35
+
+boundary (x / y / z), 8, 8, 3
+
+start_point (x / y / z), 1, 1, 1.5
+end_point (x / y / z), 7, 7.75, 1.5
+
+boxes
+corner_1 (x / y / z), -0.15, -0.15, 0, corner_2 (x / y / z), 0.15, 8.15, 3
+corner_1 (x / y / z), 7.85, -0.15, 0, corner_2 (x / y / z), 8.15, 8.15, 3
+corner_1 (x / y / z), 0.15, -0.15, 0, corner_2 (x / y / z), 7.85, 0.15, 3
+corner_1 (x / y / z), 0.15, 7.85, 0, corner_2 (x / y / z), 6.15, 8.15, 3
+corner_1 (x / y / z), 0.15, 1.90, 0, corner_2 (x / y / z), 4.0, 2.10, 3
+corner_1 (x / y / z), 5.90, 0.15, 0, corner_2 (x / y / z), 6.10, 2.0, 3
+corner_1 (x / y / z), 1.90, 4.0, 0, corner_2 (x / y / z), 2.10, 7.85, 3
+corner_1 (x / y / z), 2.10, 5.90, 0, corner_2 (x / y / z), 4.0, 6.10, 3
+corner_1 (x / y / z), 4.0, 3.90, 0, corner_2 (x / y / z), 5.90, 4.10, 3
+corner_1 (x / y / z), 5.90, 3.90, 0, corner_2 (x / y / z), 6.10, 6.10, 3
+corner_1 (x / y / z), 6.10, 5.90, 0, corner_2 (x / y / z), 7.85, 6.10, 3

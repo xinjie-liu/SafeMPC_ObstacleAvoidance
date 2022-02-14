@@ -1,0 +1,33 @@
+Scenario Description:
+
+A variation on the original scenario (the warehouse). Here, the openings of the doors and windows are purposefully made
+wider, in order to study the effect on the drone's behaviour.
+
+# ALWAYS KEEP FIVE LINES ABOVE THIS ONE ##############################################################################
+
+xlim (min / max), 0, 15
+ylim (min / max), -3, 12
+zlim (min / max), 0, 15
+figsize (width / height), 16, 16
+xlabel (label string), x
+ylabel (label string), y
+zlabel (label string), z
+title (title string), 3D animation: scenario 4 (wide openings/doors/windows)
+view_init (elev / azim), 30, 35
+
+boundary (x / y / z), 15, 10, 3
+
+start_point (x / y / z), 5, 9, 3
+end_point (x / y / z), 0.5, 4.5, 1.5
+
+boxes
+corner_1 (x / y / z), 0, 7, 0, corner_2 (x / y / z), 12.5, 7.3, 3
+corner_1 (x / y / z), 0, 6, 0, corner_2 (x / y / z), 1, 7, 1
+corner_1 (x / y / z), 0, 4, 0, corner_2 (x / y / z), 1, 5, 1
+corner_1 (x / y / z), 1.5, 6, 0, corner_2 (x / y / z), 2.5, 7, 1
+corner_1 (x / y / z), 5, 0, 2.5, corner_2 (x / y / z), 5.3, 7, 3
+corner_1 (x / y / z), 5, 2, 1, corner_2 (x / y / z), 5.3, 2.5, 2.5
+corner_1 (x / y / z), 5, 0, 0, corner_2 (x / y / z), 5.3, 2.5, 1
+corner_1 (x / y / z), 2, 2.20, 0, corner_2 (x / y / z), 5, 2.40, 3
+corner_1 (x / y / z), -0.050, 0, 0, corner_2 (x / y / z), 0, 7.3, 3
+corner_1 (x / y / z), 15, 0, 0, corner_2 (x / y / z), 15.050, 7.3, 3

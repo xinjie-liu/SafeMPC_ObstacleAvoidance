@@ -1,0 +1,30 @@
+Scenario Description:
+
+The first vertical scenario. Here, the motion of the drone is directed upwards.
+
+
+# ALWAYS KEEP FIVE LINES ABOVE THIS ONE ##############################################################################
+
+xlim (min / max), -5, 10
+ylim (min / max), -5, 10
+zlim (min / max), 0, 15
+figsize (width / height), 16, 16
+xlabel (label string), x
+ylabel (label string), y
+zlabel (label string), z
+title (title string), 3D animation: scenario 5 (vertical)
+view_init (elev / azim), 30, 35
+
+boundary (x / y / z), 5, 5, 15
+
+start_point (x / y / z), 2.5, 2.5, 1
+end_point (x / y / z), 2.5, 2.5, 14
+
+boxes
+corner_1 (x / y / z), 0, 0, 4, corner_2 (x / y / z), 5, 3.5, 4.3
+corner_1 (x / y / z), 0, 3.5, 4, corner_2 (x / y / z), 3.5, 5, 4.3
+corner_1 (x / y / z), 0, 0, 9, corner_2 (x / y / z), 1.5, 3.5, 9.3
+corner_1 (x / y / z), 1.5, 0, 9, corner_2 (x / y / z), 5, 1.5, 9.3
+corner_1 (x / y / z), 0, 3.5, 9, corner_2 (x / y / z), 3.5, 5, 9.3
+corner_1 (x / y / z), 3.5, 1.5, 9, corner_2 (x / y / z), 5, 5, 9.3
+corner_1 (x / y / z), 1, 1, 12, corner_2 (x / y / z), 4, 4, 12.3
