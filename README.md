@@ -7,3 +7,4 @@ Final project of course SC42125 Model Predictive Control
 * [Non-linear MPC for quadrotor design, linearization, discretization](https://www.researchgate.net/profile/Mina-Samir-Kamel/publication/311545161_Model_Predictive_Control_for_Trajectory_Tracking_of_Unmanned_Aerial_Vehicles_Using_Robot_Operating_System/links/59682043458515e9af9eba66/Model-Predictive-Control-for-Trajectory-Tracking-of-Unmanned-Aerial-Vehicles-Using-Robot-Operating-System.pdf)
 * [I don't know whether this could be useful but: parammetric MPC (some state variables of the quadrotor as parameters of others to reduce complexity of NLP)](https://journals-sagepub-com.tudelft.idm.oclc.org/doi/pdf/10.1177/0959651819847053)
 * [maybe helpful for writing report: NMPC formulation for obstacle avoidance](https://arxiv.org/pdf/1812.04755.pdf)
+* [might helps for searching for resources: A survey of MPC in quadrotor](https://arxiv.org/pdf/2011.11104.pdf)
