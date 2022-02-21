@@ -8,3 +8,4 @@ Final project of course SC42125 Model Predictive Control
 * [I don't know whether this could be useful but: parammetric MPC (some state variables of the quadrotor as parameters of others to reduce complexity of NLP)](https://journals-sagepub-com.tudelft.idm.oclc.org/doi/pdf/10.1177/0959651819847053)
 * [maybe helpful for writing report: NMPC formulation for obstacle avoidance](https://arxiv.org/pdf/1812.04755.pdf)
 * [might helps for searching for resources (especially analysis of linearized system): A survey of MPC in quadrotor](https://arxiv.org/pdf/2011.11104.pdf)
+* [A cool group who did a lot of drone researches](https://rpg.ifi.uzh.ch/aggressive_flight.html)
