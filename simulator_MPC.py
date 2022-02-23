@@ -20,7 +20,7 @@ if __name__ == "__main__":
     obstacle = True                         # whether to have a local obstacle
     RRT_iterations = 2000                   # Number of iterations of the RRT_star algorithm
     use_pre_saved_traj = True              # whether to generate new trajectory using RRT* + trajectory smoothing
-    collision_avoidance_guarantee = True    # whether to provide collision avoidance guarantee
+    collision_avoidance_guarantee = False    # whether to provide collision avoidance guarantee
     waypoint_navigation = False             # whether to use waypoints navigation instead of min_snap trajectory
     slow_factor = 1.8                       # whether to slow down the time-optimal trajectory
     scenario = 2                            # which scenario to test the algorithm on
