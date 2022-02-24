@@ -21,31 +21,32 @@ class Robot():
         self.R = R_  # in meter
         self.L = L_  # in meter
         self.dt = 1e-2
-
-    def uniToDiff(self, v, w):
-        vR = (2 * v + w * self.L) / (2 * self.R)
-        vL = (2 * v - w * self.L) / (2 * self.R)
-        return vR, vL
-
-    def diffToUni(self, vR, vL):
-        v = self.R / 2 * (vR + vL)
-        w = self.R / self.L * (vR - vL)
-        return v, w
+        self.u = np.array([0,0])
+# =============================================================================
+#     def uniToDiff(self, v, w):
+#         vR = (2 * v + w * self.L) / (2 * self.R)
+#         vL = (2 * v - w * self.L) / (2 * self.R)
+#         return vR, vL
+# 
+#     def diffToUni(self, vR, vL):
+#         v = self.R / 2 * (vR + vL)
+#         w = self.R / self.L * (vR - vL)
+#         return v, w
+# =============================================================================
 
     def fixAngle(self, angle):
         return atan2(sin(angle), cos(angle))
 
     def step(self, v, w):
-        x_dt = v * cos(self.current.theta)
-        y_dt = v * sin(self.current.theta)
-        theta_dt = w
-
 # =============================================================================
-#         # In terms of u:
-#         x_dt = (self.u[0]+self.u[1])*np.cos(self.current.theta)/2
-#         y_dt = (self.u[0]+self.u[1])*np.sin(self.current.theta)/2    
-#         theta_dt = (self.u[1]-self.u[0])/(2*self.L)
+#         x_dt = v * cos(self.current.theta)
+#         y_dt = v * sin(self.current.theta)
+#         theta_dt = w
 # =============================================================================
+        # In terms of u:
+        x_dt = (self.u[0]+self.u[1])*np.cos(self.current.theta)/2
+        y_dt = (self.u[0]+self.u[1])*np.sin(self.current.theta)/2    
+        theta_dt = (self.u[1]-self.u[0])/(2*self.L)
 
         self.current.x = self.current.x + x_dt * self.dt
         self.current.y = self.current.y + y_dt * self.dt
