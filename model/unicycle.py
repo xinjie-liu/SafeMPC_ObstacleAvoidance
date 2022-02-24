@@ -7,15 +7,10 @@ import mpl_toolkits.mplot3d.axes3d as p3
 from matplotlib import animation
 
 class State():
-    def __init__(self, x_, y_, theta_):
-        if not (x_ == None or y_ == None or theta_ == None):
-            self.x = x_
-            self.y = y_
-            self.theta = theta_
-        else:
-            self.x = 0
-            self.y = 0
-            self.theta = 0
+    def __init__(self, x_=0, y_=0, theta_=0):
+        self.x = x_
+        self.y = y_
+        self.theta = theta_
 
     def __str__(self):
         return str(self.x) + "," + str(self.y) + "," + str(self.theta)
@@ -44,6 +39,13 @@ class Robot():
         x_dt = v * cos(self.current.theta)
         y_dt = v * sin(self.current.theta)
         theta_dt = w
+
+# =============================================================================
+#         # In terms of u:
+#         x_dt = (self.u[0]+self.u[1])*np.cos(self.current.theta)/2
+#         y_dt = (self.u[0]+self.u[1])*np.sin(self.current.theta)/2    
+#         theta_dt = (self.u[1]-self.u[0])/(2*self.L)
+# =============================================================================
 
         self.current.x = self.current.x + x_dt * self.dt
         self.current.y = self.current.y + y_dt * self.dt
