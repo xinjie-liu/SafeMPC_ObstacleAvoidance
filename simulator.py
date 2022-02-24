@@ -12,7 +12,7 @@ from traj_optimization.mini_snap_optim import min_snap_optimizer_3d
 from scipy import interpolate
 
 ####################################################################################
-use_pre_saved_traj = False   # whether to generate new trajectory using RRT* and smoothing or use a precomputed one
+use_pre_saved_traj = True   # whether to generate new trajectory using RRT* and smoothing or use a precomputed one
 RRT_iterations = 2000       # Number of iterations of the RRT_star algorithm
 min_snap = True             # Set to True is minimum snap is to be used as interpolation or cubic splines is preferred
 time_optimal = True         # When set to True, the minimum snap will be applied in a time-optimization fashion

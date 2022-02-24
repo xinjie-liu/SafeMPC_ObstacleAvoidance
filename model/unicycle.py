@@ -1,101 +1,102 @@
+import math
+from math import atan2, sin, cos, radians
+import time
 import numpy as np
+from matplotlib import pyplot as plt
+import mpl_toolkits.mplot3d.axes3d as p3
+from matplotlib import animation
+
+class State():
+    def __init__(self, x_, y_, theta_):
+        if not (x_ == None or y_ == None or theta_ == None):
+            self.x = x_
+            self.y = y_
+            self.theta = theta_
+        else:
+            self.x = 0
+            self.y = 0
+            self.theta = 0
+
+    def __str__(self):
+        return str(self.x) + "," + str(self.y) + "," + str(self.theta)
+
+class Robot():
+    def __init__(self, R_=0.0325, L_=0.1):
+        self.current = State(0, 0, 0) # zero initialization
+        self.R = R_  # in meter
+        self.L = L_  # in meter
+        self.dt = 1e-2
+
+    def uniToDiff(self, v, w):
+        vR = (2 * v + w * self.L) / (2 * self.R)
+        vL = (2 * v - w * self.L) / (2 * self.R)
+        return vR, vL
+
+    def diffToUni(self, vR, vL):
+        v = self.R / 2 * (vR + vL)
+        w = self.R / self.L * (vR - vL)
+        return v, w
+
+    def fixAngle(self, angle):
+        return atan2(sin(angle), cos(angle))
+
+    def step(self, v, w):
+        x_dt = v * cos(self.current.theta)
+        y_dt = v * sin(self.current.theta)
+        theta_dt = w
+
+        self.current.x = self.current.x + x_dt * self.dt
+        self.current.y = self.current.y + y_dt * self.dt
+        self.current.theta = self.fixAngle(self.current.theta + self.fixAngle(theta_dt * self.dt))
+
+        return self.current
 
 
-class Robot:
-    def __init__(self, mp=np.array([0.0, 0.0]), phi=0, q=np.array([0.0, 0.0])):
-        self.l = np.array([1, 1])  # links length
-        self.R = 0.5  # radius of the mobile base
-        self.h = 0.4  # distance between center and the wheel
-        self.q = q  # joint positions
-        self.dq = np.array([0.0, 0.0])  # joint velocities
-        self.u = np.array([1.0, 1.0])  # velocities of wheels
-        self.phi = phi  # orientation (heading) of the mobile base
-        # Position of the mobile base:
-        self.mp = mp
-        # Initial position of the end effector:
-        # self.p = np.array([(np.sum(self.l))*np.cos(self.phi),
-        #                   (np.sum(self.l))*np.sin(self.phi)])
-        self.p = mp + self.rotationMatrix(phi).dot(np.array([self.l[0] * np.cos(q[0]) + self.l[1] * np.cos(q[0] + q[1]),
-                                                             self.l[0] * np.sin(q[0]) + self.l[1] * np.sin(
-                                                                 q[0] + q[1])]))
-        # Initial position of the first joint:
-        # self.p_joint_1 = np.array([(self.l[0])*np.cos(self.phi),
-        #                   (self.l[1])*np.sin(self.phi)])
-        self.p_joint_1 = mp + self.rotationMatrix(phi).dot(
-            np.array([self.l[0] * np.cos(q[0]), self.l[0] * np.sin(q[0])]))
-        # FIX THIS - I THINK I FIXED IT
-        self.theta = phi + np.sum(q)  # orientation of the end effector (FIX THIS)
+# Starting point of the code
+def main():
+    def animate(i):
+        line.set_xdata(real_trajectory['x'][:i + 1])
+        line.set_ydata(real_trajectory['y'][:i + 1])
+        line.set_3d_properties(real_trajectory['z'][:i + 1])
+        point.set_xdata(real_trajectory['x'][i])
+        point.set_ydata(real_trajectory['y'][i])
+        point.set_3d_properties(real_trajectory['z'][i])
 
-        self.phi_dot = 0
-        self.u_limits = 10
-        self.dq_limits = 5
+    env = Robot()
+    real_trajectory = {'x': [], 'y': [], 'z': []}
+    for iter in range(1000):
+        state = env.step(0.5, 0.5)
+        print(env.current)
+        real_trajectory['x'].append(state.x)
+        real_trajectory['y'].append(state.y)
+        real_trajectory['z'].append(0)
 
-    def rotationMatrix(self, a):
-        R = np.array([[np.cos(a), -np.sin(a)],
-                      [np.sin(a), np.cos(a)]])
+    # plotting stuff
+    fig = plt.figure()
+    ax1 = p3.Axes3D(fig) # 3D place for drawing
+    real_trajectory['x'] = np.array(real_trajectory['x'])
+    real_trajectory['y'] = np.array(real_trajectory['y'])
+    real_trajectory['z'] = np.array(real_trajectory['z'])
+    point, = ax1.plot([real_trajectory['x'][0]], [real_trajectory['y'][0]], [real_trajectory['z'][0]], 'r+',
+                      label='Robot', markersize=15)
+    line, = ax1.plot([real_trajectory['x'][0]], [real_trajectory['y'][0]], [real_trajectory['z'][0]],
+                     label='Real_Trajectory')
+    ax1.set_xlabel('x')
+    ax1.set_ylabel('y')
+    ax1.set_zlabel('z')
+    ax1.set_title('3D animate')
+    ax1.set_xlim(-5., 5.)
+    ax1.set_ylim(-5., 5.)
+    ax1.set_zlim(0., 3.)
+    ax1.legend(loc='lower right')
 
-        return R
+    ani = animation.FuncAnimation(fig=fig,
+                                  func=animate,
+                                  frames=len(real_trajectory['x']),
+                                  interval=1,
+                                  repeat=False,
+                                  blit=False)
+    plt.show()
 
-    # WE DONT REALLY USE THIS ANYMORE, FIX IT
-    def ForwardKinematics(self, u_des, dq_des, phi_dot):
-        Q_dot = np.array([u_des[0], u_des[1], dq_des[0], dq_des[1]])
-        J = self.Jacobian(u_des)
-        X_dot = np.dot(J, Q_dot)
-
-        return X_dot
-
-    def ForwardKinematicsConfig(self, q):  # Find the workspace pose based on the configuration
-        # Position of the mobile base:
-        mp = np.array([q[0], q[1]])
-
-        # Find the rotation matrix based on the heading of the mobile base
-        R = self.rotationMatrix(q[2])
-        # Find the position of the centre of each link (for the polygons):
-        p_centre1 = mp + R.dot(np.array([self.l[0] / 2 * np.cos(q[3]), self.l[0] / 2 * np.sin(q[3])]))
-        #
-        p_centre2 = mp + R.dot(np.array([self.l[0] * np.cos(q[3]) + self.l[1] / 2 * np.cos(q[3] + q[4]),
-                                         self.l[0] * np.sin(q[3]) + self.l[1] / 2 * np.sin(q[3] + q[4])]))
-
-        joint_1 = mp + R.dot(np.array([self.l[0] * np.cos(q[3]), self.l[0] * np.sin(q[3])]))
-        #
-        l_2 = self.l[1] - 0.25
-        joint_2 = mp + R.dot(np.array([self.l[0] * np.cos(q[3]) + l_2 * np.cos(q[3] + q[4]),
-                                       self.l[0] * np.sin(q[3]) + l_2 * np.sin(q[3] + q[4])]))
-
-        return mp, p_centre1, p_centre2, joint_1, joint_2
-
-        return
-
-    def Jacobian(self, u):
-        cphi = np.cos(self.phi)
-        sphi = np.sin(self.phi)
-        q1 = self.q[0]
-        q2 = self.q[1]
-
-        # Position of the end effector w.r.t the mobile base:
-        p_em = np.array([self.l[0] * np.cos(q1) + self.l[1] * np.cos(q1 + q2),
-                         self.l[0] * np.sin(q1) + self.l[1] * np.sin(q1 + q2)])
-        # a and b are the components associated with dR/dt * p_em (derivative of the rot matrix)
-        a = (-sphi * p_em[0] - cphi * p_em[1]) / (2 * self.h)
-        b = (cphi * p_em[0] - sphi * p_em[1]) / (2 * self.h)
-
-        J = np.array([[cphi / 2 - a, cphi / 2 + a,
-                       cphi * (-self.l[0] * np.sin(q1) - self.l[1] * np.sin(q1 + q2)) - sphi * (
-                                   self.l[0] * np.cos(q1) + self.l[1] * np.cos(q1 + q2)),
-                       cphi * (-self.l[1] * np.sin(q1 + q2)) - sphi * (self.l[1] * np.cos(q1 + q2))],
-                      [sphi / 2 - b, sphi / 2 + b,
-                       sphi * (-self.l[0] * np.sin(q1) - self.l[1] * np.sin(q1 + q2)) + cphi * (
-                                   self.l[0] * np.cos(q1) + self.l[1] * np.cos(q1 + q2)),
-                       sphi * (-self.l[1] * np.sin(q1 + q2)) + cphi * (self.l[1] * np.cos(q1 + q2))],
-                      [-1 / (2 * self.h), 1 / (2 * self.h), 1, 1]])
-        return J
-
-    def Update(self, mp, phi, p, theta, q, dq, u, p_joint_1):
-        self.mp = mp
-        self.phi = phi
-        self.p = p
-        self.theta = theta
-        self.q = q
-        self.dq = dq
-        self.u = u
-        self.p_joint_1 = p_joint_1
+if __name__ == "__main__":
+    main()

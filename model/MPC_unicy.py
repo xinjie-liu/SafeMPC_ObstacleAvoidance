@@ -210,7 +210,6 @@ class MPC_traj:
         self.goal = np.array([goal[0], goal[1], goal[2], goal[3], goal[4], goal[5], 0, 0, 0, 1, 0, 0, 0])
         return (z[4:] - self.goal).T @ self._Q_goal @ (z[4:]-self.goal) + 0.1 * (z[0]**2 + z[1]**2 + z[2]**2 + z[3]**2)
 
-
 #######################################################################################################################
 # You can check the results of a single optimization step here, be sure to comment the main function below
 #######################################################################################################################
