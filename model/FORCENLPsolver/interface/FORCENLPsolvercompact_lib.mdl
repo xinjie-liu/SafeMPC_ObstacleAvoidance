@@ -60,13 +60,13 @@ Model {
       }
     }
   }
-  Created		  "1/5/2022 4:02:59 PM"
+  Created		  "2/24/2022 11:20:32 PM"
   Creator		  "embotech AG"
   UpdateHistory		  "UpdateHistoryNever"
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "embotech AG"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "1/5/2022 4:02:59 PM"
+  LastModifiedDate	  "2/24/2022 11:20:32 PM"
   RTWModifiedTimeStamp	  315310195
   ModelVersionFormat	  "1.%<AutoIncrement:2>"
   ConfigurationManager	  "None"
@@ -767,7 +767,7 @@ Model {
       BlockType		      S-Function
       Name		      "FORCENLPsolver"
       SID		      "1"
-      Ports		      [6, 1]
+      Ports		      [4, 1]
       Position		      [170, 99, 650, 180]
       ZOrder		      1
       FunctionName	      "FORCENLPsolver_simulinkBlockcompact"
@@ -805,23 +805,19 @@ Model {
 	"\nOUTPUTS = FORCENLPsolver(INPUTS) solves an optimization problem where:\n\n"
 	"INPUTS:\n"
 	" - reinitialize - column vector of length 0\n "
-" - lb - column vector of length 160\n "
-" - ub - column vector of length 160\n "
-" - xinit - column vector of length 13\n "
-" - x0 - column vector of length 680\n "
-" - all_parameters - column vector of length 360\n "
+" - xinit - column vector of length 3\n "
+" - x0 - column vector of length 100\n "
+" - all_parameters - column vector of length 60\n "
 
 	"\nOUTPUTS:\n"
-	" - outputs - column vector of length 680\n "
+	" - outputs - column vector of length 100\n "
 
 	"\n For more information, see https://forces.embotech.com/Documentation/graphical_interface/index.html \n "
 
 	Display			"port_label('input', 1, 'reinitialize') \n  "
-"port_label('input', 2, 'lb') \n  "
-"port_label('input', 3, 'ub') \n  "
-"port_label('input', 4, 'xinit') \n  "
-"port_label('input', 5, 'x0') \n  "
-"port_label('input', 6, 'all_parameters') \n  "
+"port_label('input', 2, 'xinit') \n  "
+"port_label('input', 3, 'x0') \n  "
+"port_label('input', 4, 'all_parameters') \n  "
 "port_label('output', 1, 'outputs') \n "
 "if( exist('FORCES_PRO_Logo.jpg','file') ), image(imread('FORCES_PRO_Logo.jpg'),'center','on'); elseif( exist(['interface',filesep,'FORCES_PRO_Logo.jpg'],'file') ), image(imread(['interface',filesep,'FORCES_PRO_Logo.jpg']),'center','on'); elseif( exist(['FORCENLPsolver',filesep,'interface',filesep,'FORCES_PRO_Logo.jpg'],'file') ), image(imread(['FORCENLPsolver',filesep,'interface',filesep,'FORCES_PRO_Logo.jpg']),'center','on'); end \n "
 

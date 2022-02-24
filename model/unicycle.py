@@ -5,6 +5,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import mpl_toolkits.mplot3d.axes3d as p3
 from matplotlib import animation
+from MPC_unicy import MPC
 
 class State():
     def __init__(self, x_=0, y_=0, theta_=0):
@@ -57,6 +58,7 @@ class Robot():
 
 # Starting point of the code
 def main():
+
     def animate(i):
         line.set_xdata(real_trajectory['x'][:i + 1])
         line.set_ydata(real_trajectory['y'][:i + 1])
@@ -66,9 +68,12 @@ def main():
         point.set_3d_properties(real_trajectory['z'][i])
 
     env = Robot()
+    mpc = MPC(20)
     real_trajectory = {'x': [], 'y': [], 'z': []}
-    for iter in range(1000):
-        state = env.step(0.5, 0.5)
+    for iter in range(10000):
+        #state = env.step(0.5, 0.5)
+        v, w = mpc.control(env.current, np.array([15., 0.5, 0.1]))
+        state = env.step(v, w)
         print(env.current)
         real_trajectory['x'].append(state.x)
         real_trajectory['y'].append(state.y)

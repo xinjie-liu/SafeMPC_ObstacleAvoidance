@@ -59,15 +59,15 @@ extern void FORCENLPsolver_casadi2forces(FORCENLPsolver_float *x,        /* prim
 	
 
 	/* Allocate working arrays for CasADi */
-	FORCENLPsolver_float w[166];
+	FORCENLPsolver_float w[31];
 	
     /* temporary storage for CasADi sparse output */
     FORCENLPsolver_callback_float this_f;
-    FORCENLPsolver_float nabla_f_sparse[17];
-    FORCENLPsolver_float h_sparse[1];
-    FORCENLPsolver_float nabla_h_sparse[3];
-    FORCENLPsolver_float c_sparse[13];
-    FORCENLPsolver_float nabla_c_sparse[133];
+    FORCENLPsolver_float nabla_f_sparse[5];
+    
+    
+    FORCENLPsolver_float c_sparse[3];
+    FORCENLPsolver_float nabla_c_sparse[10];
             
     
     /* pointers to row and column info for 
@@ -81,7 +81,7 @@ extern void FORCENLPsolver_casadi2forces(FORCENLPsolver_float *x,        /* prim
     in[2] = l;
     in[3] = y;
 
-	if ((0 <= stage && stage <= 38))
+	if ((0 <= stage && stage <= 18))
 	{
 		
 		
@@ -123,30 +123,8 @@ extern void FORCENLPsolver_casadi2forces(FORCENLPsolver_float *x,        /* prim
 			row = FORCENLPsolver_ddynamics_0_sparsity_out(0) + 2 + (ncol + 1);
 			sparse2fullcopy(nrow, ncol, colind, row, nabla_c_sparse, nabla_c);
 		}
-		
-		if( h )
-		{
-			out[0] = h_sparse;
-			FORCENLPsolver_inequalities_0(in, out, NULL, w, 0);
-			nrow = FORCENLPsolver_inequalities_0_sparsity_out(0)[0];
-			ncol = FORCENLPsolver_inequalities_0_sparsity_out(0)[1];
-			colind = FORCENLPsolver_inequalities_0_sparsity_out(0) + 2;
-			row = FORCENLPsolver_inequalities_0_sparsity_out(0) + 2 + (ncol + 1);
-			sparse2fullcopy(nrow, ncol, colind, row, h_sparse, h);
-		}
-		
-		if( nabla_h )
-		{
-			out[0] = nabla_h_sparse;
-			FORCENLPsolver_dinequalities_0(in, out, NULL, w, 0);
-			nrow = FORCENLPsolver_dinequalities_0_sparsity_out(0)[0];
-			ncol = FORCENLPsolver_dinequalities_0_sparsity_out(0)[1];
-			colind = FORCENLPsolver_dinequalities_0_sparsity_out(0) + 2;
-			row = FORCENLPsolver_dinequalities_0_sparsity_out(0) + 2 + (ncol + 1);
-			sparse2fullcopy(nrow, ncol, colind, row, nabla_h_sparse, nabla_h);
-		}
 	}
-	if ((39 == stage))
+	if ((19 == stage))
 	{
 		
 		
@@ -165,28 +143,6 @@ extern void FORCENLPsolver_casadi2forces(FORCENLPsolver_float *x,        /* prim
 			colind = FORCENLPsolver_dobjective_1_sparsity_out(0) + 2;
 			row = FORCENLPsolver_dobjective_1_sparsity_out(0) + 2 + (ncol + 1);
 			sparse2fullcopy(nrow, ncol, colind, row, nabla_f_sparse, nabla_f);
-		}
-		
-		if( h )
-		{
-			out[0] = h_sparse;
-			FORCENLPsolver_inequalities_1(in, out, NULL, w, 0);
-			nrow = FORCENLPsolver_inequalities_1_sparsity_out(0)[0];
-			ncol = FORCENLPsolver_inequalities_1_sparsity_out(0)[1];
-			colind = FORCENLPsolver_inequalities_1_sparsity_out(0) + 2;
-			row = FORCENLPsolver_inequalities_1_sparsity_out(0) + 2 + (ncol + 1);
-			sparse2fullcopy(nrow, ncol, colind, row, h_sparse, h);
-		}
-		
-		if( nabla_h )
-		{
-			out[0] = nabla_h_sparse;
-			FORCENLPsolver_dinequalities_1(in, out, NULL, w, 0);
-			nrow = FORCENLPsolver_dinequalities_1_sparsity_out(0)[0];
-			ncol = FORCENLPsolver_dinequalities_1_sparsity_out(0)[1];
-			colind = FORCENLPsolver_dinequalities_1_sparsity_out(0) + 2;
-			row = FORCENLPsolver_dinequalities_1_sparsity_out(0) + 2 + (ncol + 1);
-			sparse2fullcopy(nrow, ncol, colind, row, nabla_h_sparse, nabla_h);
 		}
 	}
     
