@@ -12,5 +12,5 @@ Final project of course SC42125 Model Predictive Control
 * [might helps for searching for resources (especially analysis of linearized system): A survey of MPC in quadrotor](https://arxiv.org/pdf/2011.11104.pdf)
 * [A cool group who did a lot of drone researches](https://rpg.ifi.uzh.ch/aggressive_flight.html)
 ## 3. some references (unicycle)
-* [unicycle MPC](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=7312445)
+* [unicycle MPC (including stability analysis)](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=7312445)
 
