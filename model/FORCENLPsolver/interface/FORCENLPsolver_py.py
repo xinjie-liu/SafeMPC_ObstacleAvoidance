@@ -92,12 +92,12 @@ import numpy as np
 import numpy.ctypeslib as npct
 import sys
 
-#_lib = ctypes.CDLL(os.path.join(os.getcwd(),'FORCENLPsolver/lib/FORCENLPsolver.so')) 
+#_lib = ctypes.CDLL(os.path.join(os.getcwd(),'FORCENLPsolver/lib/FORCENLPsolver.dll')) 
 try:
-    _lib = ctypes.CDLL(os.path.join(os.path.dirname(os.path.abspath(__file__)),'FORCENLPsolver/lib/FORCENLPsolver.so'))
+    _lib = ctypes.CDLL(os.path.join(os.path.dirname(os.path.abspath(__file__)),'FORCENLPsolver/lib/FORCENLPsolver.dll'))
     csolver = getattr(_lib,'FORCENLPsolver_solve')
 except:
-    _lib = ctypes.CDLL(os.path.join(os.path.dirname(os.path.abspath(__file__)),'FORCENLPsolver/lib/libFORCENLPsolver.so'))
+    _lib = ctypes.CDLL(os.path.join(os.path.dirname(os.path.abspath(__file__)),'FORCENLPsolver/lib/libFORCENLPsolver.dll'))
     csolver = getattr(_lib,'FORCENLPsolver_solve')
 
 class FORCENLPsolver_params_ctypes(ctypes.Structure):

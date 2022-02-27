@@ -3,8 +3,8 @@ import ctypes
 
 name = "FORCENLPsolver"
 requires_callback = True
-lib = "lib/libFORCENLPsolver.so"
-lib_static = "lib/libFORCENLPsolver.a"
+lib = "lib/FORCENLPsolver.dll"
+lib_static = "lib/FORCENLPsolver_static.lib"
 c_header = "include/FORCENLPsolver.h"
 nstages = 20
 

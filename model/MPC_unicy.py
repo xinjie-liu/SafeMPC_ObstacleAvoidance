@@ -1,6 +1,11 @@
 """
 File containing the class definition of the Nonlinear Model Predictive Controller
 """
+# Adding to my path
+# =============================================================================
+# import sys
+# sys.path.insert(0, 'C:\\Users\\Vassil\\Desktop\\Personal\\TU Delft\\Msc Robotics\\forces_pro_client')
+# =============================================================================
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.linalg import inv
@@ -96,29 +101,27 @@ class MPC:
         return casadi.atan2(casadi.sin(angle), casadi.cos(angle))
 
     # this is the discrete-time model for omega = 0 (straight line)
-    # def continuous_dynamics(self, s, u):
-    #     v = u[0]
-    #     w = u[1]
-    #     x_dt = v * casadi.cos(s[2])
-    #     y_dt = v * casadi.sin(s[2])
-    #     theta_dt = w
-    #
-    #     new_x = s[0] + x_dt * self.dt
-    #     new_y = s[1] + y_dt * self.dt
-    #     new_theta = self.fixAngle(s[2] + self.fixAngle(theta_dt * self.dt))
-    #
-    #     return casadi.vertcat(new_x, new_y, new_theta)
-
-    # this is the discrete-time model for omega /= 0
     def continuous_dynamics(self, s, u):
-        v = u[0]
-        w = u[1]
-        theta_dt = w
-        new_theta = self.fixAngle(s[2] + self.fixAngle(theta_dt * self.dt))
-        new_x = s[0] + (v/(w+1e-20)) * (casadi.sin(new_theta) - casadi.sin(s[2]))
-        new_y = s[1] + (v/(w+1e-20)) * (casadi.cos(s[2]) - casadi.cos(new_theta))
+         v = u[0]
+         w = u[1]
+         x_dt = v * casadi.cos(s[2])
+         y_dt = v * casadi.sin(s[2])
+         theta_dt = w
+    
+         return casadi.vertcat(x_dt, y_dt, theta_dt)
 
-        return casadi.vertcat(new_x, new_y, new_theta)
+# =============================================================================
+#     # this is the discrete-time model for omega /= 0
+#     def continuous_dynamics(self, s, u):
+#         v = u[0]
+#         w = u[1]
+#         theta_dt = w
+#         new_theta = self.fixAngle(s[2] + self.fixAngle(theta_dt * self.dt))
+#         new_x = s[0] + (v/(w+1e-20)) * (casadi.sin(new_theta) - casadi.sin(s[2]))
+#         new_y = s[1] + (v/(w+1e-20)) * (casadi.cos(s[2]) - casadi.cos(new_theta))
+# 
+#         return casadi.vertcat(new_x, new_y, new_theta)
+# =============================================================================
 
     def objective(self, z, goal):
         self.goal = casadi.vertcat(goal[0], goal[1], goal[2])
@@ -131,9 +134,10 @@ class MPC:
 #######################################################################################################################
 # You can check the results of a single optimization step here, be sure to comment the main function below
 #######################################################################################################################
+# =============================================================================
 # mpc = MPC(20)
-#
-# # Set initial guess to start solver from (here, middle of upper and lower bound)
+# 
+# # # Set initial guess to start solver from (here, middle of upper and lower bound)
 # x0i = np.zeros(5)
 # x0 = np.transpose(np.tile(x0i, (1, mpc.model.N)))
 # init_state = np.zeros(3)
@@ -141,14 +145,15 @@ class MPC:
 # # Set runtime parameters
 # goal = np.array([0.5, 0.5, 0])
 # problem["all_parameters"] = np.transpose(np.tile(goal, (1, mpc.N)))
-#
+# 
 # # Time to solve the NLP!
 # output, exitflag, info = mpc.solver.solve(problem)
-#
+# 
 # # Make sure the solver has exited properly.
 # print("exitflag: ", exitflag)
 # print("FORCES took {} iterations and {} seconds to solve the problem.".format(info.it, info.solvetime))
-#
+# 
 # print(output)
 # print(output['x01'].shape)
-#######################################################################################################################
+# =============================================================================
+

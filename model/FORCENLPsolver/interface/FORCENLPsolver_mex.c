@@ -30,7 +30,17 @@ jurisdiction in case of any dispute.
 #include <stdio.h>
 #endif
 
-
+/* For compatibility with Microsoft Visual Studio 2015 */
+#if _MSC_VER >= 1900
+FILE _iob[3];
+FILE * __cdecl __iob_func(void)
+{
+	_iob[0] = *stdin;
+	_iob[1] = *stdout;
+	_iob[2] = *stderr;
+	return _iob;
+}
+#endif
 
 /* copy functions */
 
