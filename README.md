@@ -13,4 +13,4 @@ Final project of course SC42125 Model Predictive Control
 * [A cool group who did a lot of drone researches](https://rpg.ifi.uzh.ch/aggressive_flight.html)
 ## 3. some references (unicycle)
 * [unicycle MPC (including stability analysis)](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=7312445)
-* [unicycle: a survey](file:///home/richard/Downloads/Nonholonomicmobilerobotstrajectorytrackingmodelpredictivecontrol-asurvey_Nascimento2018.pdf)
+* [unicycle: a survey](https://www.cambridge.org/core/journals/robotica/article/nonholonomic-mobile-robots-trajectory-tracking-model-predictive-control-a-survey/6C977C1B5A025C8427F3FD3C7F63EE20)
