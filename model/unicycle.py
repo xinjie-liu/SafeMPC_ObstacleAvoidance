@@ -8,6 +8,7 @@ from matplotlib import animation
 from MPC_unicy import MPC
 
 class State():
+
     def __init__(self, x_=0, y_=0, theta_=0):
         self.x = x_
         self.y = y_
@@ -21,8 +22,8 @@ class Robot():
         self.current = State(0, 0, 0) # zero initialization
         self.R = R_  # in meter
         self.L = L_  # in meter
-        self.dt = 1e-2
-        self.u = np.array([0,0])
+        self.dt = 5e-2
+        # self.u = np.array([0,0])
 # =============================================================================
 #     def uniToDiff(self, v, w):
 #         vR = (2 * v + w * self.L) / (2 * self.R)
@@ -40,14 +41,14 @@ class Robot():
 
     def step(self, v, w):
 # =============================================================================
-#         x_dt = v * cos(self.current.theta)
-#         y_dt = v * sin(self.current.theta)
-#         theta_dt = w
+        x_dt = v * cos(self.current.theta)
+        y_dt = v * sin(self.current.theta)
+        theta_dt = w
 # =============================================================================
         # In terms of u:
-        x_dt = (self.u[0]+self.u[1])*np.cos(self.current.theta)/2
-        y_dt = (self.u[0]+self.u[1])*np.sin(self.current.theta)/2    
-        theta_dt = (self.u[1]-self.u[0])/(2*self.L)
+        # x_dt = (self.u[0]+self.u[1])*np.cos(self.current.theta)/2
+        # y_dt = (self.u[0]+self.u[1])*np.sin(self.current.theta)/2
+        # theta_dt = (self.u[1]-self.u[0])/(2*self.L)
 
         self.current.x = self.current.x + x_dt * self.dt
         self.current.y = self.current.y + y_dt * self.dt
@@ -70,9 +71,9 @@ def main():
     env = Robot()
     mpc = MPC(20)
     real_trajectory = {'x': [], 'y': [], 'z': []}
-    for iter in range(10000):
-        #state = env.step(0.5, 0.5)
-        v, w = mpc.control(env.current, np.array([15., 0.5, 0.1]))
+    for iter in range(500):
+        # state = env.step(0.5, 0.8)
+        v, w = mpc.control(env.current, np.array([5., 0., 0.]))
         state = env.step(v, w)
         print(env.current)
         real_trajectory['x'].append(state.x)
@@ -85,7 +86,7 @@ def main():
     real_trajectory['x'] = np.array(real_trajectory['x'])
     real_trajectory['y'] = np.array(real_trajectory['y'])
     real_trajectory['z'] = np.array(real_trajectory['z'])
-    point, = ax1.plot([real_trajectory['x'][0]], [real_trajectory['y'][0]], [real_trajectory['z'][0]], 'r+',
+    point, = ax1.plot([real_trajectory['x'][0]], [real_trajectory['y'][0]], [real_trajectory['z'][0]], 'ro',
                       label='Robot', markersize=15)
     line, = ax1.plot([real_trajectory['x'][0]], [real_trajectory['y'][0]], [real_trajectory['z'][0]],
                      label='Real_Trajectory')

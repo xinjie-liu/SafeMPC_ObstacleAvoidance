@@ -296,8 +296,8 @@ int FORCENLPsolver_dobjective_0_work(casadi_int *sz_arg, casadi_int* sz_res, cas
 static int casadi_f2(const casadi_real** arg, casadi_real** res, casadi_int* iw, casadi_real* w, int mem) {
   casadi_real a0, a1, a10, a11, a12, a13, a14, a15, a16, a2, a3, a4, a5, a6, a7, a8, a9;
   a0=arg[0]? arg[0][2] : 0;
-  a1=1.6666666666666668e-03;
-  a2=1.0000000000000000e-02;
+  a1=8.3333333333333332e-03;
+  a2=5.0000000000000003e-02;
   a3=arg[0]? arg[0][0] : 0;
   a4=arg[0]? arg[0][4] : 0;
   a5=cos(a4);
@@ -305,7 +305,7 @@ static int casadi_f2(const casadi_real** arg, casadi_real** res, casadi_int* iw,
   a5=(a2*a5);
   a5=(a0+a5);
   a6=2.;
-  a7=5.0000000000000001e-03;
+  a7=2.5000000000000001e-02;
   a8=(a7*a5);
   a8=(a0+a8);
   a9=arg[0]? arg[0][1] : 0;
@@ -492,13 +492,13 @@ int FORCENLPsolver_dynamics_0_work(casadi_int *sz_arg, casadi_int* sz_res, casad
 /* FORCENLPsolver_ddynamics_0:(i0[5],i1[3])->(o0[3x5,10nz]) */
 static int casadi_f3(const casadi_real** arg, casadi_real** res, casadi_int* iw, casadi_real* w, int mem) {
   casadi_real a0, a1, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a2, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a3, a30, a4, a5, a6, a7, a8, a9;
-  a0=1.6666666666666668e-03;
-  a1=1.0000000000000000e-02;
+  a0=8.3333333333333332e-03;
+  a1=5.0000000000000003e-02;
   a2=arg[0]? arg[0][4] : 0;
   a3=cos(a2);
   a3=(a1*a3);
   a4=2.;
-  a5=5.0000000000000001e-03;
+  a5=2.5000000000000001e-02;
   a6=(a5*a3);
   a7=arg[0]? arg[0][1] : 0;
   a8=(a1*a7);
@@ -692,14 +692,14 @@ static int casadi_f3(const casadi_real** arg, casadi_real** res, casadi_int* iw,
   a13=(a13+a16);
   a13=(a0*a13);
   if (res[0]!=0) res[0][4]=a13;
-  a13=1.0100501670833333e+00;
+  a13=1.0512710937500001e+00;
   if (res[0]!=0) res[0][5]=a13;
   if (res[0]!=0) res[0][6]=a13;
   a13=sin(a2);
   a13=(a3*a13);
   a13=(a1*a13);
   a16=(a5*a13);
-  a24=1.0049999999999999e+00;
+  a24=1.0249999999999999e+00;
   a6=(a24*a6);
   a6=(a3*a6);
   a6=(a1*a6);

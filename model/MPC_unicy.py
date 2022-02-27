@@ -19,7 +19,7 @@ class MPC:
         """
         Parameters of the class
         """
-        self.dt = 1e-2
+        self.dt = 5e-2
         self.N = N # planning horizon
         """
         Parameters for the MPC controller
@@ -83,7 +83,7 @@ class MPC:
         output, exitflag, info = self.solver.solve(self.problem)
         # Make sure the solver has exited properly.
         print("exitflag: ", exitflag)
-        self.inital_guess = output['x01'][:, np.newaxis]
+        self.inital_guess = output['x02'][:, np.newaxis]
         print(output['x01'])
 
         v = output['x01'][0]
