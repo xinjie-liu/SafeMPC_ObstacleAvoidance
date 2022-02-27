@@ -1,3 +1,8 @@
+# Adding to my path
+# =============================================================================
+# import sys
+# sys.path.insert(0, 'C:\\Users\\Vassil\\Desktop\\Personal\\TU Delft\\Msc Robotics\\forces_pro_client')
+# =============================================================================
 import math
 from math import atan2, sin, cos, radians
 import time
@@ -76,15 +81,16 @@ def main():
 
     env = Robot()
     mpc = MPC(20)
-    real_trajectory = {'x': [], 'y': [], 'z': []}
+    real_trajectory = {'x': [], 'y': [], 'z': [],'theta':[]}
     for iter in range(5000):
         #state = env.step(0.5, 0.)
-        v, w = mpc.control(env.current, np.array([3., 0., 0.]))
+        v, w = mpc.control(env.current, np.array([3., 3., 0.]))
         state = env.step(v, w)
         print(env.current)
         real_trajectory['x'].append(state.x)
         real_trajectory['y'].append(state.y)
         real_trajectory['z'].append(0)
+        real_trajectory['theta'].append(state.theta)
 
     # plotting stuff
     fig = plt.figure()
@@ -94,6 +100,13 @@ def main():
     real_trajectory['z'] = np.array(real_trajectory['z'])
     point, = ax1.plot([real_trajectory['x'][0]], [real_trajectory['y'][0]], [real_trajectory['z'][0]], 'ro',
                       label='Robot', markersize=15)
+    
+    #robotBody = plt.Circle([real_trajectory['x'][0]], [real_trajectory['y'][0]], color='r',fill=False)
+    heading, = ax1.plot([real_trajectory['x'][0],real_trajectory['x'][0]+0.8*np.cos(real_trajectory['theta'][0])],\
+             [real_trajectory['y'][0],real_trajectory['y'][0]+0.8*np.sin(real_trajectory['theta'][0])])
+    #ax1.add_patch(robotBody)
+        
+        
     line, = ax1.plot([real_trajectory['x'][0]], [real_trajectory['y'][0]], [real_trajectory['z'][0]],
                      label='Real_Trajectory')
     ax1.set_xlabel('x')
