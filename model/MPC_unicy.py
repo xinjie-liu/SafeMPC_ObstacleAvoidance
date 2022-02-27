@@ -19,7 +19,7 @@ class MPC:
         """
         Parameters of the class
         """
-        self.dt = 5e-2
+        self.dt = 5e-3
         self.N = N # planning horizon
         """
         Parameters for the MPC controller
@@ -27,10 +27,11 @@ class MPC:
         self.model = forcespro.nlp.SymbolicModel(N)  # create an empty model with time horizon of N steps
 
         self._Q_goal = np.diag([100, 100, 10])      # x, y, theta
-        self._Q_goal_N = np.diag([100, 100, 10])      # x, y, theta
+        self._Q_goal_N = np.diag([500, 500, 100])      # x, y, theta
 
         # cost: distance to the goal
         self.model.objective = self.objective
+        self.model.objectiveN = self.objectiveN
 
         # equality constraints (robot model)
         # z[0:2] action z[2:5] state
@@ -94,22 +95,38 @@ class MPC:
     def fixAngle(self, angle):
         return casadi.atan2(casadi.sin(angle), casadi.cos(angle))
 
+    # this is the discrete-time model for omega = 0 (straight line)
+    # def continuous_dynamics(self, s, u):
+    #     v = u[0]
+    #     w = u[1]
+    #     x_dt = v * casadi.cos(s[2])
+    #     y_dt = v * casadi.sin(s[2])
+    #     theta_dt = w
+    #
+    #     new_x = s[0] + x_dt * self.dt
+    #     new_y = s[1] + y_dt * self.dt
+    #     new_theta = self.fixAngle(s[2] + self.fixAngle(theta_dt * self.dt))
+    #
+    #     return casadi.vertcat(new_x, new_y, new_theta)
+
+    # this is the discrete-time model for omega /= 0
     def continuous_dynamics(self, s, u):
         v = u[0]
         w = u[1]
-        x_dt = v * casadi.cos(s[2])
-        y_dt = v * casadi.sin(s[2])
         theta_dt = w
-
-        new_x = s[0] + x_dt * self.dt
-        new_y = s[1] + y_dt * self.dt
         new_theta = self.fixAngle(s[2] + self.fixAngle(theta_dt * self.dt))
+        new_x = s[0] + (v/(w+1e-20)) * (casadi.sin(new_theta) - casadi.sin(s[2]))
+        new_y = s[1] + (v/(w+1e-20)) * (casadi.cos(s[2]) - casadi.cos(new_theta))
 
         return casadi.vertcat(new_x, new_y, new_theta)
 
     def objective(self, z, goal):
         self.goal = casadi.vertcat(goal[0], goal[1], goal[2])
         return (z[2:] - self.goal).T @ self._Q_goal @ (z[2:]-self.goal) + 0.1 * z[0]**2 + 0.1 * z[1]**2
+
+    def objectiveN(self, z, goal):
+        self.goal = casadi.vertcat(goal[0], goal[1], goal[2])
+        return (z[2:] - self.goal).T @ self._Q_goal_N @ (z[2:]-self.goal) + 0.1 * z[0]**2 + 0.1 * z[1]**2
 
 #######################################################################################################################
 # You can check the results of a single optimization step here, be sure to comment the main function below

@@ -22,7 +22,7 @@ class Robot():
         self.current = State(0, 0, 0) # zero initialization
         self.R = R_  # in meter
         self.L = L_  # in meter
-        self.dt = 5e-2
+        self.dt = 5e-3
         # self.u = np.array([0,0])
 # =============================================================================
 #     def uniToDiff(self, v, w):
@@ -40,19 +40,25 @@ class Robot():
         return atan2(sin(angle), cos(angle))
 
     def step(self, v, w):
-# =============================================================================
-        x_dt = v * cos(self.current.theta)
-        y_dt = v * sin(self.current.theta)
         theta_dt = w
+        old_theta = self.current.theta
+        self.current.theta = self.fixAngle(self.current.theta + self.fixAngle(theta_dt * self.dt))
+        self.current.x = self.current.x + (v / (w+1e-20)) * (sin(self.current.theta) - sin(old_theta))
+        self.current.y = self.current.y + (v / (w+1e-20)) * (cos(old_theta) - cos(self.current.theta))
 # =============================================================================
+        # dynamic model (old one)
+        # theta_dt = w
+        # x_dt = v * cos(self.current.theta)
+        # y_dt = v * sin(self.current.theta)
+        # self.current.theta = self.fixAngle(self.current.theta + self.fixAngle(theta_dt * self.dt))
+        # self.current.x = self.current.x + x_dt * self.dt
+        # self.current.y = self.current.y + y_dt * self.dt
+
         # In terms of u:
         # x_dt = (self.u[0]+self.u[1])*np.cos(self.current.theta)/2
         # y_dt = (self.u[0]+self.u[1])*np.sin(self.current.theta)/2
         # theta_dt = (self.u[1]-self.u[0])/(2*self.L)
-
-        self.current.x = self.current.x + x_dt * self.dt
-        self.current.y = self.current.y + y_dt * self.dt
-        self.current.theta = self.fixAngle(self.current.theta + self.fixAngle(theta_dt * self.dt))
+# =============================================================================
 
         return self.current
 
@@ -71,9 +77,9 @@ def main():
     env = Robot()
     mpc = MPC(20)
     real_trajectory = {'x': [], 'y': [], 'z': []}
-    for iter in range(500):
-        # state = env.step(0.5, 0.8)
-        v, w = mpc.control(env.current, np.array([5., 0., 0.]))
+    for iter in range(5000):
+        #state = env.step(0.5, 0.)
+        v, w = mpc.control(env.current, np.array([3., 0., 0.]))
         state = env.step(v, w)
         print(env.current)
         real_trajectory['x'].append(state.x)
