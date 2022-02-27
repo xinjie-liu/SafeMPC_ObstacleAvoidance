@@ -2,7 +2,7 @@
 Final project of course SC42125 Model Predictive Control
 ## 1. report
 [our report can be found here](https://www.overleaf.com/3292615562fwdtpjvbbnwg)
-## 2. some references
+## 2. some references (quadrotor)
 * [(only an intuition about the proof process) A guiding vector field algorithm for path following, where they proved the existence of Lyapunov function](https://www.researchgate.net/publication/309191959_A_Guiding_Vector-Field_Algorithm_for_Path-Following_Control_of_Nonholonomic_Mobile_Robots/figures?lo=1)
 * [(only an intuition about the task) High MPC: an interesting dynamic obstacle avoidance task for quadrotor](https://github.com/uzh-rpg/high_mpc)
 * [An overview of MPC in quadrotor control](https://arxiv.org/pdf/2109.01365.pdf)
@@ -11,3 +11,6 @@ Final project of course SC42125 Model Predictive Control
 * [maybe helpful for writing report: NMPC formulation for obstacle avoidance](https://arxiv.org/pdf/1812.04755.pdf)
 * [might helps for searching for resources (especially analysis of linearized system): A survey of MPC in quadrotor](https://arxiv.org/pdf/2011.11104.pdf)
 * [A cool group who did a lot of drone researches](https://rpg.ifi.uzh.ch/aggressive_flight.html)
+## 3. some references (unicycle)
+* [unicycle MPC (including stability analysis)](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=7312445)
+
