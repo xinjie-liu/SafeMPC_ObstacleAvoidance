@@ -79,6 +79,10 @@ def main():
         point.set_ydata(real_trajectory['y'][i])
         point.set_3d_properties(real_trajectory['z'][i])
 
+        heading.set_xdata([real_trajectory['x'][i], real_trajectory['x'][i] + 0.8 * np.cos(real_trajectory['theta'][i])])
+        heading.set_ydata([real_trajectory['y'][i], real_trajectory['y'][i] + 0.8 * np.sin(real_trajectory['theta'][i])])
+        return ax1
+
     env = Robot()
     mpc = MPC(20)
     real_trajectory = {'x': [], 'y': [], 'z': [],'theta':[]}
@@ -101,10 +105,10 @@ def main():
     point, = ax1.plot([real_trajectory['x'][0]], [real_trajectory['y'][0]], [real_trajectory['z'][0]], 'ro',
                       label='Robot', markersize=15)
     
-    #robotBody = plt.Circle([real_trajectory['x'][0]], [real_trajectory['y'][0]], color='r',fill=False)
+
     heading, = ax1.plot([real_trajectory['x'][0],real_trajectory['x'][0]+0.8*np.cos(real_trajectory['theta'][0])],\
-             [real_trajectory['y'][0],real_trajectory['y'][0]+0.8*np.sin(real_trajectory['theta'][0])])
-    #ax1.add_patch(robotBody)
+             [real_trajectory['y'][0],real_trajectory['y'][0]+0.8*np.sin(real_trajectory['theta'][0])],[real_trajectory['z'][0]],'b')
+
         
         
     line, = ax1.plot([real_trajectory['x'][0]], [real_trajectory['y'][0]], [real_trajectory['z'][0]],
@@ -117,11 +121,10 @@ def main():
     ax1.set_ylim(-5., 5.)
     ax1.set_zlim(0., 3.)
     ax1.legend(loc='lower right')
-
     ani = animation.FuncAnimation(fig=fig,
                                   func=animate,
                                   frames=len(real_trajectory['x']),
-                                  interval=1,
+                                  interval=50,
                                   repeat=False,
                                   blit=False)
     plt.show()
