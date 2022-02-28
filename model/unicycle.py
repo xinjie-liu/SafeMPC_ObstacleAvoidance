@@ -23,8 +23,8 @@ class State():
         return str(self.x) + "," + str(self.y) + "," + str(self.theta)
 
 class Robot():
-    def __init__(self, R_=0.0325, L_=0.1):
-        self.current = State(0, 0, 0) # zero initialization
+    def __init__(self, x_=0, y_=0, z_=0, R_=0.0325, L_=0.1):
+        self.current = State(x_, y_, z_) # zero initialization
         self.R = R_  # in meter
         self.L = L_  # in meter
         self.dt = 5e-3
@@ -109,7 +109,6 @@ def main():
     heading, = ax1.plot([real_trajectory['x'][0],real_trajectory['x'][0]+0.8*np.cos(real_trajectory['theta'][0])],\
              [real_trajectory['y'][0],real_trajectory['y'][0]+0.8*np.sin(real_trajectory['theta'][0])],[real_trajectory['z'][0]],'b')
 
-        
         
     line, = ax1.plot([real_trajectory['x'][0]], [real_trajectory['y'][0]], [real_trajectory['z'][0]],
                      label='Real_Trajectory')
