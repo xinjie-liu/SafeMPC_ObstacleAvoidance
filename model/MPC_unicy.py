@@ -1,17 +1,18 @@
 """
 File containing the class definition of the Nonlinear Model Predictive Controller
 """
-# Adding to my path
 # =============================================================================
+# # Adding to my path
 # import sys
 # sys.path.insert(0, 'C:\\Users\\Vassil\\Desktop\\Personal\\TU Delft\\Msc Robotics\\forces_pro_client')
+# sys.path.insert(0, 'C:\\Users\\Vassil\\Desktop\\Personal\\TU Delft\\Msc Robotics\\Model Predictive Control\\MPC_final_project')
 # =============================================================================
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.linalg import inv
 from matplotlib import animation
 import forcespro
-from model.quadrotor import Quadrotor
+from quadrotor import Quadrotor
 import casadi
 
 class MPC:
