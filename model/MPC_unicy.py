@@ -34,7 +34,7 @@ class MPC:
         """
         self.model = forcespro.nlp.SymbolicModel(N)  # create an empty model with time horizon of N steps
 
-        self._Q_goal = np.diag([100, 100, 10])      # x, y, theta
+        self._Q_goal = np.diag([100, 100, 0])      # x, y, theta
         self._Q_goal_N = np.diag([500, 500, 100])      # x, y, theta
 
         # cost: distance to the goal
@@ -46,6 +46,17 @@ class MPC:
         self.model.eq = lambda z: forcespro.nlp.integrate(self.continuous_dynamics, z[2:], z[0:2],
                                                           integrator=forcespro.nlp.integrators.RK4, stepsize=self.dt)
         self.model.E = np.concatenate([np.zeros((3, 2)), np.eye(3)], axis=1)  # inter-stage equality Ek@ zk+1=f(zk,pk)
+
+        # inequality constraints for collision avoidance
+        self.model.ineq = lambda z: np.array([(z[2] - 5) ** 2 + (z[3] - 0) ** 2]) # squared distance
+        self.model.hu = np.array([np.inf])
+        self.model.hl = np.array([2.5])
+        self.model.nh = 1 # # number of inequality constraints functions (collision avoidance)
+        # terminal constraint
+        # self.model.ineqN = lambda z: np.array([(z[2] - 5) ** 2 + (z[3] - 0) ** 2, (z[2] - 10) ** 2 + (z[3] - 0) ** 2] ) # squared distance
+        # self.model.huN = np.array([np.inf, np.inf])
+        # self.model.hlN = np.array([4, -np.inf])
+        # self.model.nhN = 2 # # number of inequality constraints functions at the last stage
 
         # set dimensions of the problem
         self.model.nvar = 5    # number of variables
@@ -176,12 +187,12 @@ def main():
             [real_trajectory['y'][i], real_trajectory['y'][i] + 0.8 * np.sin(real_trajectory['theta'][i])])
         return ax1
 
-    env = Robot()
-    mpc = MPC(20)
+    env = Robot(-2, 0, 0)
+    mpc = MPC(40)
     real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
     for iter in range(5000):
         # state = env.step(0.5, 0.)
-        v, w = mpc.control(env.current, np.array([3., 3., 0.]))
+        v, w = mpc.control(env.current, np.array([10., -0.2, 0.]))
         state = env.step(v, w)
         print(env.current)
         real_trajectory['x'].append(state.x)
