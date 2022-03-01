@@ -50,7 +50,7 @@ class MPC:
         # inequality constraints for collision avoidance between agents
         # self.model.ineq = lambda z: np.array([(z[4] - z[7]) ** 2 + (z[5] - z[8]) ** 2]) # squared distance between robots (each robot has radius of 0.2m)
         # self.model.hu = np.array([np.inf])
-        # self.model.hl = np.array([0.16])
+        # self.model.hl = np.array([0.64])
         # self.model.nh = 1 # # number of inequality constraints functions (collision avoidance)
 
         # set dimensions of the problem
@@ -150,7 +150,7 @@ def main():
 
     env1 = Robot(0, 0, 0)
     env2 = Robot(10, 10, 10)
-    mpc = MPC(10) # centralized control
+    mpc = MPC(30) # centralized control
     real_trajectory = {'x1': [], 'y1': [], 'z1': [], 'x2': [], 'y2': [], 'z2': []}
     for iter in range(5000):
         #state = env.step(0.5, 0.)
