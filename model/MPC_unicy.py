@@ -84,14 +84,12 @@ class MPC:
         self.inital_guess = np.zeros([self.model.nvar, 1])
         x0 = np.transpose(np.tile(self.inital_guess, (1, self.model.N)))
         self.problem = {"x0": x0}
+        self.problem["reinitialize"] = False # reuse the previous solution at every iteration
 
     def control(self, state, goal):
         """
         Sovling NLP prolem in N-step-horizon for optimal control, take the first control input
         """
-        # Set initial guess
-        x0 = np.transpose(np.tile(self.inital_guess, (1, self.model.N)))
-        self.problem = {"x0": x0}
         # Set initial condition
         state = np.array([state.x, state.y, state.theta])
         x_current = np.transpose(state)
@@ -103,7 +101,6 @@ class MPC:
         output, exitflag, info = self.solver.solve(self.problem)
         # Make sure the solver has exited properly.
         print("exitflag: ", exitflag)
-        self.inital_guess = output['x02'][:, np.newaxis]
         print(output['x01'])
 
         v = output['x01'][0]
@@ -192,7 +189,7 @@ def main():
     real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
     for iter in range(5000):
         # state = env.step(0.5, 0.)
-        v, w = mpc.control(env.current, np.array([10., -0.2, 0.]))
+        v, w = mpc.control(env.current, np.array([10., 0., 0.]))
         state = env.step(v, w)
         print(env.current)
         real_trajectory['x'].append(state.x)

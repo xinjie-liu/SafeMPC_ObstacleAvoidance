@@ -81,14 +81,12 @@ class MPC:
         self.inital_guess = np.zeros([self.model.nvar, 1])
         x0 = np.transpose(np.tile(self.inital_guess, (1, self.model.N)))
         self.problem = {"x0": x0}
+        self.problem["reinitialize"] = False # reuse the previous solution at every iteration
 
     def control(self, state1, state2, goal):
         """
         Sovling NLP prolem in N-step-horizon for optimal control, take the first control input
         """
-        # Set initial guess
-        x0 = np.transpose(np.tile(self.inital_guess, (1, self.model.N)))
-        self.problem = {"x0": x0}
         # Set initial condition
         # s is slack variable
         state = np.array([state1.x, state1.y, state1.theta, state2.x, state2.y, state2.theta])
@@ -101,7 +99,6 @@ class MPC:
         output, exitflag, info = self.solver.solve(self.problem)
         # Make sure the solver has exited properly.
         print("exitflag: ", exitflag)
-        self.inital_guess = output['x02'][:, np.newaxis]
         print(output['x01'])
 
         v1 = output['x01'][0]
