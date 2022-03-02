@@ -15,3 +15,4 @@ Final project of course SC42125 Model Predictive Control
 * [unicycle MPC (including stability analysis)](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=7312445)
 * [unicycle: a survey](https://www.cambridge.org/core/journals/robotica/article/nonholonomic-mobile-robots-trajectory-tracking-model-predictive-control-a-survey/6C977C1B5A025C8427F3FD3C7F63EE20)
 * [distributed MPC](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8920881)
+* [linearization of unicycle model](http://www.ece.ufrgs.br/~fetter/mechrob04_553.pdf)
