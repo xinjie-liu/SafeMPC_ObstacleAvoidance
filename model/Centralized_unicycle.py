@@ -33,29 +33,31 @@ class MPC:
         Parameters for the MPC controller
         """
         self.model = forcespro.nlp.SymbolicModel(N)  # create an empty model with time horizon of N steps
-
-        self._Q_goal = np.diag([100, 100, 10, 100, 100, 10])  # x, y, theta
-        self._Q_goal_N = np.diag([500, 500, 100, 500, 500, 100])  # x, y, theta
-
+        costQ1 = 200
+        costQ2 = 200
+        self._Q_goal = np.diag([costQ1, costQ2, 10, costQ1, costQ2, 10])  # x, y, theta
+        self._Q_goal_N = np.diag([500, 500, 50, 500, 500, 50])  # x, y, theta
+        self.lamb = 500  # slack variable parameter lambda
         # cost: distance to the goal
         self.model.objective = self.objective
         self.model.objectiveN = self.objectiveN
 
         # equality constraints (robot model)
         # z[0:2] action z[2:5] state
-        self.model.eq = lambda z: forcespro.nlp.integrate(self.continuous_dynamics, z[4:], z[0:4],
+        self.model.eq = lambda z: forcespro.nlp.integrate(self.continuous_dynamics, z[4:10], z[0:4],
                                                           integrator=forcespro.nlp.integrators.RK4, stepsize=self.dt)
-        self.model.E = np.concatenate([np.zeros((6, 4)), np.eye(6)], axis=1)  # inter-stage equality Ek@ zk+1=f(zk,pk)
+        self.model.E = np.concatenate([np.zeros((6, 5)), np.eye(6)], axis=1)  # inter-stage equality Ek@ zk+1=f(zk,pk)
 
         # inequality constraints for collision avoidance between agents
-        # self.model.ineq = lambda z: np.array([(z[4] - z[7]) ** 2 + (z[5] - z[8]) ** 2]) # squared distance between robots (each robot has radius of 0.2m)
-        # self.model.hu = np.array([np.inf])
-        # self.model.hl = np.array([0.64])
-        # self.model.nh = 1 # # number of inequality constraints functions (collision avoidance)
+        # z[10] is the slack variable s
+        self.model.ineq = lambda z:casadi.vertcat((z[4] - z[7]) ** 2 + (z[5] - z[8]) ** 2 + z[10], z[10])# squared distance between robots (each robot has radius of 0.2m)
+        self.model.hu = np.array([+float('inf'), +float('inf')])
+        self.model.hl = np.array([0.2**2, 0])
 
         # set dimensions of the problem
-        self.model.nvar = 10  # number of variables
+        self.model.nvar = 11  # number of variables
         self.model.neq = 6  # number of equality constraints
+        self.model.nh = 2 # # number of inequality constraints functions (collision avoidance)
         self.model.npar = 6  # x, y, theta
         self.model.xinitidx = range(4, 10)  # indices of the state variables
 
@@ -70,7 +72,7 @@ class MPC:
         self.codeoptions.nlp.bfgs_init = 2.5 * np.identity(8)  # initialization of the hessian approximation
         self.codeoptions.solvemethod = "SQP_NLP"
         self.codeoptions.sqp_nlp.maxqps = 1  # maximum number of quadratic problems to be solved
-        self.codeoptions.sqp_nlp.reg_hessian = 5e-8  # increase this if exitflag=-8
+        self.codeoptions.sqp_nlp.reg_hessian = 5e-9  # increase this if exitflag=-8
         # self.codeoptions.nlp.stack_parambounds = True
         # Creates code for symbolic model formulation given above, then contacts server to generate new solver
         self.solver = self.model.generate_solver(self.codeoptions)
@@ -88,6 +90,7 @@ class MPC:
         x0 = np.transpose(np.tile(self.inital_guess, (1, self.model.N)))
         self.problem = {"x0": x0}
         # Set initial condition
+        # s is slack variable
         state = np.array([state1.x, state1.y, state1.theta, state2.x, state2.y, state2.theta])
         x_current = np.transpose(state)
         self.problem["xinit"] = x_current
@@ -126,11 +129,11 @@ class MPC:
 
     def objective(self, z, goal):
         self.goal = casadi.vertcat(goal[0], goal[1], goal[2], goal[3], goal[4], goal[5])
-        return (z[4:] - self.goal).T @ self._Q_goal @ (z[4:] - self.goal) + 0.1 * (z[0]**2 + z[1]**2 + z[2]**2 + z[3]**2)
+        return (self.lamb*z[10]) + (z[4:10] - self.goal).T @ self._Q_goal @ (z[4:10] - self.goal) + 0.1 * (z[0]**2 + z[1]**2 + z[2]**2 + z[3]**2)
 
     def objectiveN(self, z, goal):
         self.goal = casadi.vertcat(goal[0], goal[1], goal[2], goal[3], goal[4], goal[5])
-        return (z[4:] - self.goal).T @ self._Q_goal_N @ (z[4:] - self.goal) + 0.1 * (z[0]**2 + z[1]**2 + z[2]**2 + z[3]**2)
+        return (self.lamb*z[10]) + (z[4:10] - self.goal).T @ self._Q_goal_N @ (z[4:10] - self.goal) #+ 0.1 * (z[0]**2 + z[1]**2 + z[2]**2 + z[3]**2)
 
 def main():
 
@@ -149,12 +152,12 @@ def main():
         point2.set_3d_properties(real_trajectory['z2'][i])
 
     env1 = Robot(0, 0, 0)
-    env2 = Robot(10, 10, 10)
+    env2 = Robot(10, 10, 0)
     mpc = MPC(30) # centralized control
     real_trajectory = {'x1': [], 'y1': [], 'z1': [], 'x2': [], 'y2': [], 'z2': []}
     for iter in range(5000):
         #state = env.step(0.5, 0.)
-        v1, w1, v2, w2 = mpc.control(env1.current, env2.current, np.array([10., 10., 10., 0., 0., 0.]))
+        v1, w1, v2, w2 = mpc.control(env1.current, env2.current, np.array([10., 10., 0., 0., 0., 0.]))
         state1 = env1.step(v1, w1)
         state2 = env2.step(v2, w2)
         real_trajectory['x1'].append(state1.x)
@@ -188,8 +191,8 @@ def main():
     ax1.set_ylabel('y')
     ax1.set_zlabel('z')
     ax1.set_title('3D animate')
-    ax1.set_xlim(-5., 5.)
-    ax1.set_ylim(-5., 5.)
+    ax1.set_xlim(-12., 12.)
+    ax1.set_ylim(-12., 12.)
     ax1.set_zlim(0., 3.)
     ax1.legend(loc='lower right')
 

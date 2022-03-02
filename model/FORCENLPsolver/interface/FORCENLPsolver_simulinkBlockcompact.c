@@ -94,21 +94,21 @@ static void mdlInitializeSizes(SimStruct *S)
     ssSetInputPortRequiredContiguous(S, 0, 1); /*direct input signal access*/
 	
 	/* Input Port 1 */
-    ssSetInputPortMatrixDimensions(S,  1, 3, 1);
+    ssSetInputPortMatrixDimensions(S,  1, 6, 1);
     ssSetInputPortDataType(S, 1, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 1, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 1, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 1, 1); /*direct input signal access*/
 	
 	/* Input Port 2 */
-    ssSetInputPortMatrixDimensions(S,  2, 100, 1);
+    ssSetInputPortMatrixDimensions(S,  2, 330, 1);
     ssSetInputPortDataType(S, 2, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 2, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 2, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 2, 1); /*direct input signal access*/
 	
 	/* Input Port 3 */
-    ssSetInputPortMatrixDimensions(S,  3, 60, 1);
+    ssSetInputPortMatrixDimensions(S,  3, 180, 1);
     ssSetInputPortDataType(S, 3, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 3, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 3, 1); /* Feedthrough enabled */
@@ -120,7 +120,7 @@ static void mdlInitializeSizes(SimStruct *S)
     if (!ssSetNumOutputPorts(S, 1)) return;    
 		
 	/* Output Port 0 */
-    ssSetOutputPortMatrixDimensions(S,  0, 100, 1);
+    ssSetOutputPortMatrixDimensions(S,  0, 330, 1);
     ssSetOutputPortDataType(S, 0, SS_DOUBLE);
     ssSetOutputPortComplexSignal(S, 0, COMPLEX_NO); /* no complex signals suppported */
 
@@ -233,17 +233,17 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 	
 
 	/* Copy inputs */
-	for( i=0; i<3; i++)
+	for( i=0; i<6; i++)
 	{ 
 		params.xinit[i] = (double) xinit[i]; 
 	}
 
-	for( i=0; i<100; i++)
+	for( i=0; i<330; i++)
 	{ 
 		params.x0[i] = (double) x0[i]; 
 	}
 
-	for( i=0; i<60; i++)
+	for( i=0; i<180; i++)
 	{ 
 		params.all_parameters[i] = (double) all_parameters[i]; 
 	}
@@ -280,123 +280,183 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 	
 
 	/* Copy outputs */
-	for( i=0; i<5; i++)
+	for( i=0; i<11; i++)
 	{ 
 		outputs[i] = (real_T) output.x01[i]; 
 	}
 
-	k=5; 
-	for( i=0; i<5; i++)
+	k=11; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x02[i]; 
 	}
 
-	k=10; 
-	for( i=0; i<5; i++)
+	k=22; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x03[i]; 
 	}
 
-	k=15; 
-	for( i=0; i<5; i++)
+	k=33; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x04[i]; 
 	}
 
-	k=20; 
-	for( i=0; i<5; i++)
+	k=44; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x05[i]; 
 	}
 
-	k=25; 
-	for( i=0; i<5; i++)
+	k=55; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x06[i]; 
 	}
 
-	k=30; 
-	for( i=0; i<5; i++)
+	k=66; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x07[i]; 
 	}
 
-	k=35; 
-	for( i=0; i<5; i++)
+	k=77; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x08[i]; 
 	}
 
-	k=40; 
-	for( i=0; i<5; i++)
+	k=88; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x09[i]; 
 	}
 
-	k=45; 
-	for( i=0; i<5; i++)
+	k=99; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x10[i]; 
 	}
 
-	k=50; 
-	for( i=0; i<5; i++)
+	k=110; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x11[i]; 
 	}
 
-	k=55; 
-	for( i=0; i<5; i++)
+	k=121; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x12[i]; 
 	}
 
-	k=60; 
-	for( i=0; i<5; i++)
+	k=132; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x13[i]; 
 	}
 
-	k=65; 
-	for( i=0; i<5; i++)
+	k=143; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x14[i]; 
 	}
 
-	k=70; 
-	for( i=0; i<5; i++)
+	k=154; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x15[i]; 
 	}
 
-	k=75; 
-	for( i=0; i<5; i++)
+	k=165; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x16[i]; 
 	}
 
-	k=80; 
-	for( i=0; i<5; i++)
+	k=176; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x17[i]; 
 	}
 
-	k=85; 
-	for( i=0; i<5; i++)
+	k=187; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x18[i]; 
 	}
 
-	k=90; 
-	for( i=0; i<5; i++)
+	k=198; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x19[i]; 
 	}
 
-	k=95; 
-	for( i=0; i<5; i++)
+	k=209; 
+	for( i=0; i<11; i++)
 	{ 
 		outputs[k++] = (real_T) output.x20[i]; 
+	}
+
+	k=220; 
+	for( i=0; i<11; i++)
+	{ 
+		outputs[k++] = (real_T) output.x21[i]; 
+	}
+
+	k=231; 
+	for( i=0; i<11; i++)
+	{ 
+		outputs[k++] = (real_T) output.x22[i]; 
+	}
+
+	k=242; 
+	for( i=0; i<11; i++)
+	{ 
+		outputs[k++] = (real_T) output.x23[i]; 
+	}
+
+	k=253; 
+	for( i=0; i<11; i++)
+	{ 
+		outputs[k++] = (real_T) output.x24[i]; 
+	}
+
+	k=264; 
+	for( i=0; i<11; i++)
+	{ 
+		outputs[k++] = (real_T) output.x25[i]; 
+	}
+
+	k=275; 
+	for( i=0; i<11; i++)
+	{ 
+		outputs[k++] = (real_T) output.x26[i]; 
+	}
+
+	k=286; 
+	for( i=0; i<11; i++)
+	{ 
+		outputs[k++] = (real_T) output.x27[i]; 
+	}
+
+	k=297; 
+	for( i=0; i<11; i++)
+	{ 
+		outputs[k++] = (real_T) output.x28[i]; 
+	}
+
+	k=308; 
+	for( i=0; i<11; i++)
+	{ 
+		outputs[k++] = (real_T) output.x29[i]; 
+	}
+
+	k=319; 
+	for( i=0; i<11; i++)
+	{ 
+		outputs[k++] = (real_T) output.x30[i]; 
 	}
 
 	
