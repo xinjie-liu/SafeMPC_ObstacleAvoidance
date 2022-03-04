@@ -52,8 +52,8 @@ for i in range(N):
 
 
     # Set up the D matrix and c1 = -A*x0 as varying parameters:
-    stages.newParam(casadi.Concat('D_current',str(i)), i, 'eq.D')
-    
+    stages.newParam(('D_current'+str(i)), i, 'eq.D')
+
     stages.newParam('minusA_times_x0', [1], 'eq.c')
     # Define the output to be u0
     stages.newOutput('u0', 1, range(1,nu+1))

@@ -33,7 +33,7 @@ def main():
         A, B = linearize_model(refTraj[k:k + N])
 
         for i in range(N): # Define the D =  (B | A) matrix over the whole horizon
-            problem['D_current',str(i)] = np.hstack(B[i], A[i])
+            problem[('D_current'+str(i))] = np.hstack(B[i], A[i])
 
         state = env.step(v, w)
         print(env.current)
