@@ -60,13 +60,13 @@ Model {
       }
     }
   }
-  Created		  "3/2/2022 12:28:07 PM"
+  Created		  "3/2/2022 2:15:48 PM"
   Creator		  "embotech AG"
   UpdateHistory		  "UpdateHistoryNever"
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "embotech AG"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "3/2/2022 12:28:07 PM"
+  LastModifiedDate	  "3/2/2022 2:15:48 PM"
   RTWModifiedTimeStamp	  315310195
   ModelVersionFormat	  "1.%<AutoIncrement:2>"
   ConfigurationManager	  "None"
@@ -805,12 +805,12 @@ Model {
 	"\nOUTPUTS = FORCENLPsolver(INPUTS) solves an optimization problem where:\n\n"
 	"INPUTS:\n"
 	" - reinitialize - column vector of length 0\n "
-" - xinit - column vector of length 6\n "
-" - x0 - column vector of length 330\n "
-" - all_parameters - column vector of length 180\n "
+" - xinit - column vector of length 3\n "
+" - x0 - column vector of length 200\n "
+" - all_parameters - column vector of length 120\n "
 
 	"\nOUTPUTS:\n"
-	" - outputs - column vector of length 330\n "
+	" - outputs - column vector of length 200\n "
 
 	"\n For more information, see https://forces.embotech.com/Documentation/graphical_interface/index.html \n "
 
