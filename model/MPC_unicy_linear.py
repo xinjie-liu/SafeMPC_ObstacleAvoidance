@@ -9,26 +9,48 @@ from numpy.linalg import inv
 from matplotlib import animation
 from unicycle import Robot
 import forcespro
+import get_userid
 from quadrotor import Quadrotor
 import casadi
 
 """
 Parameters of the class
 """
-dt = 5e-3
-N = 10 # planning horizon
-stages = forcespro.MultistageProblem(N) # create the stages for the whole finite horizon
+# class MPC():
+#     def __init__(self, N):
+#         self.dt = 5e-3
+#         self.N = N  # planning horizon
+#         self.stages = forcespro.MultistageProblem(N)  # create the stages for the whole finite horizon
+#         self.nx = 3
+#         self.nu = 2
 
-nx = 2
+dt = 1e-3
+N = 10  # planning horizon
+stages = forcespro.MultistageProblem(N)  # create the stages for the whole finite horizon
+nx = 3
 nu = 2
+Q = 100*np.diag([4, 40, 0.1])
+R = np.eye(nu)/100
+P = 0*Q
+
+#=======================================================
+# just for testing, remove later
+from MPC_utils import *
+Xref = traj_generate(10000, 10)
+Uref = get_ref_input(Xref)
+linear_models = linearize_model(Xref, Uref, 1e-3)
+Ads = linear_models[0][:10]
+Bds = linear_models[1][:10]
+#=========================================================
 
 for i in range(N):
-
+    A = Ads[i]
+    B = Bds[i]
 
     stages.dims[i]['n'] = nx + nu  # number of stage variables
     stages.dims[i]['r'] = nx  # number of equality constraints
-    stages.dims[i]['l'] = nx + nu  # number of lower bounds
-    stages.dims[i]['u'] = nx + nu  # number of upper bounds
+    stages.dims[i]['l'] = 0 # nx + nu  # number of lower bounds
+    stages.dims[i]['u'] = 0 # nx + nu  # number of upper bounds
 
     # Cost/Objective function
     # V = sum_i(z(i)*H*z(i)) + z(N)*H*z(N) -> where z(i) = [u1,u2,x1,x2] at stage/step i.
@@ -44,22 +66,24 @@ for i in range(N):
 
     # Equality constraints (expressed in the form of C*z(i) + D*z(i+1) = 0, where C = ( B(i) | A(i) ), D = (0 | -I)
     if (i < N - 1):
-        #stages.eq[i]['C'] = np.hstack(B, A)
+        stages.eq[i]['C'] = np.hstack((B, A))
     if (i > 0):
         stages.eq[i]['c'] = np.zeros((nx, 1))
 
-    stages.eq[i]['D'] = np.hstack((0, -np.eye(nx)))
+    stages.eq[i]['D'] = np.hstack((np.zeros([nx, nu]), -np.eye(nx)))
 
-
-    # Set up the D matrix and c1 = -A*x0 as varying parameters:
-    stages.newParam(('D_current'+str(i)), i, 'eq.D')
-
-    stages.newParam('minusA_times_x0', [1], 'eq.c')
-    # Define the output to be u0
-    stages.newOutput('u0', 1, range(1,nu+1))
+    #  parameter: initial state
+    stages.newParam("xinit", [1], 'eq.c')  # 1-indexed
+    # define the output
+    stages.newOutput('u0', 1, range(1, nu+nx+1))
+    # # Set up the D matrix and c1 = -A*x0 as varying parameters:
+    # stages.newParam(('D_current'+str(i)), i, 'eq.D')
 
     # solver settings
     stages.codeoptions['name'] = 'MPC_Project_FORCESPRO'
-    stages.codeoptions['printlevel'] = 0
-    import get_userid
-    stages.generateCode(get_userid.user_id)
+    #   stages.codeoptions['printlevel'] = 0
+    stages.generateCode()
+
+import SOLVER_NAME_py  # notice the _py suffix
+problem = {}  # a dictionary of solver parameters
+SOLVER_NAME_py.SOLVER_NAME_solve(problem)
