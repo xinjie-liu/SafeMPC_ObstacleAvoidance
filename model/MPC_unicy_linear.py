@@ -63,7 +63,6 @@ for i in range(N):
 
     stages.cost[i]['f'] =  np.zeros((nx+nu,1)) # there's no linear fT*z term in the cost, so set to 0
 
-
     # Equality constraints (expressed in the form of C*z(i) + D*z(i+1) = 0, where C = ( B(i) | A(i) ), D = (0 | -I)
     if (i < N - 1):
         stages.eq[i]['C'] = np.hstack((B, A))
@@ -72,18 +71,23 @@ for i in range(N):
 
     stages.eq[i]['D'] = np.hstack((np.zeros([nx, nu]), -np.eye(nx)))
 
-    #  parameter: initial state
-    stages.newParam("xinit", [1], 'eq.c')  # 1-indexed
-    # define the output
-    stages.newOutput('u0', 1, range(1, nu+nx+1))
-    # # Set up the D matrix and c1 = -A*x0 as varying parameters:
-    # stages.newParam(('D_current'+str(i)), i, 'eq.D')
+# parameter: initial state
+stages.newParam("xinit", [1], 'eq.c')  # 1-indexed
+# define the output
+stages.newOutput('control', range(1, 11), range(1, nu + nx + 1))
+# # Set up the D matrix and c1 = -A*x0 as varying parameters:
+# stages.newParam(('D_current'+str(i)), i, 'eq.D')
 
-    # solver settings
-    stages.codeoptions['name'] = 'MPC_Project_FORCESPRO'
-    #   stages.codeoptions['printlevel'] = 0
-    stages.generateCode()
+# solver settings
+stages.codeoptions['name'] = 'MPC_Project_FORCESPRO'
+stages.codeoptions['printlevel'] = 2
+stages.generateCode()
 
-import SOLVER_NAME_py  # notice the _py suffix
-problem = {}  # a dictionary of solver parameters
-SOLVER_NAME_py.SOLVER_NAME_solve(problem)
+import MPC_Project_FORCESPRO_py  # notice the _py suffix
+problem = {"xinit": np.array([1, 0, -np.pi/2])}  # a dictionary of solver parameters
+output = MPC_Project_FORCESPRO_py.MPC_Project_FORCESPRO_solve(problem)[0]['control']
+
+xinit = output[2:5]
+problem = {"xinit": xinit}
+output2 = MPC_Project_FORCESPRO_py.MPC_Project_FORCESPRO_solve(problem)[0]['control']
+print(output2)
