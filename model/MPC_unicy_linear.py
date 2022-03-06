@@ -88,15 +88,42 @@ class MPC():
 # #=======================================================
 # just for testing, remove later
 from MPC_utils import *
-Xref = traj_generate(10000, 10)
+T = 1
+dt = 1e-3
+Xref = traj_generate(int(T/dt), T)
 Uref = get_ref_input(Xref)
 linear_models = linearize_model(Xref, Uref, 1e-3)
-Ads = linear_models[0][:10]
-Bds = linear_models[1][:10]
+
 # #=========================================================
+N = 50
+mpc = MPC(N)
+xPos = []
+yPos = []
+uStore = []
+x_0 = np.array([1, 0, -np.pi/2])
+for i in range(int(T/dt)-N):
+    # Find the new linearisation (from current step to current step + N
+    Ads = linear_models[0][i:i+N]
+    Bds = linear_models[1][i:i+N]
+    control = mpc.control(x_0, Ads, Bds)
+    # Extract the first control inputs:
+    u = mpc.output[0:2]
+    uStore.append(u)
+    # Simulate the motion
+    dx = u[0]*np.cos(x_0[2])
+    dy = u[0]*np.sin(x_0[2])
+    dtheta = u[1]
+    # 
+    x_0[0] += dt*dx
+    x_0[1] += dt*dy
+    x_0[2] += dt*dtheta
+    # Store the xy position for plotting:
+    xPos.append(x_0[0])
+    yPos.append(x_0[1])
 
-mpc = MPC(10)
-control = mpc.control(np.array([1, 0, -np.pi/2]), Ads, Bds)
-print(mpc.output)
-
-
+xPos = np.array(xPos)
+yPos = np.array(yPos)
+fig,ax = plt.subplots()
+ax.plot(Xref[0,:],Xref[1,:],'g')
+ax.plot(xPos,yPos,'r')
+plt.show()
