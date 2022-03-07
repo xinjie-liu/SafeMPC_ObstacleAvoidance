@@ -81,22 +81,29 @@ static void mdlInitializeSizes(SimStruct *S)
     ssSetNumContStates(S, 0);
     ssSetNumDiscStates(S, 0);
 
-	/* initialize input ports - there are 2 in total */
-    if (!ssSetNumInputPorts(S, 2)) return;
+	/* initialize input ports - there are 3 in total */
+    if (!ssSetNumInputPorts(S, 3)) return;
     	
 	/* Input Port 0 */
-    ssSetInputPortMatrixDimensions(S,  0, 3, 245);
+    ssSetInputPortMatrixDimensions(S,  0, 3, 45);
     ssSetInputPortDataType(S, 0, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 0, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 0, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 0, 1); /*direct input signal access*/
 	
 	/* Input Port 1 */
-    ssSetInputPortMatrixDimensions(S,  1, 3, 1);
+    ssSetInputPortMatrixDimensions(S,  1, 5, 9);
     ssSetInputPortDataType(S, 1, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 1, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 1, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 1, 1); /*direct input signal access*/
+	
+	/* Input Port 2 */
+    ssSetInputPortMatrixDimensions(S,  2, 3, 1);
+    ssSetInputPortDataType(S, 2, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 2, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 2, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 2, 1); /*direct input signal access*/
  
 
 
@@ -199,7 +206,8 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 
 	/* Simulink data */
 	const real_T *C = (const real_T*) ssGetInputPortSignal(S,0);
-	const real_T *xinit = (const real_T*) ssGetInputPortSignal(S,1);
+	const real_T *f = (const real_T*) ssGetInputPortSignal(S,1);
+	const real_T *xinit = (const real_T*) ssGetInputPortSignal(S,2);
 	
     real_T *outputs = (real_T*) ssGetOutputPortSignal(S,0);
 	
@@ -273,244 +281,57 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 		params.linear_model9[i] = (double) C[j++]; 
 	}
 
-	j=135; 
-	for( i=0; i<15; i++)
+	for( i=0; i<5; i++)
 	{ 
-		params.linear_model10[i] = (double) C[j++]; 
+		params.f_error1[i] = (double) f[i]; 
 	}
 
-	j=150; 
-	for( i=0; i<15; i++)
+	j=5; 
+	for( i=0; i<5; i++)
 	{ 
-		params.linear_model11[i] = (double) C[j++]; 
+		params.f_error2[i] = (double) f[j++]; 
 	}
 
-	j=165; 
-	for( i=0; i<15; i++)
+	j=10; 
+	for( i=0; i<5; i++)
 	{ 
-		params.linear_model12[i] = (double) C[j++]; 
+		params.f_error3[i] = (double) f[j++]; 
 	}
 
-	j=180; 
-	for( i=0; i<15; i++)
+	j=15; 
+	for( i=0; i<5; i++)
 	{ 
-		params.linear_model13[i] = (double) C[j++]; 
+		params.f_error4[i] = (double) f[j++]; 
 	}
 
-	j=195; 
-	for( i=0; i<15; i++)
+	j=20; 
+	for( i=0; i<5; i++)
 	{ 
-		params.linear_model14[i] = (double) C[j++]; 
+		params.f_error5[i] = (double) f[j++]; 
 	}
 
-	j=210; 
-	for( i=0; i<15; i++)
+	j=25; 
+	for( i=0; i<5; i++)
 	{ 
-		params.linear_model15[i] = (double) C[j++]; 
+		params.f_error6[i] = (double) f[j++]; 
 	}
 
-	j=225; 
-	for( i=0; i<15; i++)
+	j=30; 
+	for( i=0; i<5; i++)
 	{ 
-		params.linear_model16[i] = (double) C[j++]; 
+		params.f_error7[i] = (double) f[j++]; 
 	}
 
-	j=240; 
-	for( i=0; i<15; i++)
+	j=35; 
+	for( i=0; i<5; i++)
 	{ 
-		params.linear_model17[i] = (double) C[j++]; 
+		params.f_error8[i] = (double) f[j++]; 
 	}
 
-	j=255; 
-	for( i=0; i<15; i++)
+	j=40; 
+	for( i=0; i<5; i++)
 	{ 
-		params.linear_model18[i] = (double) C[j++]; 
-	}
-
-	j=270; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model19[i] = (double) C[j++]; 
-	}
-
-	j=285; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model20[i] = (double) C[j++]; 
-	}
-
-	j=300; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model21[i] = (double) C[j++]; 
-	}
-
-	j=315; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model22[i] = (double) C[j++]; 
-	}
-
-	j=330; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model23[i] = (double) C[j++]; 
-	}
-
-	j=345; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model24[i] = (double) C[j++]; 
-	}
-
-	j=360; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model25[i] = (double) C[j++]; 
-	}
-
-	j=375; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model26[i] = (double) C[j++]; 
-	}
-
-	j=390; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model27[i] = (double) C[j++]; 
-	}
-
-	j=405; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model28[i] = (double) C[j++]; 
-	}
-
-	j=420; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model29[i] = (double) C[j++]; 
-	}
-
-	j=435; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model30[i] = (double) C[j++]; 
-	}
-
-	j=450; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model31[i] = (double) C[j++]; 
-	}
-
-	j=465; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model32[i] = (double) C[j++]; 
-	}
-
-	j=480; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model33[i] = (double) C[j++]; 
-	}
-
-	j=495; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model34[i] = (double) C[j++]; 
-	}
-
-	j=510; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model35[i] = (double) C[j++]; 
-	}
-
-	j=525; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model36[i] = (double) C[j++]; 
-	}
-
-	j=540; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model37[i] = (double) C[j++]; 
-	}
-
-	j=555; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model38[i] = (double) C[j++]; 
-	}
-
-	j=570; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model39[i] = (double) C[j++]; 
-	}
-
-	j=585; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model40[i] = (double) C[j++]; 
-	}
-
-	j=600; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model41[i] = (double) C[j++]; 
-	}
-
-	j=615; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model42[i] = (double) C[j++]; 
-	}
-
-	j=630; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model43[i] = (double) C[j++]; 
-	}
-
-	j=645; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model44[i] = (double) C[j++]; 
-	}
-
-	j=660; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model45[i] = (double) C[j++]; 
-	}
-
-	j=675; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model46[i] = (double) C[j++]; 
-	}
-
-	j=690; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model47[i] = (double) C[j++]; 
-	}
-
-	j=705; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model48[i] = (double) C[j++]; 
-	}
-
-	j=720; 
-	for( i=0; i<15; i++)
-	{ 
-		params.linear_model49[i] = (double) C[j++]; 
+		params.f_error9[i] = (double) f[j++]; 
 	}
 
 	

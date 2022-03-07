@@ -311,804 +311,184 @@ void mexFunction( solver_int32_default nlhs, mxArray *plhs[], solver_int32_defau
 		copyMArrayToC_double(mxGetPr(par), params.linear_model9,15);
 
 	}
-	par = mxGetField(PARAMS, 0, "linear_model10");
+	par = mxGetField(PARAMS, 0, "f_error1");
 #ifdef MEXARGMUENTCHECKS
     if( par == NULL )	
 	{
-        mexErrMsgTxt("PARAMS.linear_model10 not found");
+        mexErrMsgTxt("PARAMS.f_error1 not found");
     }
     if( !mxIsDouble(par) )
     {
-    mexErrMsgTxt("PARAMS.linear_model10 must be a double.");
+    mexErrMsgTxt("PARAMS.f_error1 must be a double.");
     }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
+    if( mxGetM(par) != 5 || mxGetN(par) != 1 ) 
 	{
-    mexErrMsgTxt("PARAMS.linear_model10 must be of size [3 x 5]");
+    mexErrMsgTxt("PARAMS.f_error1 must be of size [5 x 1]");
     }
 #endif	 
 	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
 	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model10,15);
+		copyMArrayToC_double(mxGetPr(par), params.f_error1,5);
 
 	}
-	par = mxGetField(PARAMS, 0, "linear_model11");
+	par = mxGetField(PARAMS, 0, "f_error2");
 #ifdef MEXARGMUENTCHECKS
     if( par == NULL )	
 	{
-        mexErrMsgTxt("PARAMS.linear_model11 not found");
+        mexErrMsgTxt("PARAMS.f_error2 not found");
     }
     if( !mxIsDouble(par) )
     {
-    mexErrMsgTxt("PARAMS.linear_model11 must be a double.");
+    mexErrMsgTxt("PARAMS.f_error2 must be a double.");
     }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
+    if( mxGetM(par) != 5 || mxGetN(par) != 1 ) 
 	{
-    mexErrMsgTxt("PARAMS.linear_model11 must be of size [3 x 5]");
+    mexErrMsgTxt("PARAMS.f_error2 must be of size [5 x 1]");
     }
 #endif	 
 	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
 	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model11,15);
+		copyMArrayToC_double(mxGetPr(par), params.f_error2,5);
 
 	}
-	par = mxGetField(PARAMS, 0, "linear_model12");
+	par = mxGetField(PARAMS, 0, "f_error3");
 #ifdef MEXARGMUENTCHECKS
     if( par == NULL )	
 	{
-        mexErrMsgTxt("PARAMS.linear_model12 not found");
+        mexErrMsgTxt("PARAMS.f_error3 not found");
     }
     if( !mxIsDouble(par) )
     {
-    mexErrMsgTxt("PARAMS.linear_model12 must be a double.");
+    mexErrMsgTxt("PARAMS.f_error3 must be a double.");
     }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
+    if( mxGetM(par) != 5 || mxGetN(par) != 1 ) 
 	{
-    mexErrMsgTxt("PARAMS.linear_model12 must be of size [3 x 5]");
+    mexErrMsgTxt("PARAMS.f_error3 must be of size [5 x 1]");
     }
 #endif	 
 	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
 	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model12,15);
+		copyMArrayToC_double(mxGetPr(par), params.f_error3,5);
 
 	}
-	par = mxGetField(PARAMS, 0, "linear_model13");
+	par = mxGetField(PARAMS, 0, "f_error4");
 #ifdef MEXARGMUENTCHECKS
     if( par == NULL )	
 	{
-        mexErrMsgTxt("PARAMS.linear_model13 not found");
+        mexErrMsgTxt("PARAMS.f_error4 not found");
     }
     if( !mxIsDouble(par) )
     {
-    mexErrMsgTxt("PARAMS.linear_model13 must be a double.");
+    mexErrMsgTxt("PARAMS.f_error4 must be a double.");
     }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
+    if( mxGetM(par) != 5 || mxGetN(par) != 1 ) 
 	{
-    mexErrMsgTxt("PARAMS.linear_model13 must be of size [3 x 5]");
+    mexErrMsgTxt("PARAMS.f_error4 must be of size [5 x 1]");
     }
 #endif	 
 	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
 	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model13,15);
+		copyMArrayToC_double(mxGetPr(par), params.f_error4,5);
 
 	}
-	par = mxGetField(PARAMS, 0, "linear_model14");
+	par = mxGetField(PARAMS, 0, "f_error5");
 #ifdef MEXARGMUENTCHECKS
     if( par == NULL )	
 	{
-        mexErrMsgTxt("PARAMS.linear_model14 not found");
+        mexErrMsgTxt("PARAMS.f_error5 not found");
     }
     if( !mxIsDouble(par) )
     {
-    mexErrMsgTxt("PARAMS.linear_model14 must be a double.");
+    mexErrMsgTxt("PARAMS.f_error5 must be a double.");
     }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
+    if( mxGetM(par) != 5 || mxGetN(par) != 1 ) 
 	{
-    mexErrMsgTxt("PARAMS.linear_model14 must be of size [3 x 5]");
+    mexErrMsgTxt("PARAMS.f_error5 must be of size [5 x 1]");
     }
 #endif	 
 	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
 	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model14,15);
+		copyMArrayToC_double(mxGetPr(par), params.f_error5,5);
 
 	}
-	par = mxGetField(PARAMS, 0, "linear_model15");
+	par = mxGetField(PARAMS, 0, "f_error6");
 #ifdef MEXARGMUENTCHECKS
     if( par == NULL )	
 	{
-        mexErrMsgTxt("PARAMS.linear_model15 not found");
+        mexErrMsgTxt("PARAMS.f_error6 not found");
     }
     if( !mxIsDouble(par) )
     {
-    mexErrMsgTxt("PARAMS.linear_model15 must be a double.");
+    mexErrMsgTxt("PARAMS.f_error6 must be a double.");
     }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
+    if( mxGetM(par) != 5 || mxGetN(par) != 1 ) 
 	{
-    mexErrMsgTxt("PARAMS.linear_model15 must be of size [3 x 5]");
+    mexErrMsgTxt("PARAMS.f_error6 must be of size [5 x 1]");
     }
 #endif	 
 	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
 	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model15,15);
+		copyMArrayToC_double(mxGetPr(par), params.f_error6,5);
 
 	}
-	par = mxGetField(PARAMS, 0, "linear_model16");
+	par = mxGetField(PARAMS, 0, "f_error7");
 #ifdef MEXARGMUENTCHECKS
     if( par == NULL )	
 	{
-        mexErrMsgTxt("PARAMS.linear_model16 not found");
+        mexErrMsgTxt("PARAMS.f_error7 not found");
     }
     if( !mxIsDouble(par) )
     {
-    mexErrMsgTxt("PARAMS.linear_model16 must be a double.");
+    mexErrMsgTxt("PARAMS.f_error7 must be a double.");
     }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
+    if( mxGetM(par) != 5 || mxGetN(par) != 1 ) 
 	{
-    mexErrMsgTxt("PARAMS.linear_model16 must be of size [3 x 5]");
+    mexErrMsgTxt("PARAMS.f_error7 must be of size [5 x 1]");
     }
 #endif	 
 	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
 	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model16,15);
+		copyMArrayToC_double(mxGetPr(par), params.f_error7,5);
 
 	}
-	par = mxGetField(PARAMS, 0, "linear_model17");
+	par = mxGetField(PARAMS, 0, "f_error8");
 #ifdef MEXARGMUENTCHECKS
     if( par == NULL )	
 	{
-        mexErrMsgTxt("PARAMS.linear_model17 not found");
+        mexErrMsgTxt("PARAMS.f_error8 not found");
     }
     if( !mxIsDouble(par) )
     {
-    mexErrMsgTxt("PARAMS.linear_model17 must be a double.");
+    mexErrMsgTxt("PARAMS.f_error8 must be a double.");
     }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
+    if( mxGetM(par) != 5 || mxGetN(par) != 1 ) 
 	{
-    mexErrMsgTxt("PARAMS.linear_model17 must be of size [3 x 5]");
+    mexErrMsgTxt("PARAMS.f_error8 must be of size [5 x 1]");
     }
 #endif	 
 	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
 	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model17,15);
+		copyMArrayToC_double(mxGetPr(par), params.f_error8,5);
 
 	}
-	par = mxGetField(PARAMS, 0, "linear_model18");
+	par = mxGetField(PARAMS, 0, "f_error9");
 #ifdef MEXARGMUENTCHECKS
     if( par == NULL )	
 	{
-        mexErrMsgTxt("PARAMS.linear_model18 not found");
+        mexErrMsgTxt("PARAMS.f_error9 not found");
     }
     if( !mxIsDouble(par) )
     {
-    mexErrMsgTxt("PARAMS.linear_model18 must be a double.");
+    mexErrMsgTxt("PARAMS.f_error9 must be a double.");
     }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
+    if( mxGetM(par) != 5 || mxGetN(par) != 1 ) 
 	{
-    mexErrMsgTxt("PARAMS.linear_model18 must be of size [3 x 5]");
+    mexErrMsgTxt("PARAMS.f_error9 must be of size [5 x 1]");
     }
 #endif	 
 	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
 	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model18,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model19");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model19 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model19 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model19 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model19,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model20");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model20 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model20 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model20 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model20,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model21");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model21 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model21 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model21 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model21,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model22");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model22 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model22 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model22 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model22,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model23");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model23 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model23 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model23 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model23,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model24");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model24 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model24 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model24 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model24,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model25");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model25 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model25 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model25 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model25,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model26");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model26 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model26 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model26 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model26,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model27");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model27 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model27 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model27 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model27,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model28");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model28 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model28 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model28 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model28,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model29");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model29 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model29 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model29 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model29,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model30");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model30 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model30 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model30 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model30,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model31");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model31 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model31 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model31 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model31,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model32");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model32 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model32 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model32 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model32,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model33");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model33 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model33 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model33 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model33,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model34");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model34 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model34 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model34 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model34,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model35");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model35 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model35 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model35 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model35,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model36");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model36 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model36 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model36 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model36,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model37");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model37 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model37 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model37 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model37,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model38");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model38 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model38 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model38 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model38,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model39");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model39 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model39 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model39 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model39,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model40");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model40 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model40 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model40 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model40,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model41");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model41 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model41 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model41 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model41,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model42");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model42 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model42 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model42 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model42,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model43");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model43 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model43 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model43 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model43,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model44");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model44 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model44 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model44 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model44,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model45");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model45 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model45 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model45 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model45,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model46");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model46 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model46 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model46 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model46,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model47");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model47 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model47 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model47 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model47,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model48");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model48 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model48 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model48 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model48,15);
-
-	}
-	par = mxGetField(PARAMS, 0, "linear_model49");
-#ifdef MEXARGMUENTCHECKS
-    if( par == NULL )	
-	{
-        mexErrMsgTxt("PARAMS.linear_model49 not found");
-    }
-    if( !mxIsDouble(par) )
-    {
-    mexErrMsgTxt("PARAMS.linear_model49 must be a double.");
-    }
-    if( mxGetM(par) != 3 || mxGetN(par) != 5 ) 
-	{
-    mexErrMsgTxt("PARAMS.linear_model49 must be of size [3 x 5]");
-    }
-#endif	 
-	if ( (mxGetN(par) != 0) && (mxGetM(par) != 0) )
-	{
-		copyMArrayToC_double(mxGetPr(par), params.linear_model49,15);
+		copyMArrayToC_double(mxGetPr(par), params.f_error9,5);
 
 	}
 

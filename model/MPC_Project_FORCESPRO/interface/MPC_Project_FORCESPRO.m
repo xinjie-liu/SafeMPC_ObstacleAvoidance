@@ -12,46 +12,15 @@
 %       PARAMS.linear_model7 - matrix of size [3 x 5]
 %       PARAMS.linear_model8 - matrix of size [3 x 5]
 %       PARAMS.linear_model9 - matrix of size [3 x 5]
-%       PARAMS.linear_model10 - matrix of size [3 x 5]
-%       PARAMS.linear_model11 - matrix of size [3 x 5]
-%       PARAMS.linear_model12 - matrix of size [3 x 5]
-%       PARAMS.linear_model13 - matrix of size [3 x 5]
-%       PARAMS.linear_model14 - matrix of size [3 x 5]
-%       PARAMS.linear_model15 - matrix of size [3 x 5]
-%       PARAMS.linear_model16 - matrix of size [3 x 5]
-%       PARAMS.linear_model17 - matrix of size [3 x 5]
-%       PARAMS.linear_model18 - matrix of size [3 x 5]
-%       PARAMS.linear_model19 - matrix of size [3 x 5]
-%       PARAMS.linear_model20 - matrix of size [3 x 5]
-%       PARAMS.linear_model21 - matrix of size [3 x 5]
-%       PARAMS.linear_model22 - matrix of size [3 x 5]
-%       PARAMS.linear_model23 - matrix of size [3 x 5]
-%       PARAMS.linear_model24 - matrix of size [3 x 5]
-%       PARAMS.linear_model25 - matrix of size [3 x 5]
-%       PARAMS.linear_model26 - matrix of size [3 x 5]
-%       PARAMS.linear_model27 - matrix of size [3 x 5]
-%       PARAMS.linear_model28 - matrix of size [3 x 5]
-%       PARAMS.linear_model29 - matrix of size [3 x 5]
-%       PARAMS.linear_model30 - matrix of size [3 x 5]
-%       PARAMS.linear_model31 - matrix of size [3 x 5]
-%       PARAMS.linear_model32 - matrix of size [3 x 5]
-%       PARAMS.linear_model33 - matrix of size [3 x 5]
-%       PARAMS.linear_model34 - matrix of size [3 x 5]
-%       PARAMS.linear_model35 - matrix of size [3 x 5]
-%       PARAMS.linear_model36 - matrix of size [3 x 5]
-%       PARAMS.linear_model37 - matrix of size [3 x 5]
-%       PARAMS.linear_model38 - matrix of size [3 x 5]
-%       PARAMS.linear_model39 - matrix of size [3 x 5]
-%       PARAMS.linear_model40 - matrix of size [3 x 5]
-%       PARAMS.linear_model41 - matrix of size [3 x 5]
-%       PARAMS.linear_model42 - matrix of size [3 x 5]
-%       PARAMS.linear_model43 - matrix of size [3 x 5]
-%       PARAMS.linear_model44 - matrix of size [3 x 5]
-%       PARAMS.linear_model45 - matrix of size [3 x 5]
-%       PARAMS.linear_model46 - matrix of size [3 x 5]
-%       PARAMS.linear_model47 - matrix of size [3 x 5]
-%       PARAMS.linear_model48 - matrix of size [3 x 5]
-%       PARAMS.linear_model49 - matrix of size [3 x 5]
+%       PARAMS.f_error1 - column vector of length 5
+%       PARAMS.f_error2 - column vector of length 5
+%       PARAMS.f_error3 - column vector of length 5
+%       PARAMS.f_error4 - column vector of length 5
+%       PARAMS.f_error5 - column vector of length 5
+%       PARAMS.f_error6 - column vector of length 5
+%       PARAMS.f_error7 - column vector of length 5
+%       PARAMS.f_error8 - column vector of length 5
+%       PARAMS.f_error9 - column vector of length 5
 %
 %   OUTPUT returns the values of the last iteration of the solver where
 %       OUTPUT.output - column vector of size 50
