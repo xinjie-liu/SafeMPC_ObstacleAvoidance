@@ -39,9 +39,9 @@ def linearize_model(Xref, Uref, dt):
         Bd[i] = np.array([[-dt, 0], [0, 0], [0, -dt]])
     return Ad, Bd
 
-# Xref = traj_generate(10000, 10)
-# Uref = get_ref_input(Xref)
-# linear_models = linearize_model(Xref, Uref, 1e-3)
-# Ads = linear_models[0][:10]
-# Bds = linear_models[1][:10]
-# print(linear_models)
+Xref = traj_generate(10000, 10)
+Uref = get_ref_input(Xref)
+linear_models = linearize_model(Xref, Uref, 1e-3)
+Ads = linear_models[0][:10]
+Bds = linear_models[1][:10]
+print(linear_models)

@@ -19,7 +19,7 @@ Parameters of the class
 
 class MPC():
     def __init__(self, N):
-        self.dt = 5e-3
+        self.dt = 1e-3
         self.N = N  # planning horizon
         self.stages = forcespro.MultistageProblem(N)  # create the stages for the whole finite horizon
         self.nx = 3
@@ -73,8 +73,8 @@ class MPC():
         self.stages.codeoptions['printlevel'] = 2
         self.stages.generateCode()
 
-    def control(self, state, Ads, Bds):
-        problem = {"xinit": -state}  # eq.c = -xinit
+    def control(self, error, Ads, Bds):
+        problem = {"xinit": -error}  # eq.c = -xinit
         # set up linearized models as equality constraints
         for i in range(self.N - 1):
             A = Ads[i]
@@ -88,7 +88,7 @@ class MPC():
 # #=======================================================
 # just for testing, remove later
 from MPC_utils import *
-T = 3
+T = 10
 dt = 1e-3
 Xref = traj_generate(T/dt, T)
 Uref = get_ref_input(Xref)
@@ -121,10 +121,13 @@ for i in range(int(T/dt)-N):
     error_t_ = Ads[0] @ error_t + Bds[0] @ u
     x_error.append(error_t_[0])
     y_error.append(error_t_[1])
+    error_t = error_t_
 
 # plot the robot position
 xPos = np.array(xPos)
 yPos = np.array(yPos)
+print(xPos)
+
 fig1,ax1 = plt.subplots()
 ax1.plot(Xref[:,0],Xref[:,1],'g')
 ax1.plot(xPos,yPos,'r')
@@ -136,3 +139,4 @@ fig2,ax2 = plt.subplots()
 ax2.plot(range(len(x_error)), x_error,'b')
 ax2.plot(range(len(y_error)), y_error,'g')
 plt.show()
+print(mpc)
