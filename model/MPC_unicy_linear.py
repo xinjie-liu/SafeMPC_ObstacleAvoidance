@@ -19,7 +19,7 @@ Parameters of the class
 
 class MPC():
     def __init__(self, N):
-        self.dt = 5e-3
+        self.dt = 1e-3
         self.N = N  # planning horizon
         self.stages = forcespro.MultistageProblem(N)  # create the stages for the whole finite horizon
         self.nx = 3
@@ -67,8 +67,6 @@ class MPC():
             self.stages.newParam("f_error"+str(i+1), [i+1], 'cost.f')
         # define the output
         self.stages.newOutput('output', range(1, 11), range(1, self.nu + self.nx + 1))
-        # # Set up the D matrix and c1 = -A*x0 as varying parameters:
-        # stages.newParam(('D_current'+str(i)), i, 'eq.D')
 
         # solver settings
         self.stages.codeoptions['name'] = 'MPC_Project_FORCESPRO'
@@ -82,7 +80,7 @@ class MPC():
             A = Ads[i]
             B = Bds[i]
             problem["linear_model"+str(i+1)] = np.hstack((B, A))
-            z_error = np.hstack((np.zeros(2),state[i,:]))
+            z_error = np.hstack((np.zeros(2), state[i,:]))
             problem["f_error"+str(i+1)] = (2*z_error.T@self.stages.cost[i]['H']).T
         self.output = self.solver.MPC_Project_FORCESPRO_solve(problem)[0]['output']
         control = self.output[:2]
@@ -103,10 +101,9 @@ nx = 3
 x0 = np.array([1, 0, np.pi/2]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2])
 mpc = MPC(N)
-xPos = []
-yPos = []
+real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
 uStore = []
-error_t = np.zeros((N,nx))
+error_t = np.zeros((mpc.N,nx))
 x_error = []
 y_error = []
 
@@ -127,21 +124,26 @@ for i in range(int(T/dt)-N):
     x0 = np.array([state.x,state.y,state.theta])
 
     # Store the xy position for plotting:
-    xPos.append(state.x)
-    yPos.append(state.y)
-    x_error.append(error_t[0])
-    y_error.append(error_t[1])
-    
+    real_trajectory['x'].append(state.x)
+    real_trajectory['y'].append(state.y)
+    real_trajectory['z'].append(0)
+    real_trajectory['theta'].append(state.theta)
+
+    x_error.append(error_t[0, 0])
+    y_error.append(error_t[0, 1])
+
 # plot the robot position
-xPos = np.array(xPos)
-yPos = np.array(yPos)
-fig1,ax1 = plt.subplots()
-ax1.plot(xPos,yPos,'r')
-ax1.plot(Xref[:,0],Xref[:,1],'g')
+xPos = np.array(real_trajectory['x'])
+yPos = np.array(real_trajectory['y'])
+fig1, ax1 = plt.subplots()
+ax1.plot(xPos, yPos, 'r')
+ax1.plot(Xref[:, 0], Xref[:, 1], 'g')
 # plot the error
 x_error = np.array(x_error)
 y_error = np.array(y_error)
-fig2,ax2 = plt.subplots()
-ax2.plot(range(len(x_error)), x_error,'b')
-ax2.plot(range(len(y_error)), y_error,'g')
+fig2, ax2 = plt.subplots()
+ax2.plot(range(len(x_error)), x_error, 'b')
+ax2.plot(range(len(y_error)), y_error, 'g')
 plt.show()
+# animation
+plot_single_robot(real_trajectory)
