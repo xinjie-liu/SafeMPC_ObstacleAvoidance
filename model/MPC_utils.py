@@ -51,18 +51,26 @@ def plot_single_robot(real_trajectory):
                                   blit=False)
     plt.show()
 
-def line_traj_generate(start, goal, total_step): # start: (x, y, theta)
-    x = np.zeros([total_step+1, ])
-    y = np.zeros([total_step+1, ])
-    theta = np.zeros([total_step+1, ])
-    x_interval = (goal[0] - start[0])/total_step
-    y_interval = (goal[1] - start[1])/total_step
-    theta_interval = (goal[2] - start[2])/total_step
-    for i in range(total_step+1):
-        x[i] = start[0] + i * x_interval
-        y[i] = start[1] + i * y_interval
-        theta[i] = start[2] + i * theta_interval
-    return x, y, theta
+
+def line_traj_generate(start, goal, total_step):  # start: (x, y, theta)
+    total_step = int(total_step)
+    # xr yr xrdot yrdot xrddot yrddot theta
+    x = np.zeros([total_step, ])
+    y = np.zeros([total_step, ])
+    x[0] = start[0]
+    y[0] = start[1]
+    theta = np.zeros([total_step, ])
+    x_interval = (goal[0] - start[0]) / (total_step - 1)
+    y_interval = (goal[1] - start[1]) / (total_step - 1)
+    for i in range(total_step - 1):
+        x[i + 1] = start[0] + i * x_interval
+        y[i + 1] = start[1] + i * y_interval
+    xdot = np.diff(x)[1] * np.ones(len(x))  # constant velocity
+    ydot = np.diff(y)[1] * np.ones(len(y))
+    xddot = np.zeros(len(x))
+    yddot = np.zeros(len(y))
+
+    return np.array([x, y, xdot, ydot, xddot, yddot, theta]).T
 
 def traj_generate(total_step, T):
     t_interval = T/total_step
@@ -89,9 +97,9 @@ def linearize_model(Xref, Uref, dt):
         Ad[i] = np.array([[1, Uref[i, 1]*dt, 0], [-Uref[i, 1]*dt, 1, Uref[i, 0]*dt], [0, 0, 1]])
         Bd[i] = np.array([[-dt, 0], [0, 0], [0, -dt]])
     return Ad, Bd
+
 def wrapAngle(angle):
     return  np.arctan2(np.sin(angle), np.cos(angle))
-    
 
 # Xref = traj_generate(10000, 10)
 # Uref = get_ref_input(Xref)

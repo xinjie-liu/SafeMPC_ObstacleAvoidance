@@ -88,17 +88,17 @@ class MPC():
         return control
 
 # #=======================================================
-# just for testing, remove later
 from MPC_utils import *
-T = 10
+T = 1
 dt = 1e-3
-Xref = traj_generate(T/dt, T)
+# Xref = traj_generate(T/dt, T)
+Xref = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt)
 Uref = get_ref_input(Xref)
 linear_models = linearize_model(Xref, Uref, 1e-3)
 # #=========================================================
 N = 10
 nx = 3
-x0 = np.array([1, 0, np.pi/2]) # This angle needs to be in standard notation (it gets wrapped later)
+x0 = np.array([0, 0, np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2])
 mpc = MPC(N)
 real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
@@ -128,6 +128,7 @@ for i in range(int(T/dt)-N):
     real_trajectory['y'].append(state.y)
     real_trajectory['z'].append(0)
     real_trajectory['theta'].append(state.theta)
+    print('current position: x: ', state.x, ', y: ', state.y)
 
     x_error.append(error_t[0, 0])
     y_error.append(error_t[0, 1])
