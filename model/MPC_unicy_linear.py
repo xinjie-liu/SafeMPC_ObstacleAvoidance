@@ -88,42 +88,51 @@ class MPC():
 # #=======================================================
 # just for testing, remove later
 from MPC_utils import *
-T = 1
+T = 3
 dt = 1e-3
-Xref = traj_generate(int(T/dt), T)
+Xref = traj_generate(T/dt, T)
 Uref = get_ref_input(Xref)
 linear_models = linearize_model(Xref, Uref, 1e-3)
-
 # #=========================================================
-N = 50
+N = 10
+x0 = np.array([1, 0, np.pi/2])
+env = Robot(x0[0], x0[1], x0[2])
 mpc = MPC(N)
 xPos = []
 yPos = []
 uStore = []
-x_0 = np.array([1, 0, -np.pi/2])
+error_t = 0.5 * np.ones(3)
+x_error = []
+y_error = []
+
 for i in range(int(T/dt)-N):
     # Find the new linearisation (from current step to current step + N
     Ads = linear_models[0][i:i+N]
     Bds = linear_models[1][i:i+N]
-    control = mpc.control(x_0, Ads, Bds)
+    control = mpc.control(error_t, Ads, Bds)
     # Extract the first control inputs:
     u = mpc.output[0:2]
     uStore.append(u)
     # Simulate the motion
-    dx = u[0]*np.cos(x_0[2])
-    dy = u[0]*np.sin(x_0[2])
-    dtheta = u[1]
-    # 
-    x_0[0] += dt*dx
-    x_0[1] += dt*dy
-    x_0[2] += dt*dtheta
+    state = env.step(u[0], u[1])
     # Store the xy position for plotting:
-    xPos.append(x_0[0])
-    yPos.append(x_0[1])
+    xPos.append(state.x)
+    yPos.append(state.y)
+    error_t_ = Ads[0] @ error_t + Bds[0] @ u
+    x_error.append(error_t_[0])
+    y_error.append(error_t_[1])
 
+# plot the robot position
 xPos = np.array(xPos)
 yPos = np.array(yPos)
-fig,ax = plt.subplots()
-ax.plot(Xref[0,:],Xref[1,:],'g')
-ax.plot(xPos,yPos,'r')
+fig1,ax1 = plt.subplots()
+ax1.plot(Xref[:,0],Xref[:,1],'g')
+ax1.plot(xPos,yPos,'r')
+
+# plot the error
+x_error = np.array(x_error)
+y_error = np.array(y_error)
+fig2,ax2 = plt.subplots()
+ax2.plot(range(len(x_error)), x_error,'b')
+ax2.plot(range(len(y_error)), y_error,'g')
 plt.show()
