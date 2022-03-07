@@ -12,6 +12,7 @@ import forcespro
 import get_userid
 from quadrotor import Quadrotor
 import casadi
+from MPC_utils import *
 
 """
 Parameters of the class
@@ -87,7 +88,6 @@ class MPC():
 
 # #=======================================================
 # just for testing, remove later
-from MPC_utils import *
 T = 10
 dt = 1e-3
 Xref = traj_generate(T/dt, T)
@@ -98,8 +98,7 @@ N = 10
 x0 = np.array([1, 0, np.pi/2])
 env = Robot(x0[0], x0[1], x0[2])
 mpc = MPC(N)
-xPos = []
-yPos = []
+real_trajectory = {'x': [x0[0]], 'y': [x0[1]], 'z': [0], 'theta': [x0[2]]}
 uStore = []
 error_t = 0.5 * np.ones(3)
 x_error = []
@@ -116,18 +115,18 @@ for i in range(int(T/dt)-N):
     # Simulate the motion
     state = env.step(u[0], u[1])
     # Store the xy position for plotting:
-    xPos.append(state.x)
-    yPos.append(state.y)
+    real_trajectory['x'].append(state.x)
+    real_trajectory['y'].append(state.y)
+    real_trajectory['z'].append(0)
+    real_trajectory['theta'].append(state.theta)
     error_t_ = Ads[0] @ error_t + Bds[0] @ u
     x_error.append(error_t_[0])
     y_error.append(error_t_[1])
     error_t = error_t_
 
 # plot the robot position
-xPos = np.array(xPos)
-yPos = np.array(yPos)
-print(xPos)
-
+xPos = np.array(real_trajectory['x'])
+yPos = np.array(real_trajectory['y'])
 fig1,ax1 = plt.subplots()
 ax1.plot(Xref[:,0],Xref[:,1],'g')
 ax1.plot(xPos,yPos,'r')
@@ -139,4 +138,7 @@ fig2,ax2 = plt.subplots()
 ax2.plot(range(len(x_error)), x_error,'b')
 ax2.plot(range(len(y_error)), y_error,'g')
 plt.show()
-print(mpc)
+
+# animation
+plot_single_robot(real_trajectory)
+
