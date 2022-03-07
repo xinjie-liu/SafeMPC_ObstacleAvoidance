@@ -60,13 +60,13 @@ Model {
       }
     }
   }
-  Created		  "3/6/2022 3:57:10 PM"
+  Created		  "3/7/2022 2:38:38 PM"
   Creator		  "embotech AG"
   UpdateHistory		  "UpdateHistoryNever"
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "embotech AG"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "3/6/2022 3:57:10 PM"
+  LastModifiedDate	  "3/7/2022 2:38:38 PM"
   RTWModifiedTimeStamp	  315310195
   ModelVersionFormat	  "1.%<AutoIncrement:2>"
   ConfigurationManager	  "None"
@@ -767,7 +767,7 @@ Model {
       BlockType		      S-Function
       Name		      "MPC_Project_FORCESPRO"
       SID		      "1"
-      Ports		      [2, 1]
+      Ports		      [3, 1]
       Position		      [170, 99, 650, 180]
       ZOrder		      1
       FunctionName	      "MPC_Project_FORCESPRO_simulinkBlockcompact"
@@ -804,7 +804,8 @@ Model {
 	Help			"MPC_Project_FORCESPRO_simulinkBlockcompact provides an easy Simulink interface for simulating your customized solver.  \n"
 	"\nOUTPUTS = MPC_Project_FORCESPRO(INPUTS) solves an optimization problem where:\n\n"
 	"INPUTS:\n"
-	" - C - matrix of size 3x245\n "
+	" - C - matrix of size 3x45\n "
+" - f - matrix of size 5x9\n "
 " - xinit - column vector of length 3\n "
 
 	"\nOUTPUTS:\n"
@@ -813,7 +814,8 @@ Model {
 	"\n For more information, see https://forces.embotech.com/Documentation/graphical_interface/index.html \n "
 
 	Display			"port_label('input', 1, 'C') \n  "
-"port_label('input', 2, 'xinit') \n  "
+"port_label('input', 2, 'f') \n  "
+"port_label('input', 3, 'xinit') \n  "
 "port_label('output', 1, 'outputs') \n "
 "if( exist('FORCES_PRO_Logo.jpg','file') ), image(imread('FORCES_PRO_Logo.jpg'),'center','on'); elseif( exist(['interface',filesep,'FORCES_PRO_Logo.jpg'],'file') ), image(imread(['interface',filesep,'FORCES_PRO_Logo.jpg']),'center','on'); elseif( exist(['MPC_Project_FORCESPRO',filesep,'interface',filesep,'FORCES_PRO_Logo.jpg'],'file') ), image(imread(['MPC_Project_FORCESPRO',filesep,'interface',filesep,'FORCES_PRO_Logo.jpg']),'center','on'); end \n "
 
