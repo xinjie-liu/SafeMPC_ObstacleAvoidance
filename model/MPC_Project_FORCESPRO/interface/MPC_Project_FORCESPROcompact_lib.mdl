@@ -60,13 +60,13 @@ Model {
       }
     }
   }
-  Created		  "3/7/2022 8:58:18 PM"
+  Created		  "3/8/2022 12:43:11 PM"
   Creator		  "embotech AG"
   UpdateHistory		  "UpdateHistoryNever"
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "embotech AG"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "3/7/2022 8:58:18 PM"
+  LastModifiedDate	  "3/8/2022 12:43:11 PM"
   RTWModifiedTimeStamp	  315310195
   ModelVersionFormat	  "1.%<AutoIncrement:2>"
   ConfigurationManager	  "None"
@@ -804,8 +804,8 @@ Model {
 	Help			"MPC_Project_FORCESPRO_simulinkBlockcompact provides an easy Simulink interface for simulating your customized solver.  \n"
 	"\nOUTPUTS = MPC_Project_FORCESPRO(INPUTS) solves an optimization problem where:\n\n"
 	"INPUTS:\n"
-	" - C - matrix of size 3x145\n "
-" - f - matrix of size 5x29\n "
+	" - C - matrix of size 3x195\n "
+" - f - matrix of size 5x39\n "
 " - xinit - column vector of length 3\n "
 
 	"\nOUTPUTS:\n"

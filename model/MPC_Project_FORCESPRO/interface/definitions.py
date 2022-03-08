@@ -6,7 +6,7 @@ requires_callback = False
 lib = "lib/MPC_Project_FORCESPRO.dll"
 lib_static = "lib/MPC_Project_FORCESPRO_static.lib"
 c_header = "include/MPC_Project_FORCESPRO.h"
-nstages = 30
+nstages = 40
 
 # Parameter             | Type    | Scalar type      | Ctypes type    | Numpy type   | Shape     | Len
 params = \
@@ -40,6 +40,16 @@ params = \
  ("linear_model27"      , "dense" , ""               , ctypes.c_double, numpy.float64, (  3,   5),   15),
  ("linear_model28"      , "dense" , ""               , ctypes.c_double, numpy.float64, (  3,   5),   15),
  ("linear_model29"      , "dense" , ""               , ctypes.c_double, numpy.float64, (  3,   5),   15),
+ ("linear_model30"      , "dense" , ""               , ctypes.c_double, numpy.float64, (  3,   5),   15),
+ ("linear_model31"      , "dense" , ""               , ctypes.c_double, numpy.float64, (  3,   5),   15),
+ ("linear_model32"      , "dense" , ""               , ctypes.c_double, numpy.float64, (  3,   5),   15),
+ ("linear_model33"      , "dense" , ""               , ctypes.c_double, numpy.float64, (  3,   5),   15),
+ ("linear_model34"      , "dense" , ""               , ctypes.c_double, numpy.float64, (  3,   5),   15),
+ ("linear_model35"      , "dense" , ""               , ctypes.c_double, numpy.float64, (  3,   5),   15),
+ ("linear_model36"      , "dense" , ""               , ctypes.c_double, numpy.float64, (  3,   5),   15),
+ ("linear_model37"      , "dense" , ""               , ctypes.c_double, numpy.float64, (  3,   5),   15),
+ ("linear_model38"      , "dense" , ""               , ctypes.c_double, numpy.float64, (  3,   5),   15),
+ ("linear_model39"      , "dense" , ""               , ctypes.c_double, numpy.float64, (  3,   5),   15),
  ("f_error1"            , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5),
  ("f_error2"            , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5),
  ("f_error3"            , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5),
@@ -68,7 +78,17 @@ params = \
  ("f_error26"           , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5),
  ("f_error27"           , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5),
  ("f_error28"           , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5),
- ("f_error29"           , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5)]
+ ("f_error29"           , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5),
+ ("f_error30"           , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5),
+ ("f_error31"           , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5),
+ ("f_error32"           , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5),
+ ("f_error33"           , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5),
+ ("f_error34"           , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5),
+ ("f_error35"           , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5),
+ ("f_error36"           , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5),
+ ("f_error37"           , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5),
+ ("f_error38"           , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5),
+ ("f_error39"           , "dense" , ""               , ctypes.c_double, numpy.float64, (  5,   1),    5)]
 
 # Output                | Type    | Scalar type      | Ctypes type    | Numpy type   | Shape     | Len
 outputs = \
@@ -98,6 +118,16 @@ info = \
 # Dynamics dimensions
 #   nvar    |   neq   |   dimh    |   dimp    |   diml    |   dimu    |   dimhl   |   dimhu    
 dynamics_dims = [
+	(5, 3, 0, 0, 0, 0, 0, 0), 
+	(5, 3, 0, 0, 0, 0, 0, 0), 
+	(5, 3, 0, 0, 0, 0, 0, 0), 
+	(5, 3, 0, 0, 0, 0, 0, 0), 
+	(5, 3, 0, 0, 0, 0, 0, 0), 
+	(5, 3, 0, 0, 0, 0, 0, 0), 
+	(5, 3, 0, 0, 0, 0, 0, 0), 
+	(5, 3, 0, 0, 0, 0, 0, 0), 
+	(5, 3, 0, 0, 0, 0, 0, 0), 
+	(5, 3, 0, 0, 0, 0, 0, 0), 
 	(5, 3, 0, 0, 0, 0, 0, 0), 
 	(5, 3, 0, 0, 0, 0, 0, 0), 
 	(5, 3, 0, 0, 0, 0, 0, 0), 

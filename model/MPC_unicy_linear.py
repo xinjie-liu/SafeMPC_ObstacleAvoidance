@@ -81,7 +81,7 @@ class MPC():
             B = Bds[i]
             problem["linear_model"+str(i+1)] = np.hstack((B, A))
             z_error = np.hstack((np.zeros(2), state[i,:]))
-            problem["f_error"+str(i+1)] = (2*z_error.T@self.stages.cost[i]['H']).T
+            #problem["f_error"+str(i+1)] = (2*z_error.T@self.stages.cost[i]['H']).T
         self.output = self.solver.MPC_Project_FORCESPRO_solve(problem)[0]['output']
         control = self.output[:2]
 
@@ -89,16 +89,16 @@ class MPC():
 
 # #=======================================================
 from MPC_utils import *
-T = 1
+T = 10
 dt = 1e-3
-# Xref = traj_generate(T/dt, T)
-Xref = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt)
+Xref = traj_generate(T/dt, T)
+#Xref = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt)
 Uref = get_ref_input(Xref)
 linear_models = linearize_model(Xref, Uref, 1e-3)
 # #=========================================================
-N = 10
+N = 40
 nx = 3
-x0 = np.array([0, 0, np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
+x0 = np.array([1, 0, 0]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2])
 mpc = MPC(N)
 real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
@@ -114,6 +114,8 @@ for i in range(int(T/dt)-N):
     # Calculate the new errors (current pose vs reference pose)
     error_t[:,:2] = np.array([np.array([[np.cos(x0[2]),np.sin(x0[2])],[-np.sin(x0[2]), np.cos(x0[2])]])@(Xref[i+k,:2] - x0[:2]) for k in range(N)])
     error_t[:,2] = np.array([Xref[i+k,6] - wrapAngle(x0[2]) for k in range(N)])
+    # Wrap the error too (otherwise there is a huge between -pi and pi)
+    error_t[:,2] = wrapAngle(error_t[:,2])
     # Solve the MPC problem:
     control = mpc.control(error_t, Ads, Bds)
     # Extract the first control input (for error correction) and add the reference input (for trajectory tracking)
@@ -147,4 +149,4 @@ ax2.plot(range(len(x_error)), x_error, 'b')
 ax2.plot(range(len(y_error)), y_error, 'g')
 plt.show()
 # animation
-plot_single_robot(real_trajectory)
+#plot_single_robot(real_trajectory)

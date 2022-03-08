@@ -32,6 +32,16 @@
 %       PARAMS.linear_model27 - matrix of size [3 x 5]
 %       PARAMS.linear_model28 - matrix of size [3 x 5]
 %       PARAMS.linear_model29 - matrix of size [3 x 5]
+%       PARAMS.linear_model30 - matrix of size [3 x 5]
+%       PARAMS.linear_model31 - matrix of size [3 x 5]
+%       PARAMS.linear_model32 - matrix of size [3 x 5]
+%       PARAMS.linear_model33 - matrix of size [3 x 5]
+%       PARAMS.linear_model34 - matrix of size [3 x 5]
+%       PARAMS.linear_model35 - matrix of size [3 x 5]
+%       PARAMS.linear_model36 - matrix of size [3 x 5]
+%       PARAMS.linear_model37 - matrix of size [3 x 5]
+%       PARAMS.linear_model38 - matrix of size [3 x 5]
+%       PARAMS.linear_model39 - matrix of size [3 x 5]
 %       PARAMS.f_error1 - column vector of length 5
 %       PARAMS.f_error2 - column vector of length 5
 %       PARAMS.f_error3 - column vector of length 5
@@ -61,6 +71,16 @@
 %       PARAMS.f_error27 - column vector of length 5
 %       PARAMS.f_error28 - column vector of length 5
 %       PARAMS.f_error29 - column vector of length 5
+%       PARAMS.f_error30 - column vector of length 5
+%       PARAMS.f_error31 - column vector of length 5
+%       PARAMS.f_error32 - column vector of length 5
+%       PARAMS.f_error33 - column vector of length 5
+%       PARAMS.f_error34 - column vector of length 5
+%       PARAMS.f_error35 - column vector of length 5
+%       PARAMS.f_error36 - column vector of length 5
+%       PARAMS.f_error37 - column vector of length 5
+%       PARAMS.f_error38 - column vector of length 5
+%       PARAMS.f_error39 - column vector of length 5
 %
 %   OUTPUT returns the values of the last iteration of the solver where
 %       OUTPUT.output - column vector of size 50

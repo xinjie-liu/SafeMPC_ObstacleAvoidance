@@ -85,14 +85,14 @@ static void mdlInitializeSizes(SimStruct *S)
     if (!ssSetNumInputPorts(S, 3)) return;
     	
 	/* Input Port 0 */
-    ssSetInputPortMatrixDimensions(S,  0, 3, 145);
+    ssSetInputPortMatrixDimensions(S,  0, 3, 195);
     ssSetInputPortDataType(S, 0, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 0, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 0, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 0, 1); /*direct input signal access*/
 	
 	/* Input Port 1 */
-    ssSetInputPortMatrixDimensions(S,  1, 5, 29);
+    ssSetInputPortMatrixDimensions(S,  1, 5, 39);
     ssSetInputPortDataType(S, 1, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 1, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 1, 1); /* Feedthrough enabled */
@@ -401,6 +401,66 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 		params.linear_model29[i] = (double) C[j++]; 
 	}
 
+	j=435; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model30[i] = (double) C[j++]; 
+	}
+
+	j=450; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model31[i] = (double) C[j++]; 
+	}
+
+	j=465; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model32[i] = (double) C[j++]; 
+	}
+
+	j=480; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model33[i] = (double) C[j++]; 
+	}
+
+	j=495; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model34[i] = (double) C[j++]; 
+	}
+
+	j=510; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model35[i] = (double) C[j++]; 
+	}
+
+	j=525; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model36[i] = (double) C[j++]; 
+	}
+
+	j=540; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model37[i] = (double) C[j++]; 
+	}
+
+	j=555; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model38[i] = (double) C[j++]; 
+	}
+
+	j=570; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model39[i] = (double) C[j++]; 
+	}
+
 	for( i=0; i<5; i++)
 	{ 
 		params.f_error1[i] = (double) f[i]; 
@@ -572,6 +632,66 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 	for( i=0; i<5; i++)
 	{ 
 		params.f_error29[i] = (double) f[j++]; 
+	}
+
+	j=145; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error30[i] = (double) f[j++]; 
+	}
+
+	j=150; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error31[i] = (double) f[j++]; 
+	}
+
+	j=155; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error32[i] = (double) f[j++]; 
+	}
+
+	j=160; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error33[i] = (double) f[j++]; 
+	}
+
+	j=165; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error34[i] = (double) f[j++]; 
+	}
+
+	j=170; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error35[i] = (double) f[j++]; 
+	}
+
+	j=175; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error36[i] = (double) f[j++]; 
+	}
+
+	j=180; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error37[i] = (double) f[j++]; 
+	}
+
+	j=185; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error38[i] = (double) f[j++]; 
+	}
+
+	j=190; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error39[i] = (double) f[j++]; 
 	}
 
 	

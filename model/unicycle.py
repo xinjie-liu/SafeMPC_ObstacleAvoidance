@@ -10,6 +10,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import mpl_toolkits.mplot3d.axes3d as p3
 from matplotlib import animation
+from MPC_utils import wrapAngle
 #from MPC_unicy import MPC
 
 class State():
@@ -42,7 +43,7 @@ class Robot():
 # =============================================================================
 
     def fixAngle(self, angle):
-        return atan2(sin(angle), cos(angle))
+        return np.arctan2(np.sin(angle), np.cos(angle))
 
     def step(self, v, w):
         theta_dt = w
