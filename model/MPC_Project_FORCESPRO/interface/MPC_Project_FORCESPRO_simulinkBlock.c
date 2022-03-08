@@ -81,8 +81,8 @@ static void mdlInitializeSizes(SimStruct *S)
     ssSetNumContStates(S, 0);
     ssSetNumDiscStates(S, 0);
 
-	/* initialize input ports - there are 19 in total */
-    if (!ssSetNumInputPorts(S, 19)) return;
+	/* initialize input ports - there are 59 in total */
+    if (!ssSetNumInputPorts(S, 59)) return;
     	
 	/* Input Port 0 */
     ssSetInputPortMatrixDimensions(S,  0, 3, 1);
@@ -155,67 +155,347 @@ static void mdlInitializeSizes(SimStruct *S)
     ssSetInputPortRequiredContiguous(S, 9, 1); /*direct input signal access*/
 	
 	/* Input Port 10 */
-    ssSetInputPortMatrixDimensions(S,  10, 5, 1);
+    ssSetInputPortMatrixDimensions(S,  10, 3, 5);
     ssSetInputPortDataType(S, 10, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 10, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 10, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 10, 1); /*direct input signal access*/
 	
 	/* Input Port 11 */
-    ssSetInputPortMatrixDimensions(S,  11, 5, 1);
+    ssSetInputPortMatrixDimensions(S,  11, 3, 5);
     ssSetInputPortDataType(S, 11, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 11, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 11, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 11, 1); /*direct input signal access*/
 	
 	/* Input Port 12 */
-    ssSetInputPortMatrixDimensions(S,  12, 5, 1);
+    ssSetInputPortMatrixDimensions(S,  12, 3, 5);
     ssSetInputPortDataType(S, 12, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 12, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 12, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 12, 1); /*direct input signal access*/
 	
 	/* Input Port 13 */
-    ssSetInputPortMatrixDimensions(S,  13, 5, 1);
+    ssSetInputPortMatrixDimensions(S,  13, 3, 5);
     ssSetInputPortDataType(S, 13, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 13, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 13, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 13, 1); /*direct input signal access*/
 	
 	/* Input Port 14 */
-    ssSetInputPortMatrixDimensions(S,  14, 5, 1);
+    ssSetInputPortMatrixDimensions(S,  14, 3, 5);
     ssSetInputPortDataType(S, 14, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 14, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 14, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 14, 1); /*direct input signal access*/
 	
 	/* Input Port 15 */
-    ssSetInputPortMatrixDimensions(S,  15, 5, 1);
+    ssSetInputPortMatrixDimensions(S,  15, 3, 5);
     ssSetInputPortDataType(S, 15, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 15, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 15, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 15, 1); /*direct input signal access*/
 	
 	/* Input Port 16 */
-    ssSetInputPortMatrixDimensions(S,  16, 5, 1);
+    ssSetInputPortMatrixDimensions(S,  16, 3, 5);
     ssSetInputPortDataType(S, 16, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 16, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 16, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 16, 1); /*direct input signal access*/
 	
 	/* Input Port 17 */
-    ssSetInputPortMatrixDimensions(S,  17, 5, 1);
+    ssSetInputPortMatrixDimensions(S,  17, 3, 5);
     ssSetInputPortDataType(S, 17, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 17, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 17, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 17, 1); /*direct input signal access*/
 	
 	/* Input Port 18 */
-    ssSetInputPortMatrixDimensions(S,  18, 5, 1);
+    ssSetInputPortMatrixDimensions(S,  18, 3, 5);
     ssSetInputPortDataType(S, 18, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 18, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 18, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 18, 1); /*direct input signal access*/
+	
+	/* Input Port 19 */
+    ssSetInputPortMatrixDimensions(S,  19, 3, 5);
+    ssSetInputPortDataType(S, 19, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 19, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 19, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 19, 1); /*direct input signal access*/
+	
+	/* Input Port 20 */
+    ssSetInputPortMatrixDimensions(S,  20, 3, 5);
+    ssSetInputPortDataType(S, 20, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 20, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 20, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 20, 1); /*direct input signal access*/
+	
+	/* Input Port 21 */
+    ssSetInputPortMatrixDimensions(S,  21, 3, 5);
+    ssSetInputPortDataType(S, 21, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 21, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 21, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 21, 1); /*direct input signal access*/
+	
+	/* Input Port 22 */
+    ssSetInputPortMatrixDimensions(S,  22, 3, 5);
+    ssSetInputPortDataType(S, 22, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 22, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 22, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 22, 1); /*direct input signal access*/
+	
+	/* Input Port 23 */
+    ssSetInputPortMatrixDimensions(S,  23, 3, 5);
+    ssSetInputPortDataType(S, 23, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 23, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 23, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 23, 1); /*direct input signal access*/
+	
+	/* Input Port 24 */
+    ssSetInputPortMatrixDimensions(S,  24, 3, 5);
+    ssSetInputPortDataType(S, 24, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 24, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 24, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 24, 1); /*direct input signal access*/
+	
+	/* Input Port 25 */
+    ssSetInputPortMatrixDimensions(S,  25, 3, 5);
+    ssSetInputPortDataType(S, 25, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 25, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 25, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 25, 1); /*direct input signal access*/
+	
+	/* Input Port 26 */
+    ssSetInputPortMatrixDimensions(S,  26, 3, 5);
+    ssSetInputPortDataType(S, 26, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 26, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 26, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 26, 1); /*direct input signal access*/
+	
+	/* Input Port 27 */
+    ssSetInputPortMatrixDimensions(S,  27, 3, 5);
+    ssSetInputPortDataType(S, 27, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 27, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 27, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 27, 1); /*direct input signal access*/
+	
+	/* Input Port 28 */
+    ssSetInputPortMatrixDimensions(S,  28, 3, 5);
+    ssSetInputPortDataType(S, 28, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 28, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 28, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 28, 1); /*direct input signal access*/
+	
+	/* Input Port 29 */
+    ssSetInputPortMatrixDimensions(S,  29, 3, 5);
+    ssSetInputPortDataType(S, 29, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 29, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 29, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 29, 1); /*direct input signal access*/
+	
+	/* Input Port 30 */
+    ssSetInputPortMatrixDimensions(S,  30, 5, 1);
+    ssSetInputPortDataType(S, 30, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 30, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 30, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 30, 1); /*direct input signal access*/
+	
+	/* Input Port 31 */
+    ssSetInputPortMatrixDimensions(S,  31, 5, 1);
+    ssSetInputPortDataType(S, 31, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 31, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 31, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 31, 1); /*direct input signal access*/
+	
+	/* Input Port 32 */
+    ssSetInputPortMatrixDimensions(S,  32, 5, 1);
+    ssSetInputPortDataType(S, 32, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 32, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 32, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 32, 1); /*direct input signal access*/
+	
+	/* Input Port 33 */
+    ssSetInputPortMatrixDimensions(S,  33, 5, 1);
+    ssSetInputPortDataType(S, 33, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 33, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 33, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 33, 1); /*direct input signal access*/
+	
+	/* Input Port 34 */
+    ssSetInputPortMatrixDimensions(S,  34, 5, 1);
+    ssSetInputPortDataType(S, 34, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 34, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 34, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 34, 1); /*direct input signal access*/
+	
+	/* Input Port 35 */
+    ssSetInputPortMatrixDimensions(S,  35, 5, 1);
+    ssSetInputPortDataType(S, 35, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 35, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 35, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 35, 1); /*direct input signal access*/
+	
+	/* Input Port 36 */
+    ssSetInputPortMatrixDimensions(S,  36, 5, 1);
+    ssSetInputPortDataType(S, 36, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 36, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 36, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 36, 1); /*direct input signal access*/
+	
+	/* Input Port 37 */
+    ssSetInputPortMatrixDimensions(S,  37, 5, 1);
+    ssSetInputPortDataType(S, 37, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 37, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 37, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 37, 1); /*direct input signal access*/
+	
+	/* Input Port 38 */
+    ssSetInputPortMatrixDimensions(S,  38, 5, 1);
+    ssSetInputPortDataType(S, 38, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 38, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 38, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 38, 1); /*direct input signal access*/
+	
+	/* Input Port 39 */
+    ssSetInputPortMatrixDimensions(S,  39, 5, 1);
+    ssSetInputPortDataType(S, 39, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 39, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 39, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 39, 1); /*direct input signal access*/
+	
+	/* Input Port 40 */
+    ssSetInputPortMatrixDimensions(S,  40, 5, 1);
+    ssSetInputPortDataType(S, 40, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 40, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 40, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 40, 1); /*direct input signal access*/
+	
+	/* Input Port 41 */
+    ssSetInputPortMatrixDimensions(S,  41, 5, 1);
+    ssSetInputPortDataType(S, 41, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 41, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 41, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 41, 1); /*direct input signal access*/
+	
+	/* Input Port 42 */
+    ssSetInputPortMatrixDimensions(S,  42, 5, 1);
+    ssSetInputPortDataType(S, 42, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 42, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 42, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 42, 1); /*direct input signal access*/
+	
+	/* Input Port 43 */
+    ssSetInputPortMatrixDimensions(S,  43, 5, 1);
+    ssSetInputPortDataType(S, 43, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 43, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 43, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 43, 1); /*direct input signal access*/
+	
+	/* Input Port 44 */
+    ssSetInputPortMatrixDimensions(S,  44, 5, 1);
+    ssSetInputPortDataType(S, 44, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 44, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 44, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 44, 1); /*direct input signal access*/
+	
+	/* Input Port 45 */
+    ssSetInputPortMatrixDimensions(S,  45, 5, 1);
+    ssSetInputPortDataType(S, 45, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 45, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 45, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 45, 1); /*direct input signal access*/
+	
+	/* Input Port 46 */
+    ssSetInputPortMatrixDimensions(S,  46, 5, 1);
+    ssSetInputPortDataType(S, 46, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 46, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 46, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 46, 1); /*direct input signal access*/
+	
+	/* Input Port 47 */
+    ssSetInputPortMatrixDimensions(S,  47, 5, 1);
+    ssSetInputPortDataType(S, 47, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 47, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 47, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 47, 1); /*direct input signal access*/
+	
+	/* Input Port 48 */
+    ssSetInputPortMatrixDimensions(S,  48, 5, 1);
+    ssSetInputPortDataType(S, 48, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 48, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 48, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 48, 1); /*direct input signal access*/
+	
+	/* Input Port 49 */
+    ssSetInputPortMatrixDimensions(S,  49, 5, 1);
+    ssSetInputPortDataType(S, 49, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 49, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 49, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 49, 1); /*direct input signal access*/
+	
+	/* Input Port 50 */
+    ssSetInputPortMatrixDimensions(S,  50, 5, 1);
+    ssSetInputPortDataType(S, 50, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 50, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 50, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 50, 1); /*direct input signal access*/
+	
+	/* Input Port 51 */
+    ssSetInputPortMatrixDimensions(S,  51, 5, 1);
+    ssSetInputPortDataType(S, 51, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 51, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 51, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 51, 1); /*direct input signal access*/
+	
+	/* Input Port 52 */
+    ssSetInputPortMatrixDimensions(S,  52, 5, 1);
+    ssSetInputPortDataType(S, 52, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 52, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 52, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 52, 1); /*direct input signal access*/
+	
+	/* Input Port 53 */
+    ssSetInputPortMatrixDimensions(S,  53, 5, 1);
+    ssSetInputPortDataType(S, 53, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 53, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 53, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 53, 1); /*direct input signal access*/
+	
+	/* Input Port 54 */
+    ssSetInputPortMatrixDimensions(S,  54, 5, 1);
+    ssSetInputPortDataType(S, 54, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 54, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 54, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 54, 1); /*direct input signal access*/
+	
+	/* Input Port 55 */
+    ssSetInputPortMatrixDimensions(S,  55, 5, 1);
+    ssSetInputPortDataType(S, 55, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 55, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 55, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 55, 1); /*direct input signal access*/
+	
+	/* Input Port 56 */
+    ssSetInputPortMatrixDimensions(S,  56, 5, 1);
+    ssSetInputPortDataType(S, 56, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 56, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 56, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 56, 1); /*direct input signal access*/
+	
+	/* Input Port 57 */
+    ssSetInputPortMatrixDimensions(S,  57, 5, 1);
+    ssSetInputPortDataType(S, 57, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 57, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 57, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 57, 1); /*direct input signal access*/
+	
+	/* Input Port 58 */
+    ssSetInputPortMatrixDimensions(S,  58, 5, 1);
+    ssSetInputPortDataType(S, 58, SS_DOUBLE);
+    ssSetInputPortComplexSignal(S, 58, COMPLEX_NO); /* no complex signals suppported */
+    ssSetInputPortDirectFeedThrough(S, 58, 1); /* Feedthrough enabled */
+    ssSetInputPortRequiredContiguous(S, 58, 1); /*direct input signal access*/
  
 
 
@@ -327,15 +607,55 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 	const real_T *linear_model7 = (const real_T*) ssGetInputPortSignal(S,7);
 	const real_T *linear_model8 = (const real_T*) ssGetInputPortSignal(S,8);
 	const real_T *linear_model9 = (const real_T*) ssGetInputPortSignal(S,9);
-	const real_T *f_error1 = (const real_T*) ssGetInputPortSignal(S,10);
-	const real_T *f_error2 = (const real_T*) ssGetInputPortSignal(S,11);
-	const real_T *f_error3 = (const real_T*) ssGetInputPortSignal(S,12);
-	const real_T *f_error4 = (const real_T*) ssGetInputPortSignal(S,13);
-	const real_T *f_error5 = (const real_T*) ssGetInputPortSignal(S,14);
-	const real_T *f_error6 = (const real_T*) ssGetInputPortSignal(S,15);
-	const real_T *f_error7 = (const real_T*) ssGetInputPortSignal(S,16);
-	const real_T *f_error8 = (const real_T*) ssGetInputPortSignal(S,17);
-	const real_T *f_error9 = (const real_T*) ssGetInputPortSignal(S,18);
+	const real_T *linear_model10 = (const real_T*) ssGetInputPortSignal(S,10);
+	const real_T *linear_model11 = (const real_T*) ssGetInputPortSignal(S,11);
+	const real_T *linear_model12 = (const real_T*) ssGetInputPortSignal(S,12);
+	const real_T *linear_model13 = (const real_T*) ssGetInputPortSignal(S,13);
+	const real_T *linear_model14 = (const real_T*) ssGetInputPortSignal(S,14);
+	const real_T *linear_model15 = (const real_T*) ssGetInputPortSignal(S,15);
+	const real_T *linear_model16 = (const real_T*) ssGetInputPortSignal(S,16);
+	const real_T *linear_model17 = (const real_T*) ssGetInputPortSignal(S,17);
+	const real_T *linear_model18 = (const real_T*) ssGetInputPortSignal(S,18);
+	const real_T *linear_model19 = (const real_T*) ssGetInputPortSignal(S,19);
+	const real_T *linear_model20 = (const real_T*) ssGetInputPortSignal(S,20);
+	const real_T *linear_model21 = (const real_T*) ssGetInputPortSignal(S,21);
+	const real_T *linear_model22 = (const real_T*) ssGetInputPortSignal(S,22);
+	const real_T *linear_model23 = (const real_T*) ssGetInputPortSignal(S,23);
+	const real_T *linear_model24 = (const real_T*) ssGetInputPortSignal(S,24);
+	const real_T *linear_model25 = (const real_T*) ssGetInputPortSignal(S,25);
+	const real_T *linear_model26 = (const real_T*) ssGetInputPortSignal(S,26);
+	const real_T *linear_model27 = (const real_T*) ssGetInputPortSignal(S,27);
+	const real_T *linear_model28 = (const real_T*) ssGetInputPortSignal(S,28);
+	const real_T *linear_model29 = (const real_T*) ssGetInputPortSignal(S,29);
+	const real_T *f_error1 = (const real_T*) ssGetInputPortSignal(S,30);
+	const real_T *f_error2 = (const real_T*) ssGetInputPortSignal(S,31);
+	const real_T *f_error3 = (const real_T*) ssGetInputPortSignal(S,32);
+	const real_T *f_error4 = (const real_T*) ssGetInputPortSignal(S,33);
+	const real_T *f_error5 = (const real_T*) ssGetInputPortSignal(S,34);
+	const real_T *f_error6 = (const real_T*) ssGetInputPortSignal(S,35);
+	const real_T *f_error7 = (const real_T*) ssGetInputPortSignal(S,36);
+	const real_T *f_error8 = (const real_T*) ssGetInputPortSignal(S,37);
+	const real_T *f_error9 = (const real_T*) ssGetInputPortSignal(S,38);
+	const real_T *f_error10 = (const real_T*) ssGetInputPortSignal(S,39);
+	const real_T *f_error11 = (const real_T*) ssGetInputPortSignal(S,40);
+	const real_T *f_error12 = (const real_T*) ssGetInputPortSignal(S,41);
+	const real_T *f_error13 = (const real_T*) ssGetInputPortSignal(S,42);
+	const real_T *f_error14 = (const real_T*) ssGetInputPortSignal(S,43);
+	const real_T *f_error15 = (const real_T*) ssGetInputPortSignal(S,44);
+	const real_T *f_error16 = (const real_T*) ssGetInputPortSignal(S,45);
+	const real_T *f_error17 = (const real_T*) ssGetInputPortSignal(S,46);
+	const real_T *f_error18 = (const real_T*) ssGetInputPortSignal(S,47);
+	const real_T *f_error19 = (const real_T*) ssGetInputPortSignal(S,48);
+	const real_T *f_error20 = (const real_T*) ssGetInputPortSignal(S,49);
+	const real_T *f_error21 = (const real_T*) ssGetInputPortSignal(S,50);
+	const real_T *f_error22 = (const real_T*) ssGetInputPortSignal(S,51);
+	const real_T *f_error23 = (const real_T*) ssGetInputPortSignal(S,52);
+	const real_T *f_error24 = (const real_T*) ssGetInputPortSignal(S,53);
+	const real_T *f_error25 = (const real_T*) ssGetInputPortSignal(S,54);
+	const real_T *f_error26 = (const real_T*) ssGetInputPortSignal(S,55);
+	const real_T *f_error27 = (const real_T*) ssGetInputPortSignal(S,56);
+	const real_T *f_error28 = (const real_T*) ssGetInputPortSignal(S,57);
+	const real_T *f_error29 = (const real_T*) ssGetInputPortSignal(S,58);
 	
     real_T *output = (real_T*) ssGetOutputPortSignal(S,0);
 	
@@ -401,6 +721,106 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 		params.linear_model9[i] = (double) linear_model9[i]; 
 	}
 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model10[i] = (double) linear_model10[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model11[i] = (double) linear_model11[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model12[i] = (double) linear_model12[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model13[i] = (double) linear_model13[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model14[i] = (double) linear_model14[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model15[i] = (double) linear_model15[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model16[i] = (double) linear_model16[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model17[i] = (double) linear_model17[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model18[i] = (double) linear_model18[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model19[i] = (double) linear_model19[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model20[i] = (double) linear_model20[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model21[i] = (double) linear_model21[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model22[i] = (double) linear_model22[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model23[i] = (double) linear_model23[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model24[i] = (double) linear_model24[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model25[i] = (double) linear_model25[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model26[i] = (double) linear_model26[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model27[i] = (double) linear_model27[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model28[i] = (double) linear_model28[i]; 
+	}
+
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model29[i] = (double) linear_model29[i]; 
+	}
+
 	for( i=0; i<5; i++)
 	{ 
 		params.f_error1[i] = (double) f_error1[i]; 
@@ -444,6 +864,106 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 	for( i=0; i<5; i++)
 	{ 
 		params.f_error9[i] = (double) f_error9[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error10[i] = (double) f_error10[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error11[i] = (double) f_error11[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error12[i] = (double) f_error12[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error13[i] = (double) f_error13[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error14[i] = (double) f_error14[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error15[i] = (double) f_error15[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error16[i] = (double) f_error16[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error17[i] = (double) f_error17[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error18[i] = (double) f_error18[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error19[i] = (double) f_error19[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error20[i] = (double) f_error20[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error21[i] = (double) f_error21[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error22[i] = (double) f_error22[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error23[i] = (double) f_error23[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error24[i] = (double) f_error24[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error25[i] = (double) f_error25[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error26[i] = (double) f_error26[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error27[i] = (double) f_error27[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error28[i] = (double) f_error28[i]; 
+	}
+
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error29[i] = (double) f_error29[i]; 
 	}
 
 	

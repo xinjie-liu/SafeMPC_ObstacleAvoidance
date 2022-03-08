@@ -85,14 +85,14 @@ static void mdlInitializeSizes(SimStruct *S)
     if (!ssSetNumInputPorts(S, 3)) return;
     	
 	/* Input Port 0 */
-    ssSetInputPortMatrixDimensions(S,  0, 3, 45);
+    ssSetInputPortMatrixDimensions(S,  0, 3, 145);
     ssSetInputPortDataType(S, 0, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 0, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 0, 1); /* Feedthrough enabled */
     ssSetInputPortRequiredContiguous(S, 0, 1); /*direct input signal access*/
 	
 	/* Input Port 1 */
-    ssSetInputPortMatrixDimensions(S,  1, 5, 9);
+    ssSetInputPortMatrixDimensions(S,  1, 5, 29);
     ssSetInputPortDataType(S, 1, SS_DOUBLE);
     ssSetInputPortComplexSignal(S, 1, COMPLEX_NO); /* no complex signals suppported */
     ssSetInputPortDirectFeedThrough(S, 1, 1); /* Feedthrough enabled */
@@ -281,6 +281,126 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 		params.linear_model9[i] = (double) C[j++]; 
 	}
 
+	j=135; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model10[i] = (double) C[j++]; 
+	}
+
+	j=150; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model11[i] = (double) C[j++]; 
+	}
+
+	j=165; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model12[i] = (double) C[j++]; 
+	}
+
+	j=180; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model13[i] = (double) C[j++]; 
+	}
+
+	j=195; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model14[i] = (double) C[j++]; 
+	}
+
+	j=210; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model15[i] = (double) C[j++]; 
+	}
+
+	j=225; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model16[i] = (double) C[j++]; 
+	}
+
+	j=240; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model17[i] = (double) C[j++]; 
+	}
+
+	j=255; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model18[i] = (double) C[j++]; 
+	}
+
+	j=270; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model19[i] = (double) C[j++]; 
+	}
+
+	j=285; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model20[i] = (double) C[j++]; 
+	}
+
+	j=300; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model21[i] = (double) C[j++]; 
+	}
+
+	j=315; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model22[i] = (double) C[j++]; 
+	}
+
+	j=330; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model23[i] = (double) C[j++]; 
+	}
+
+	j=345; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model24[i] = (double) C[j++]; 
+	}
+
+	j=360; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model25[i] = (double) C[j++]; 
+	}
+
+	j=375; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model26[i] = (double) C[j++]; 
+	}
+
+	j=390; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model27[i] = (double) C[j++]; 
+	}
+
+	j=405; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model28[i] = (double) C[j++]; 
+	}
+
+	j=420; 
+	for( i=0; i<15; i++)
+	{ 
+		params.linear_model29[i] = (double) C[j++]; 
+	}
+
 	for( i=0; i<5; i++)
 	{ 
 		params.f_error1[i] = (double) f[i]; 
@@ -332,6 +452,126 @@ static void mdlOutputs(SimStruct *S, int_T tid)
 	for( i=0; i<5; i++)
 	{ 
 		params.f_error9[i] = (double) f[j++]; 
+	}
+
+	j=45; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error10[i] = (double) f[j++]; 
+	}
+
+	j=50; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error11[i] = (double) f[j++]; 
+	}
+
+	j=55; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error12[i] = (double) f[j++]; 
+	}
+
+	j=60; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error13[i] = (double) f[j++]; 
+	}
+
+	j=65; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error14[i] = (double) f[j++]; 
+	}
+
+	j=70; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error15[i] = (double) f[j++]; 
+	}
+
+	j=75; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error16[i] = (double) f[j++]; 
+	}
+
+	j=80; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error17[i] = (double) f[j++]; 
+	}
+
+	j=85; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error18[i] = (double) f[j++]; 
+	}
+
+	j=90; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error19[i] = (double) f[j++]; 
+	}
+
+	j=95; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error20[i] = (double) f[j++]; 
+	}
+
+	j=100; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error21[i] = (double) f[j++]; 
+	}
+
+	j=105; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error22[i] = (double) f[j++]; 
+	}
+
+	j=110; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error23[i] = (double) f[j++]; 
+	}
+
+	j=115; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error24[i] = (double) f[j++]; 
+	}
+
+	j=120; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error25[i] = (double) f[j++]; 
+	}
+
+	j=125; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error26[i] = (double) f[j++]; 
+	}
+
+	j=130; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error27[i] = (double) f[j++]; 
+	}
+
+	j=135; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error28[i] = (double) f[j++]; 
+	}
+
+	j=140; 
+	for( i=0; i<5; i++)
+	{ 
+		params.f_error29[i] = (double) f[j++]; 
 	}
 
 	

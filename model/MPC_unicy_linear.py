@@ -82,8 +82,8 @@ class MPC():
             A = Ads[i]
             B = Bds[i]
             problem["linear_model"+str(i+1)] = np.hstack((B, A))
-            z_error = np.hstack((np.zeros(2),state[i,:]))
-            problem["f_error"+str(i+1)] = (2*z_error.T@self.stages.cost[i]['H']).T
+            z_error = np.hstack((np.zeros(2),state[i+1,:]))
+            #problem["f_error"+str(i+1)] = (2*z_error.T@self.stages.cost[i+1]['H']).T
         self.output = self.solver.MPC_Project_FORCESPRO_solve(problem)[0]['output']
         control = self.output[:2]
 
@@ -123,12 +123,12 @@ for i in range(int(T/dt)-N):
     u = mpc.output[0:2] + Uref[i,:]
     uStore.append(u)
     # Simulate the motion
-    state = env.step(u[0], u[1])
-    x0 = np.array([state.x,state.y,state.theta])
-
+    #state = env.step(u[0], u[1])
+    #x0 = np.array([state.x,state.y,state.theta])
+    x0 = x0 + dt*np.array([u[0]*np.cos(x0[2]),u[0]*np.sin(x0[2]),u[1]])
     # Store the xy position for plotting:
-    xPos.append(state.x)
-    yPos.append(state.y)
+    xPos.append(x0[0])
+    yPos.append(x0[1])
     x_error.append(error_t[0])
     y_error.append(error_t[1])
     
