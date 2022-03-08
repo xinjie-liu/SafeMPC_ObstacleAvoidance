@@ -129,7 +129,7 @@ for i in range(int(T/dt)-N):
 
     x_error.append(error_t[0, 0])
     y_error.append(error_t[0, 1])
-
+print(mpc)
 # plot the robot position
 xPos = np.array(real_trajectory['x'])
 yPos = np.array(real_trajectory['y'])
