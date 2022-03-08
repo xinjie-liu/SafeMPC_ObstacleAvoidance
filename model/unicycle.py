@@ -10,7 +10,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import mpl_toolkits.mplot3d.axes3d as p3
 from matplotlib import animation
-from MPC_utils import wrapAngle
+from model.MPC_utils import *
 #from MPC_unicy import MPC
 
 class State():
