@@ -59,7 +59,6 @@ def line_traj_generate(start, goal, total_step):  # start: (x, y, theta)
     y = np.zeros([total_step, ])
     x[0] = start[0]
     y[0] = start[1]
-    theta = np.zeros([total_step, ])
     x_interval = (goal[0] - start[0]) / (total_step - 1)
     y_interval = (goal[1] - start[1]) / (total_step - 1)
     for i in range(total_step - 1):
@@ -69,6 +68,7 @@ def line_traj_generate(start, goal, total_step):  # start: (x, y, theta)
     ydot = np.diff(y)[1] * np.ones(len(y))
     xddot = np.zeros(len(x))
     yddot = np.zeros(len(y))
+    theta = np.arctan2(ydot, xdot)
 
     return np.array([x, y, xdot, ydot, xddot, yddot, theta]).T
 

@@ -64,7 +64,7 @@ class MPC():
         for i in range(self.N-1):
             self.stages.newParam("linear_model"+str(i+1), [i+1], 'eq.C')
             # parameter eq.f
-            self.stages.newParam("f_error"+str(i+1), [i+1], 'cost.f')
+            # self.stages.newParam("f_error"+str(i+1), [i+1], 'cost.f')
         # define the output
         self.stages.newOutput('output', range(1, 11), range(1, self.nu + self.nx + 1))
 
@@ -80,7 +80,7 @@ class MPC():
             A = Ads[i]
             B = Bds[i]
             problem["linear_model"+str(i+1)] = np.hstack((B, A))
-            z_error = np.hstack((np.zeros(2), state[i,:]))
+            # z_error = np.hstack((np.zeros(2), state[i,:]))
             #problem["f_error"+str(i+1)] = (2*z_error.T@self.stages.cost[i]['H']).T
         self.output = self.solver.MPC_Project_FORCESPRO_solve(problem)[0]['output']
         control = self.output[:2]
@@ -92,13 +92,13 @@ from MPC_utils import *
 T = 10
 dt = 1e-3
 Xref = traj_generate(T/dt, T)
-#Xref = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt)
+Xref = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt)
 Uref = get_ref_input(Xref)
 linear_models = linearize_model(Xref, Uref, 1e-3)
 # #=========================================================
 N = 40
 nx = 3
-x0 = np.array([1, 0, 0]) # This angle needs to be in standard notation (it gets wrapped later)
+x0 = np.array([0, 0, 0]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2])
 mpc = MPC(N)
 real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
@@ -149,4 +149,4 @@ ax2.plot(range(len(x_error)), x_error, 'b')
 ax2.plot(range(len(y_error)), y_error, 'g')
 plt.show()
 # animation
-#plot_single_robot(real_trajectory)
+# plot_single_robot(real_trajectory)
