@@ -1,0 +1,29 @@
+<changelist name="Uncommitted_changes_before_Update_at_3_7_22,_7_04_PM_[Changes]" date="1646676299753" recycled="false" toDelete="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_7_22,_7_04_PM_[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 3/7/22, 7:04 PM [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="model/MPC_Project_FORCESPRO/lib/MPC_Project_FORCESPRO.exp" />
+    <option name="AFTER_PATH" />
+    <option name="SHELVED_PATH" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="model/MPC_Project_FORCESPRO/lib/MPC_Project_FORCESPRO_static.lib" />
+    <option name="AFTER_PATH" />
+    <option name="SHELVED_PATH" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="model/bc729d567bbe30c728c46556798a113a.forces" />
+    <option name="AFTER_PATH" />
+    <option name="SHELVED_PATH" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="model/MPC_Project_FORCESPRO/lib/MPC_Project_FORCESPRO.lib" />
+    <option name="AFTER_PATH" />
+    <option name="SHELVED_PATH" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="model/MPC_Project_FORCESPRO/lib/MPC_Project_FORCESPRO.dll" />
+    <option name="AFTER_PATH" />
+    <option name="SHELVED_PATH" />
+  </binary>
+</changelist>
