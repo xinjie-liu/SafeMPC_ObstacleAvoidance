@@ -1,17 +1,76 @@
 import numpy as np
+import matplotlib.pyplot as plt
+import mpl_toolkits.mplot3d.axes3d as p3
+from matplotlib import animation
 
-def line_traj_generate(start, goal, total_step): # start: (x, y, theta)
-    x = np.zeros([total_step+1, ])
-    y = np.zeros([total_step+1, ])
-    theta = np.zeros([total_step+1, ])
-    x_interval = (goal[0] - start[0])/total_step
-    y_interval = (goal[1] - start[1])/total_step
-    theta_interval = (goal[2] - start[2])/total_step
-    for i in range(total_step+1):
-        x[i] = start[0] + i * x_interval
-        y[i] = start[1] + i * y_interval
-        theta[i] = start[2] + i * theta_interval
-    return x, y, theta
+
+
+def plot_single_robot(real_trajectory):
+    def animate(i):
+        line.set_xdata(real_trajectory['x'][:i + 1])
+        line.set_ydata(real_trajectory['y'][:i + 1])
+        line.set_3d_properties(real_trajectory['z'][:i + 1])
+        point.set_xdata(real_trajectory['x'][i])
+        point.set_ydata(real_trajectory['y'][i])
+        point.set_3d_properties(real_trajectory['z'][i])
+
+        heading.set_xdata(
+            [real_trajectory['x'][i], real_trajectory['x'][i] + 0.8 * np.cos(real_trajectory['theta'][i])])
+        heading.set_ydata(
+            [real_trajectory['y'][i], real_trajectory['y'][i] + 0.8 * np.sin(real_trajectory['theta'][i])])
+        return ax1
+
+    # plotting stuff
+    fig = plt.figure()
+    ax1 = p3.Axes3D(fig)  # 3D place for drawing
+    real_trajectory['x'] = np.array(real_trajectory['x'])
+    real_trajectory['y'] = np.array(real_trajectory['y'])
+    real_trajectory['z'] = np.array(real_trajectory['z'])
+    point, = ax1.plot([real_trajectory['x'][0]], [real_trajectory['y'][0]], [real_trajectory['z'][0]], 'ro',
+                      label='Robot', markersize=15)
+
+    heading, = ax1.plot([real_trajectory['x'][0], real_trajectory['x'][0] + 0.8 * np.cos(real_trajectory['theta'][0])], \
+                        [real_trajectory['y'][0], real_trajectory['y'][0] + 0.8 * np.sin(real_trajectory['theta'][0])],
+                        [real_trajectory['z'][0]], 'b')
+
+    line, = ax1.plot([real_trajectory['x'][0]], [real_trajectory['y'][0]], [real_trajectory['z'][0]],
+                     label='Real_Trajectory')
+    ax1.set_xlabel('x')
+    ax1.set_ylabel('y')
+    ax1.set_zlabel('z')
+    ax1.set_title('3D animate')
+    ax1.set_xlim(-15., 15.)
+    ax1.set_ylim(-15., 15.)
+    ax1.set_zlim(0., 3.)
+    ax1.legend(loc='lower right')
+    ani = animation.FuncAnimation(fig=fig,
+                                  func=animate,
+                                  frames=len(real_trajectory['x']),
+                                  interval=50,
+                                  repeat=False,
+                                  blit=False)
+    plt.show()
+
+
+def line_traj_generate(start, goal, total_step):  # start: (x, y, theta)
+    total_step = int(total_step)
+    # xr yr xrdot yrdot xrddot yrddot theta
+    x = np.zeros([total_step, ])
+    y = np.zeros([total_step, ])
+    x[0] = start[0]
+    y[0] = start[1]
+    theta = np.zeros([total_step, ])
+    x_interval = (goal[0] - start[0]) / (total_step - 1)
+    y_interval = (goal[1] - start[1]) / (total_step - 1)
+    for i in range(total_step - 1):
+        x[i + 1] = start[0] + i * x_interval
+        y[i + 1] = start[1] + i * y_interval
+    xdot = np.diff(x)[1] * np.ones(len(x))  # constant velocity
+    ydot = np.diff(y)[1] * np.ones(len(y))
+    xddot = np.zeros(len(x))
+    yddot = np.zeros(len(y))
+
+    return np.array([x, y, xdot, ydot, xddot, yddot, theta]).T
 
 def traj_generate(total_step, T):
     t_interval = T/total_step
@@ -38,13 +97,13 @@ def linearize_model(Xref, Uref, dt):
         Ad[i] = np.array([[1, Uref[i, 1]*dt, 0], [-Uref[i, 1]*dt, 1, Uref[i, 0]*dt], [0, 0, 1]])
         Bd[i] = np.array([[-dt, 0], [0, 0], [0, -dt]])
     return Ad, Bd
+
 def wrapAngle(angle):
     return  np.arctan2(np.sin(angle), np.cos(angle))
-    
 
-Xref = traj_generate(10000, 10)
-Uref = get_ref_input(Xref)
-linear_models = linearize_model(Xref, Uref, 1e-3)
-Ads = linear_models[0][:10]
-Bds = linear_models[1][:10]
-print(linear_models)
+# Xref = traj_generate(10000, 10)
+# Uref = get_ref_input(Xref)
+# linear_models = linearize_model(Xref, Uref, 1e-3)
+# Ads = linear_models[0][:10]
+# Bds = linear_models[1][:10]
+# print(linear_models)
