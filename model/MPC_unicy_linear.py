@@ -63,8 +63,6 @@ class MPC():
         # parameter: linearized model
         for i in range(self.N-1):
             self.stages.newParam("linear_model"+str(i+1), [i+1], 'eq.C')
-            # parameter eq.f
-            # self.stages.newParam("f_error"+str(i+1), [i+1], 'cost.f')
         # define the output
         self.stages.newOutput('output', range(1, 11), range(1, self.nu + self.nx + 1))
 
@@ -80,8 +78,6 @@ class MPC():
             A = Ads[i]
             B = Bds[i]
             problem["linear_model"+str(i+1)] = np.hstack((B, A))
-            # z_error = np.hstack((np.zeros(2), state[i,:]))
-            #problem["f_error"+str(i+1)] = (2*z_error.T@self.stages.cost[i]['H']).T
         self.output = self.solver.MPC_Project_FORCESPRO_solve(problem)[0]['output']
         control = self.output[:2]
 
