@@ -38,6 +38,14 @@ class MPC():
             self.stages.dims[i]['l'] = 0  # nx + nu  # number of lower bounds
             self.stages.dims[i]['u'] = 0  # nx + nu  # number of upper bounds
 
+            # collision avoidance between robots: section 8.8 of documentation(https://forces.embotech.com/Documentation/low_level_interface/index.html#cost-function)
+            # QCQP problem
+            self.stages.ineq[i]['q']['idx'] = np.zeros((1,), dtype=object) # index vectors
+            self.stages.ineq[i]['q']['idx'][0] = np.array([5, 6, 8, 9])
+            self.stages.ineq[i]['q']['Q'] = np.zeros((1,), dtype=object) # Hessians, only one quadratic constraints
+            self.stages.ineq[i]['q']['Q'][0] = -np.array([[1, 0, -1, 0], [0, 1, 0, -1], [-1, 0, 1, 0], [0, -1, 0, 1]]) # square distance between robots
+            self.stages.ineq[i]['q']['r'] = -np.array([0.1])  # RHSs
+
             # Cost/Objective function
             # V = sum_i(z(i)*H*z(i)) + z(N)*H*z(N) -> where z(i) = [u1,u2,x1,x2] at stage/step i.
             if i == self.N - 1:
@@ -87,18 +95,18 @@ class MPC():
 # #=======================================================
 T = 10
 dt = 1e-3
-Xref1 = traj_generate(T/dt, T)
-Xref2 = traj_generate(T/dt, T)
-# Xref1 = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt)
-# Xref2 = line_traj_generate([10.,10.,0.], [0.,0.,0.], T/dt)
+# Xref1 = traj_generate(T/dt, T)
+# Xref2 = traj_generate(T/dt, T)
+Xref1 = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt)
+Xref2 = line_traj_generate([10.,10.,0.], [0.,0.,0.], T/dt)
 Uref1 = get_ref_input(Xref1)
 Uref2 = get_ref_input(Xref2)
 linear_models1 = linearize_model(Xref1, Uref1, 1e-3)
 linear_models2 = linearize_model(Xref2, Uref2, 1e-3)
 # #=========================================================
-x1 = np.array([1.1, 0, 0]) # This angle needs to be in standard notation (it gets wrapped later)
+x1 = np.array([0., 0, 0]) # This angle needs to be in standard notation (it gets wrapped later)
 env1 = Robot(x1[0], x1[1], x1[2])
-x2 = np.array([0.9, 0, 0]) # This angle needs to be in standard notation (it gets wrapped later)
+x2 = np.array([10., 10., 0]) # This angle needs to be in standard notation (it gets wrapped later)
 env2 = Robot(x2[0], x2[1], x2[2])
 N = 10
 mpc = MPC(N)
