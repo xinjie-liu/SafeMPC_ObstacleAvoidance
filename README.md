@@ -18,3 +18,4 @@ Final project of course SC42125 Model Predictive Control
 * [linearization of unicycle model](http://www.ece.ufrgs.br/~fetter/mechrob04_553.pdf)
 ## 4. collision avoidance
 * [ellipse dynamic obstacle modelling and repulsive field by Bruno Brito](https://arxiv.org/pdf/2010.10190.pdf)
+* [decentralized NMPC, with ellipse collision constraints (references of this paper may be useful)](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8550178)
