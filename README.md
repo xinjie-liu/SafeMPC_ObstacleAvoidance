@@ -16,3 +16,8 @@ Final project of course SC42125 Model Predictive Control
 * [unicycle: a survey](https://www.cambridge.org/core/journals/robotica/article/nonholonomic-mobile-robots-trajectory-tracking-model-predictive-control-a-survey/6C977C1B5A025C8427F3FD3C7F63EE20)
 * [distributed MPC](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8920881)
 * [linearization of unicycle model](http://www.ece.ufrgs.br/~fetter/mechrob04_553.pdf)
+## 4. collision avoidance
+* [ellipse dynamic obstacle modelling and repulsive field by Bruno Brito](https://arxiv.org/pdf/2010.10190.pdf)
+* [decentralized NMPC, with ellipse collision constraints (references of this paper may be useful)](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8550178)
+* [separating hyper-planes by Laura Ferranti](https://arxiv.org/pdf/2006.11492.pdf)
+* [a linearization of nonlinear collision constraints: using first order Taylor approximation](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8550245)
