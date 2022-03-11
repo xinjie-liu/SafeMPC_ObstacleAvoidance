@@ -40,11 +40,11 @@ class MPC():
 
             # lower bounds
             self.stages.ineq[i]['b']['lbidx'] = np.array([1, 3])  # lower bound acts on these indices
-            self.stages.ineq[i]['b']['lb'] = np.array([-1, -1])  # lower bound for this stage variable
+            self.stages.ineq[i]['b']['lb'] = np.array([-3, -3])  # lower bound for this stage variable
 
             # upper bounds
             self.stages.ineq[i]['b']['ubidx'] = np.array([1, 3])  # upper bound acts on these indices
-            self.stages.ineq[i]['b']['ub'] = np.array([1, 1])  # upper bound for this stage variable
+            self.stages.ineq[i]['b']['ub'] = np.array([3, 3])  # upper bound for this stage variable
 
             # collision avoidance between robots: section 8.8 of documentation(https://forces.embotech.com/Documentation/low_level_interface/index.html#cost-function)
             # QCQP problem
@@ -107,6 +107,16 @@ class MPC():
         n = np.array([y2-y1, x1-x2])
         n = rotation @ n
         a = n[0] * (x1+x2)/2 + n[1] * (y1+y2)/2
+#================================================================
+        # delete later
+        print('x1, y1: ' , x1, ' ', y1)
+        print('x2, y2: ', x2, ' ', y2)
+        print()
+        print('distance: ', distance)
+        print('n: ', n)
+        print('a: ', a)
+        print('middle point: ', [(x1+x2)/2, (y1+y2)/2])
+#=================================================================
         return n, a
 
     def collision_avoidance(self, X1, X2, xref1, xref2):
@@ -116,22 +126,26 @@ class MPC():
         x2 = X2[0]
         y2 = X2[1]
         distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
-        print(distance)
         n, a = self.define_hyperplane(x1, y1, x2, y2)
         # define linear constraints
-        A = np.array([[0, 0, 0, 0, n[0], n[1], 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, -n[0], -n[1], 0]])
-        b = np.zeros((self.N, 2))
-        if distance < 1:
-            for i in range(self.N):
-                b[i, 0] = a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1]
-                b[i, 1] = - (a - n[0]*xref2[i, 0] - n[1]*xref2[i, 1])
-        else:
-        # if two robots are far from each other, the constraints are inactive
-            for i in range(self.N):
-                b[i, 0] = 1e5
-                b[i, 1] = -1e5
-        self.hyperplane = {"A": A, "bs": b}
-
+        ineqA = np.array([[0, 0, 0, 0, n[0], n[1], 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, -n[0], -n[1], 0]])
+        ineqb = np.zeros((self.N, 2))
+        # if distance < 2:
+        for i in range(self.N):
+            ineqb[i, 0] = a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1]
+            ineqb[i, 1] = - (a - n[0]*xref2[i, 0] - n[1]*xref2[i, 1])
+        # else:
+        # # if two robots are far from each other, the constraints are inactive
+        #     for i in range(self.N):
+        #         ineqb[i, 0] = 1e6
+        #         ineqb[i, 1] = 1e6
+        self.hyperplane = {"A": ineqA, "bs": ineqb}
+#==========================================================================================
+        # delete later
+        for i in range(self.N):
+            print("reference positions of robot 1: ", xref1[i, 0], ' ', xref1[i, 1])
+            print("right hand side of Ax <= b for robot1: ", a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1])
+#==========================================================================================
     def control(self, state, Ads, Bds):
         self.problem = {"xinit": -state}  # eq.c = -xinit
         # set up linearized models as equality constraints
@@ -145,7 +159,13 @@ class MPC():
         self.problem["hyperplaneb"+str(self.N)] = self.hyperplane["bs"][self.N-1]
         self.output = self.solver.MPC_Project_FORCESPRO_solve(self.problem)[0]['output']
         control = self.output[:self.nu]
-
+#==========================================================================================
+        # delete later
+        for i in range(self.N):
+            print("predicted error of robot 1 at stage {}".format(i+1), self.output[i*(self.nx+self.nu) + self.nu], ' ', self.output[i*(self.nx+self.nu) + self.nu+1])
+            error_vector1 = np.array([self.output[i*(self.nx+self.nu) + self.nu], self.output[i*(self.nx+self.nu) + self.nu+1]])
+            print("left hand side of the constrainst: ", self.hyperplane["A"][0, 4:6] @ error_vector1)
+#===========================================================================================
         return control
 
 # #=======================================================
@@ -167,7 +187,7 @@ env2 = Robot(x2[0], x2[1], x2[2])
 N = 10
 mpc = MPC(N)
 nx = 3 # take care: nx here refers to nx for single robot!!
-real_trajectory = {'x1': [], 'y1': [], 'z1': [], 'theta1': [], 'x2': [], 'y2': [], 'z2': [], 'theta2': []}
+real_trajectory = {'x1': [x1[0]], 'y1': [x1[1]], 'z1': [0], 'theta1': [x1[2]], 'x2': [x2[0]], 'y2': [x2[1]], 'z2': [0], 'theta2': [x2[2]]}
 uStore = []
 error_t1 = np.zeros((mpc.N,nx))
 error_t2 = np.zeros((mpc.N,nx))
@@ -177,6 +197,7 @@ x_error2 = []
 y_error2 = []
 
 for i in range(int(T/dt)-N):
+# for i in range(10):
     # Find the new linearisation (from current step to current step + N
     Ads1 = linear_models1[0][i:i+N]
     Bds1 = linear_models1[1][i:i+N]
