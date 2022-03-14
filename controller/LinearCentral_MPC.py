@@ -102,9 +102,12 @@ class MPC():
         r = 0.5 # safety radius of each robot
         distance = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
         sin_theta = 2 * r / distance
+        # sin_theta = np.round(sin_theta, decimals=2)
+        if sin_theta > 1:
+            sin_theta = 1.
         cos_theta = np.sqrt(1 - sin_theta**2)
         rotation = np.array([[cos_theta, -sin_theta], [sin_theta, cos_theta]])
-        rotation2 = np.array([[np.cos(0.05), -np.sin(0.05)], [np.sin(0.05), np.cos(0.05)]])
+        rotation2 = np.array([[np.cos(0.), -np.sin(0.)], [np.sin(0.), np.cos(0.)]])
         n = np.array([y2-y1, x1-x2])
 #================================================================
         print('n: ', n)
@@ -202,8 +205,8 @@ y_error1 = []
 x_error2 = []
 y_error2 = []
 
-# for i in range(int(T/dt)-N):
-for i in range(int(T/(1.65*dt))):
+for i in range(int(T/dt)-N):
+# for i in range(int(T/(1.65*dt))):
     # Find the new linearisation (from current step to current step + N
     Ads1 = linear_models1[0][i:i+N]
     Bds1 = linear_models1[1][i:i+N]
