@@ -99,7 +99,7 @@ class MPC():
 
     def define_hyperplane(self, x1, y1, x2, y2):
         # given position of two robots, compute the normal vector and the value of projection of boundary point onto the normal vector
-        r = 0.5 # safety radius of each robot
+        r = 1 # safety radius of each robot
         distance = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
         sin_theta = 2 * r / distance
         # sin_theta = np.round(sin_theta, decimals=2)
@@ -142,7 +142,7 @@ class MPC():
         # if distance < 2:
         for i in range(self.N):
             ineqb[i, 0] = a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1]
-            ineqb[i, 1] = - (a - n[0]*xref2[i, 0] - n[1]*xref2[i, 1])
+            ineqb[i, 1] = -(a - n[0]*xref2[i, 0] - n[1]*xref2[i, 1])
         # else:
         # # if two robots are far from each other, the constraints are inactive
         #     for i in range(self.N):
@@ -289,5 +289,5 @@ fig5, ax5 = plt.subplots()
 ax5.plot(range(len(x_error2)), x_error2, 'b')
 ax5.plot(range(len(y_error2)), y_error2, 'g')
 plt.show()
-# animation (have not adapted to multi-robots!! )
-# plot_single_robot(real_trajectory)
+# animation
+plot_multi_robot(real_trajectory)

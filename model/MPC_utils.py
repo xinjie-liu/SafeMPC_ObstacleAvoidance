@@ -51,6 +51,66 @@ def plot_single_robot(real_trajectory):
                                   blit=False)
     plt.show()
 
+def plot_multi_robot(real_trajectory):
+
+    def animate(i):
+        line.set_xdata(real_trajectory['x1'][:i + 1])
+        line.set_ydata(real_trajectory['y1'][:i + 1])
+        line.set_3d_properties(real_trajectory['z1'][:i + 1])
+        point.set_xdata(real_trajectory['x1'][i])
+        point.set_ydata(real_trajectory['y1'][i])
+        point.set_3d_properties(real_trajectory['z1'][i])
+        line2.set_xdata(real_trajectory['x2'][:i + 1])
+        line2.set_ydata(real_trajectory['y2'][:i + 1])
+        line2.set_3d_properties(real_trajectory['z2'][:i + 1])
+        point2.set_xdata(real_trajectory['x2'][i])
+        point2.set_ydata(real_trajectory['y2'][i])
+        point2.set_3d_properties(real_trajectory['z2'][i])
+
+        # heading.set_xdata(
+        #     [real_trajectory['x1'][i], real_trajectory['x1'][i] + 0.8 * np.cos(real_trajectory['theta1'][i])])
+        # heading.set_ydata(
+        #     [real_trajectory['y1'][i], real_trajectory['y1'][i] + 0.8 * np.sin(real_trajectory['theta1'][i])])
+        return ax1
+
+    # plotting stuff
+    fig = plt.figure()
+    ax1 = p3.Axes3D(fig)  # 3D place for drawing
+    real_trajectory['x1'] = np.array(real_trajectory['x1'])
+    real_trajectory['y1'] = np.array(real_trajectory['y1'])
+    real_trajectory['z1'] = np.array(real_trajectory['z1'])
+    real_trajectory['x2'] = np.array(real_trajectory['x2'])
+    real_trajectory['y2'] = np.array(real_trajectory['y2'])
+    real_trajectory['z2'] = np.array(real_trajectory['z2'])
+    point, = ax1.plot([real_trajectory['x1'][0]], [real_trajectory['y1'][0]], [real_trajectory['z1'][0]], 'ro',
+                      label='Robot1', markersize=10)
+    point2, = ax1.plot([real_trajectory['x2'][0]], [real_trajectory['y2'][0]], [real_trajectory['z2'][0]], 'bo',
+                      label='Robot2', markersize=10)
+
+    # heading, = ax1.plot([real_trajectory['x1'][0], real_trajectory['x1'][0] + 0.8 * np.cos(real_trajectory['theta1'][0])], \
+    #                     [real_trajectory['y1'][0], real_trajectory['y1'][0] + 0.8 * np.sin(real_trajectory['theta1'][0])],
+    #                     [real_trajectory['z1'][0]], 'b')
+
+    line, = ax1.plot([real_trajectory['x1'][0]], [real_trajectory['y1'][0]], [real_trajectory['z1'][0]],
+                     label='Real_Trajectory1')
+    line2, = ax1.plot([real_trajectory['x2'][0]], [real_trajectory['y2'][0]], [real_trajectory['z2'][0]],
+                     label='Real_Trajectory2')
+
+    ax1.set_xlabel('x')
+    ax1.set_ylabel('y')
+    ax1.set_zlabel('z')
+    ax1.set_title('3D animate')
+    ax1.set_xlim(-15., 15.)
+    ax1.set_ylim(-15., 15.)
+    ax1.set_zlim(0., 3.)
+    ax1.legend(loc='lower right')
+    ani = animation.FuncAnimation(fig=fig,
+                                  func=animate,
+                                  frames=len(real_trajectory['x1']),
+                                  interval=5,
+                                  repeat=False,
+                                  blit=False)
+    plt.show()
 
 def line_traj_generate(start, goal, total_step):  # start: (x, y, theta)
     total_step = int(total_step)
