@@ -99,13 +99,19 @@ class MPC():
 
     def define_hyperplane(self, x1, y1, x2, y2):
         # given position of two robots, compute the normal vector and the value of projection of boundary point onto the normal vector
-        r = 0.2 # safety radius of each robot
+        r = 0.5 # safety radius of each robot
         distance = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
         sin_theta = 2 * r / distance
         cos_theta = np.sqrt(1 - sin_theta**2)
         rotation = np.array([[cos_theta, -sin_theta], [sin_theta, cos_theta]])
+        rotation2 = np.array([[np.cos(0.05), -np.sin(0.05)], [np.sin(0.05), np.cos(0.05)]])
         n = np.array([y2-y1, x1-x2])
-        n = rotation @ n
+#================================================================
+        print('n: ', n)
+        print('sin: ', sin_theta, 'cos: ', cos_theta)
+        print('rotation matrix: ', rotation)
+#================================================================
+        n = rotation2 @ rotation @ n
         a = n[0] * (x1+x2)/2 + n[1] * (y1+y2)/2
 #================================================================
         # delete later
@@ -196,8 +202,8 @@ y_error1 = []
 x_error2 = []
 y_error2 = []
 
-for i in range(int(T/dt)-N):
-# for i in range(10):
+# for i in range(int(T/dt)-N):
+for i in range(int(T/(1.65*dt))):
     # Find the new linearisation (from current step to current step + N
     Ads1 = linear_models1[0][i:i+N]
     Bds1 = linear_models1[1][i:i+N]
@@ -264,18 +270,21 @@ ax1.plot(Xref1[:, 0], Xref1[:, 1], 'g')
 fig2, ax2 = plt.subplots()
 ax2.plot(xPos2, yPos2, 'r')
 ax2.plot(Xref2[:, 0], Xref2[:, 1], 'g')
+fig3, ax3 = plt.subplots()
+ax3.plot(xPos1, yPos1, 'r')
+ax3.plot(xPos2, yPos2, 'b')
 
 # plot the error
 x_error1 = np.array(x_error1)
 y_error1 = np.array(y_error1)
 x_error2 = np.array(x_error2)
 y_error2 = np.array(y_error2)
-fig3, ax3 = plt.subplots()
-ax3.plot(range(len(x_error1)), x_error1, 'b')
-ax3.plot(range(len(y_error1)), y_error1, 'g')
 fig4, ax4 = plt.subplots()
-ax4.plot(range(len(x_error2)), x_error2, 'b')
-ax4.plot(range(len(y_error2)), y_error2, 'g')
+ax4.plot(range(len(x_error1)), x_error1, 'b')
+ax4.plot(range(len(y_error1)), y_error1, 'g')
+fig5, ax5 = plt.subplots()
+ax5.plot(range(len(x_error2)), x_error2, 'b')
+ax5.plot(range(len(y_error2)), y_error2, 'g')
 plt.show()
 # animation (have not adapted to multi-robots!! )
 # plot_single_robot(real_trajectory)
