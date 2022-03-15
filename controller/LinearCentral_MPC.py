@@ -30,6 +30,11 @@ class MPC():
         self.set_up_solver()
         import MPC_Project_FORCESPRO_py
         self.solver = MPC_Project_FORCESPRO_py
+        self.theta_err1 = None
+        self.theta_err2 = None
+        self.single_nx = 3
+        self.single_nu = 2
+        self.n = 2
 
     def set_up_solver(self):
         for i in range(self.N):
@@ -128,21 +133,42 @@ class MPC():
 #=================================================================
         return n, a
 
-    def collision_avoidance(self, X1, X2, xref1, xref2):
+    def collision_avoidance(self, X1, X2, xref1, xref2): # xref1, xref2 shape: (N, 7)
         # define the hyper-plane for collision avoidance
         x1 = X1[0]
         y1 = X1[1]
         x2 = X2[0]
         y2 = X2[1]
-        distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
+        self.theta_ref1 = xref1[:-1, -1]
+        self.theta_ref2 = xref2[:-1, -1]
+        # robot orientations calculated from the last time step
+        if not self.theta_err1 is None:
+            self.theta1 = self.theta_ref1 - self.theta_err1
+            self.theta2 = self.theta_ref2 - self.theta_err2
+            sin_1 = np.sin(self.theta1)
+            cos_1 = np.cos(self.theta1)
+            sin_2 = np.sin(self.theta2)
+            cos_2 = np.cos(self.theta2)
+        #distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
         n, a = self.define_hyperplane(x1, y1, x2, y2)
         # define linear constraints
-        ineqA = np.array([[0, 0, 0, 0, n[0], n[1], 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, -n[0], -n[1], 0]])
-        ineqb = np.zeros((self.N, 2))
-        # if distance < 2:
-        for i in range(self.N):
-            ineqb[i, 0] = a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1]
-            ineqb[i, 1] = -(a - n[0]*xref2[i, 0] - n[1]*xref2[i, 1])
+        if self.theta_err1 is None: # at very first beginning, we do not have predicted angles
+            ineqA = np.zeros((self.N, self.n, self.nu + self.nx))
+            ineqb = np.zeros((self.N, 2))
+            # if distance < 2:
+            for i in range(self.N):
+                ineqA[i] = np.array([[0, 0, 0, 0, n[0], n[1], 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, -n[0], -n[1], 0]])
+                ineqb[i, 0] = a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1]
+                ineqb[i, 1] = -(a - n[0]*xref2[i, 0] - n[1]*xref2[i, 1])
+        else: # the true constraints
+            ineqA = np.zeros((self.N, self.n, self.nu+self.nx))
+            ineqb = np.zeros((self.N, self.n))
+            # if distance < 2:
+            for i in range(self.N):
+                ineqA[i] = np.array([[0, 0, 0, 0, -n[0]*cos_1[i]-n[1]*sin_1[i], n[0]*sin_1[i]-n[1]*cos_1[i], 0, 0, 0, 0],\
+                                     [0, 0, 0, 0, 0, 0, 0, n[0]*cos_2[i]+n[1]*sin_2[i], -n[0]*sin_2[i]+n[1]*cos_2[i], 0]])
+                ineqb[i, 0] = a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1]
+                ineqb[i, 1] = -(a - n[0]*xref2[i, 0] - n[1]*xref2[i, 1])
         # else:
         # # if two robots are far from each other, the constraints are inactive
         #     for i in range(self.N):
@@ -162,18 +188,32 @@ class MPC():
             A = Ads[i]
             B = Bds[i]
             self.problem["linear_model"+str(i+1)] = np.hstack((B, A))
-            self.problem["hyperplaneA"+str(i+1)] = self.hyperplane["A"]
+            self.problem["hyperplaneA"+str(i+1)] = self.hyperplane["A"][i]
             self.problem["hyperplaneb"+str(i+1)] = self.hyperplane["bs"][i]
-        self.problem["hyperplaneA"+str(self.N)] = self.hyperplane["A"]
+        self.problem["hyperplaneA"+str(self.N)] = self.hyperplane["A"][self.N-1]
         self.problem["hyperplaneb"+str(self.N)] = self.hyperplane["bs"][self.N-1]
         self.output = self.solver.MPC_Project_FORCESPRO_solve(self.problem)[0]['output']
         control = self.output[:self.nu]
+
+        # get the angle error for calculating the collision avoidance constraints
+        self.theta_err1 = []
+        self.theta_err2 = []
+        for i in range(self.N):
+            self.theta_err1.append(self.output[i*(self.nx+self.nu) + self.nu + self.single_nx - 1])
+            self.theta_err2.append(self.output[i*(self.nx+self.nu) + self.nu + self.n*self.single_nx - 1])
+        # shift the error for one time step (since it will be used in the next step)
+        self.theta_err1 = self.theta_err1[1:]
+        self.theta_err2 = self.theta_err2[1:]
+        self.theta_err1.append(self.theta_err1[-1])
+        self.theta_err2.append(self.theta_err2[-1])
+        self.theta_err1 = np.array(self.theta_err1)
+        self.theta_err2 = np.array(self.theta_err2)
 #==========================================================================================
         # delete later
-        for i in range(self.N):
-            print("predicted error of robot 1 at stage {}".format(i+1), self.output[i*(self.nx+self.nu) + self.nu], ' ', self.output[i*(self.nx+self.nu) + self.nu+1])
-            error_vector1 = np.array([self.output[i*(self.nx+self.nu) + self.nu], self.output[i*(self.nx+self.nu) + self.nu+1]])
-            print("left hand side of the constrainst: ", self.hyperplane["A"][0, 4:6] @ error_vector1)
+        # for i in range(self.N):
+        #     print("predicted error of robot 1 at stage {}".format(i+1), self.output[i*(self.nx+self.nu) + self.nu], ' ', self.output[i*(self.nx+self.nu) + self.nu+1])
+        #     error_vector1 = np.array([self.output[i*(self.nx+self.nu) + self.nu], self.output[i*(self.nx+self.nu) + self.nu+1]])
+        #     print("left hand side of the constrainst: ", self.hyperplane["A"][0, 4:6] @ error_vector1)
 #===========================================================================================
         return control
 
