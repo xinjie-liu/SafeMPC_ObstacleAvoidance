@@ -104,7 +104,7 @@ class MPC():
 
     def define_hyperplane(self, x1, y1, x2, y2):
         # given position of two robots, compute the normal vector and the value of projection of boundary point onto the normal vector
-        r = 1 # safety radius of each robot
+        r = 0.7 # safety radius of each robot
         distance = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
         sin_theta = 2 * r / distance
         # sin_theta = np.round(sin_theta, decimals=2)
@@ -139,7 +139,7 @@ class MPC():
         y1 = X1[1]
         x2 = X2[0]
         y2 = X2[1]
-        self.theta_ref1 = xref1[:-1, -1]
+        self.theta_ref1 = xref1[:-1, -1] # (11, 7)
         self.theta_ref2 = xref2[:-1, -1]
         # robot orientations calculated from the last time step
         if not self.theta_err1 is None:
@@ -149,10 +149,11 @@ class MPC():
             cos_1 = np.cos(self.theta1)
             sin_2 = np.sin(self.theta2)
             cos_2 = np.cos(self.theta2)
-        #distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
+        distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
         n, a = self.define_hyperplane(x1, y1, x2, y2)
         # define linear constraints
         if self.theta_err1 is None: # at very first beginning, we do not have predicted angles
+            # at the first step of the whole simulation, give an arbitrary constraint
             ineqA = np.zeros((self.N, self.n, self.nu + self.nx))
             ineqb = np.zeros((self.N, 2))
             # if distance < 2:
@@ -163,18 +164,18 @@ class MPC():
         else: # the true constraints
             ineqA = np.zeros((self.N, self.n, self.nu+self.nx))
             ineqb = np.zeros((self.N, self.n))
-            # if distance < 2:
             for i in range(self.N):
                 ineqA[i] = np.array([[0, 0, 0, 0, -n[0]*cos_1[i]-n[1]*sin_1[i], n[0]*sin_1[i]-n[1]*cos_1[i], 0, 0, 0, 0],\
                                      [0, 0, 0, 0, 0, 0, 0, n[0]*cos_2[i]+n[1]*sin_2[i], -n[0]*sin_2[i]+n[1]*cos_2[i], 0]])
-                ineqb[i, 0] = a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1]
-                ineqb[i, 1] = -(a - n[0]*xref2[i, 0] - n[1]*xref2[i, 1])
-        # else:
-        # # if two robots are far from each other, the constraints are inactive
-        #     for i in range(self.N):
-        #         ineqb[i, 0] = 1e6
-        #         ineqb[i, 1] = 1e6
+                if distance < 3:
+                    ineqb[i, 0] = a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1]
+                    ineqb[i, 1] = -(a - n[0]*xref2[i, 0] - n[1]*xref2[i, 1])
+                elif distance > 3:
+                # if two robots are far from each other, the constraints are inactive
+                    ineqb[i, 0] = 1e2
+                    ineqb[i, 1] = 1e2
         self.hyperplane = {"A": ineqA, "bs": ineqb}
+
 #==========================================================================================
         # delete later
         for i in range(self.N):
@@ -246,7 +247,7 @@ x_error2 = []
 y_error2 = []
 
 for i in range(int(T/dt)-N):
-# for i in range(int(T/(1.65*dt))):
+# for i in range(10):
     # Find the new linearisation (from current step to current step + N
     Ads1 = linear_models1[0][i:i+N]
     Bds1 = linear_models1[1][i:i+N]
