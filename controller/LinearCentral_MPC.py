@@ -45,11 +45,11 @@ class MPC():
 
             # lower bounds
             self.stages.ineq[i]['b']['lbidx'] = np.array([1, 3])  # lower bound acts on these indices
-            self.stages.ineq[i]['b']['lb'] = np.array([-3, -3])  # lower bound for this stage variable
+            self.stages.ineq[i]['b']['lb'] = np.array([-5, -5])  # lower bound for this stage variable
 
             # upper bounds
             self.stages.ineq[i]['b']['ubidx'] = np.array([1, 3])  # upper bound acts on these indices
-            self.stages.ineq[i]['b']['ub'] = np.array([3, 3])  # upper bound for this stage variable
+            self.stages.ineq[i]['b']['ub'] = np.array([5, 5])  # upper bound for this stage variable
 
             # collision avoidance between robots: section 8.8 of documentation(https://forces.embotech.com/Documentation/low_level_interface/index.html#cost-function)
             # QCQP problem
@@ -104,7 +104,7 @@ class MPC():
 
     def define_hyperplane(self, x1, y1, x2, y2):
         # given position of two robots, compute the normal vector and the value of projection of boundary point onto the normal vector
-        r = 0.7 # safety radius of each robot
+        r = 1.2 # safety radius of each robot
         distance = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
         sin_theta = 2 * r / distance
         # sin_theta = np.round(sin_theta, decimals=2)
@@ -167,13 +167,13 @@ class MPC():
             for i in range(self.N):
                 ineqA[i] = np.array([[0, 0, 0, 0, -n[0]*cos_1[i]-n[1]*sin_1[i], n[0]*sin_1[i]-n[1]*cos_1[i], 0, 0, 0, 0],\
                                      [0, 0, 0, 0, 0, 0, 0, n[0]*cos_2[i]+n[1]*sin_2[i], -n[0]*sin_2[i]+n[1]*cos_2[i], 0]])
-                if distance < 3:
-                    ineqb[i, 0] = a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1]
-                    ineqb[i, 1] = -(a - n[0]*xref2[i, 0] - n[1]*xref2[i, 1])
-                elif distance > 3:
-                # if two robots are far from each other, the constraints are inactive
-                    ineqb[i, 0] = 1e2
-                    ineqb[i, 1] = 1e2
+                # if distance < 3:
+                ineqb[i, 0] = a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1]
+                ineqb[i, 1] = -(a - n[0]*xref2[i, 0] - n[1]*xref2[i, 1])
+                # elif distance > 3:
+                # # if two robots are far from each other, the constraints are inactive
+                #     ineqb[i, 0] = 1e2
+                #     ineqb[i, 1] = 1e2
         self.hyperplane = {"A": ineqA, "bs": ineqb}
 
 #==========================================================================================

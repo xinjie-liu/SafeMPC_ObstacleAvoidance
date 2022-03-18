@@ -86,14 +86,14 @@ class MPC():
 from model.MPC_utils import *
 T = 10
 dt = 1e-3
-Xref = traj_generate(T/dt, T)
+# Xref = traj_generate(T/dt, T)
 Xref = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt)
 Uref = get_ref_input(Xref)
 linear_models = linearize_model(Xref, Uref, 1e-3)
 # #=========================================================
 N = 40
 nx = 3
-x0 = np.array([0, 0, 0]) # This angle needs to be in standard notation (it gets wrapped later)
+x0 = np.array([0, 0, np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2])
 mpc = MPC(N)
 real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
@@ -103,6 +103,7 @@ x_error = []
 y_error = []
 
 for i in range(int(T/dt)-N):
+# for i in range(10):
     # Find the new linearisation (from current step to current step + N
     Ads = linear_models[0][i:i+N]
     Bds = linear_models[1][i:i+N]
