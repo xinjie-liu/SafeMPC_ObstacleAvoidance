@@ -151,11 +151,25 @@ def get_ref_input(Xref):
     return Uref.T
 
 def linearize_model(Xref, Uref, dt):
+#=================================================================
+    # linearized model in robot local frame
     Ad = np.zeros([Xref.shape[0], 3, 3])
     Bd = np.zeros([Xref.shape[0], 3, 2])
     for i in range(Xref.shape[0]):
         Ad[i] = np.array([[1, Uref[i, 1]*dt, 0], [-Uref[i, 1]*dt, 1, Uref[i, 0]*dt], [0, 0, 1]])
         Bd[i] = np.array([[-dt, 0], [0, 0], [0, -dt]])
+#=================================================================
+
+    return Ad, Bd
+
+def linearize_model_global(Xref, Uref, dt):
+    # linearized model in global inertial frame
+    Ad = np.zeros([Xref.shape[0], 3, 3])
+    Bd = np.zeros([Xref.shape[0], 3, 2])
+    for i in range(Xref.shape[0]):
+        Ad[i] = np.array([[1, 0, -Uref[i, 0]*np.sin(Xref[i,-1])*dt], [0, 1, Uref[i, 0]*np.cos(Xref[i,-1])*dt], [0, 0, 1]])
+        Bd[i] = np.array([[np.cos(Xref[i,-1])*dt, 0], [np.sin(Xref[i,-1])*dt, 0], [0, dt]])
+
     return Ad, Bd
 
 def wrapAngle(angle):
