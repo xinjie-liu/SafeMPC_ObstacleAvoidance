@@ -5,3 +5,6 @@ model/FORCENLPsolver/
 model/__pycache__/
 controller/MPC_Project_FORCESPRO/lib/MPC_Project_FORCESPRO.dll
 controller/copy_LinearCentral_MPC.py
+controller/stdout_temp.txt
+controller/MPC_Project_FORCESPRO
+controller/FORCENLPsolver
