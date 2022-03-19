@@ -18,12 +18,12 @@ Parameters of the class
 
 class MPC():
     def __init__(self, N):
-        self.dt = 2e-2
+        self.dt = 1e-3
         self.N = N  # planning horizon
         self.stages = forcespro.MultistageProblem(N)  # create the stages for the whole finite horizon
         self.nx = 3
         self.nu = 2
-        self.Q = 100*np.diag([4, 40, 0.1])
+        self.Q = 100*np.diag([40, 40, 0.1])
         self.R = np.eye(self.nu)/100
         self.P = 0 * self.Q
         self.set_up_solver()
@@ -71,7 +71,7 @@ class MPC():
         self.stages.generateCode()
 
     def control(self, state, Ads, Bds):
-        problem = {"xinit": -state[0,:]}  # eq.c = -xinit
+        problem = {"xinit": -state}  # eq.c = -xinit
         # set up linearized models as equality constraints
         for i in range(self.N - 1):
             A = Ads[i]
@@ -85,38 +85,40 @@ class MPC():
 # #=======================================================
 from model.MPC_utils import *
 T = 10
-dt = 2e-2
-# Xref = traj_generate(T/dt, T)
-Xref = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt)
+dt = 1e-3
+#Xref = traj_generate(T/dt, T)
+Xref = line_traj_generate([10.,10.,0], [0.,0.,0.], T/dt) #+ np.array([0,0,0,0,0,0,0.2])*np.random.rand(10000,7)
 Uref = get_ref_input(Xref)
-linear_models = linearize_model(Xref, Uref, dt)
+linear_models = linearize_model(Xref, Uref, 1e-3)
 # #=========================================================
-N = 40
+N = 10
 nx = 3
-x0 = np.array([0, 0, np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
+x0 = np.array([10, 10, 0]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2])
 mpc = MPC(N)
 real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
 uStore = []
-error_t = np.zeros((mpc.N,nx))
+error_t = np.zeros((nx))
 x_error = []
 y_error = []
 
 for i in range(int(T/dt)-N):
-# for i in range(10):
     # Find the new linearisation (from current step to current step + N
     Ads = linear_models[0][i:i+N]
     Bds = linear_models[1][i:i+N]
     # Calculate the new errors (current pose vs reference pose)
-    error_t[:,:2] = np.array([np.array([[np.cos(x0[2]),np.sin(x0[2])],[-np.sin(x0[2]), np.cos(x0[2])]])@(Xref[i+k,:2] - x0[:2]) for k in range(N)])
-    error_t[:,2] = np.array([Xref[i+k,6] - wrapAngle(x0[2]) for k in range(N)])
+    error_t[:2] = np.array([[np.cos(x0[2]),np.sin(x0[2])],[-np.sin(x0[2]), np.cos(x0[2])]])@(Xref[i,:2] - x0[:2])
+    #np.array([np.array([[np.cos(x0[2]),np.sin(x0[2])],[-np.sin(x0[2]), np.cos(x0[2])]])@(Xref[i+k,:2] - x0[:2]) for k in range(N)])
+    error_t[2] = Xref[i,6] - wrapAngle(x0[2])
+    #np.array([Xref[i+k,6] - wrapAngle(x0[2]) for k in range(N)])
     # Wrap the error too (otherwise there is a huge between -pi and pi)
-    error_t[:,2] = wrapAngle(error_t[:,2])
+    error_t[2] = wrapAngle(error_t[2])
     # Solve the MPC problem:
     control = mpc.control(error_t, Ads, Bds)
     # Extract the first control input (for error correction) and add the reference input (for trajectory tracking)
     u = mpc.output[0:2] + Uref[i,:]
     uStore.append(u)
+
     # Simulate the motion
     state = env.step(u[0], u[1])
     x0 = np.array([state.x,state.y,state.theta])
@@ -128,8 +130,8 @@ for i in range(int(T/dt)-N):
     real_trajectory['theta'].append(state.theta)
     print('current position: x: ', state.x, ', y: ', state.y)
 
-    x_error.append(error_t[0, 0])
-    y_error.append(error_t[0, 1])
+    x_error.append(error_t[0])
+    y_error.append(error_t[1])
 print(mpc)
 # plot the robot position
 xPos = np.array(real_trajectory['x'])

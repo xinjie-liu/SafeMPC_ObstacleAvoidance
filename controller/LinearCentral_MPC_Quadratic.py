@@ -54,17 +54,50 @@ class MPC():
 #             # upper bounds
 #             self.stages.ineq[i]['b']['ubidx'] = np.array([1, 3])  # upper bound acts on these indices
 #             self.stages.ineq[i]['b']['ub'] = np.array([3, 3])  # upper bound for this stage variable
-# 
 # =============================================================================
+
             # collision avoidance between robots: section 8.8 of documentation(https://forces.embotech.com/Documentation/low_level_interface/index.html#cost-function)
             # QCQP problem
             
+            self.stages.dims[ i ]['q'] =5 # number of quadratic constraints
             
-            # hyper-plane linear inequality constraints for collision avoidance
-            self.stages.dims[i]['p'] = 2 # two linear constraints for two robots
-            self.stages.ineq[i]['p']['A'] = np.zeros((2, self.nx + self.nu)) # Jacobian of linear inequality
-            self.stages.ineq[i]['p']['b'] = np.zeros((2,))  # RHS of linear inequality
-
+            self.stages.ineq[i]['q']['idx'] = np.zeros((1,), dtype=object) # index vectors          
+            self.stages.ineq[i]['q']['idx'][0] = np.array([5, 6, 8, 9])
+# =============================================================================
+#             self.stages.ineq[i]['q']['idx'][1] = np.array([5])
+#             self.stages.ineq[i]['q']['idx'][2] = np.array([6])                                                     
+#             self.stages.ineq[i]['q']['idx'][3] = np.array([8])
+#             self.stages.ineq[i]['q']['idx'][4] = np.array([9])
+# =============================================================================
+            
+            self.stages.ineq[i]['q']['Q'] = np.zeros((1,), dtype=object) # Hessians, only one quadratic constraint
+            self.stages.ineq[i]['q']['Q'][0] = np.array([[-1.0, 0., 1.0, 0.], [0., -1.0, 0., 1.0], [1.0, 0., -1.0, 0.], [0., 1.0, 0., -1.0]]) # square distance between robots
+# =============================================================================
+#             self.stages.ineq[i]['q']['Q'][1] = np.array([0.])  
+#             self.stages.ineq[i]['q']['Q'][2] = np.array([0.])
+#             self.stages.ineq[i]['q']['Q'][3] = np.array([0.])  
+#             self.stages.ineq[i]['q']['Q'][4] = np.array([0.])  
+# =============================================================================
+            
+            self.stages.ineq[i]['q']['l'] = np.zeros((1,), dtype=object)
+            self.stages.ineq[i]['q']['l'][0] = np.array([[0],[0],[0],[0]])
+# =============================================================================
+#             self.stages.ineq[i]['q']['l'][1] = np.array([1.0])
+#             self.stages.ineq[i]['q']['l'][2] = np.array([1.0])
+#             self.stages.ineq[i]['q']['l'][3] = np.array([1.0])
+#             self.stages.ineq[i]['q']['l'][4] = np.array([1.0])
+# =============================================================================
+            
+            #self.stages.ineq[i]['q']['r'] = np.array([[-3],[2],[2],[2],[2]])  # RHSs
+            self.stages.ineq[i]['q']['r'] = np.array([[-3]])  # RHSs
+            
+# =============================================================================
+#             # hyper-plane linear inequality constraints for collision avoidance
+#             self.stages.dims[i]['p'] = 2 # two linear constraints for two robots
+#             self.stages.ineq[i]['p']['A'] = np.zeros((2, self.nx + self.nu)) # Jacobian of linear inequality
+#             self.stages.ineq[i]['p']['b'] = np.zeros((2,))  # RHS of linear inequality
+# 
+# =============================================================================
 
 
 
@@ -96,8 +129,8 @@ class MPC():
             self.stages.newParam("linear_model"+str(i+1), [i+1], 'eq.C')
         # parameter: collision avoidance constraints
         for i in range(self.N):
-            self.stages.newParam("hyperplaneA"+str(i+1), [i+1], 'ineq.p.A')
-            self.stages.newParam("hyperplaneb"+str(i+1), [i+1], 'ineq.p.b')
+            self.stages.newParam("hyperplaneA"+str(i+1), [i+1], 'ineq.q.Q[0]')
+            self.stages.newParam("hyperplaneb"+str(i+1), [i+1], 'ineq.q.r')
         # define the output
         self.stages.newOutput('output', range(1, self.N+1), range(1, self.nu + self.nx + 1))
 
@@ -212,14 +245,16 @@ class MPC():
 # =============================================================================
         ineqA = np.zeros((self.N, self.n, self.nu+self.nx))
         ineqb = np.zeros((self.N, self.n))
-        if distance < 5:
-            for i in range(self.N):
-                
-                ineqA[i] = np.array([[0, 0, 0, 0, -n[0]*cos_1[i] - n[1]*sin_1[i], n[0]*sin_1[i]-n[1]*cos_1[i], 0, 0, 0, 0],\
-                                     [0, 0, 0, 0, 0, 0, 0, n[0]*cos_2[i]+n[1]*sin_2[i], -n[0]*sin_2[i]+n[1]*cos_2[i], 0]])
-                ineqb[i, 0] = a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1]
-                ineqb[i, 1] = -(a - n[0]*xref2[i, 0] - n[1]*xref2[i, 1])
-
+# =============================================================================
+#         if distance < 5:
+#             for i in range(self.N):
+#                 
+#                 ineqA[i] = np.array([[0, 0, 0, 0, -n[0]*cos_1[i] - n[1]*sin_1[i], n[0]*sin_1[i]-n[1]*cos_1[i], 0, 0, 0, 0],\
+#                                      [0, 0, 0, 0, 0, 0, 0, n[0]*cos_2[i]+n[1]*sin_2[i], -n[0]*sin_2[i]+n[1]*cos_2[i], 0]])
+#                 ineqb[i, 0] = a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1]
+#                 ineqb[i, 1] = -(a - n[0]*xref2[i, 0] - n[1]*xref2[i, 1])
+# =============================================================================
+        ineq
                 
                 
 
@@ -230,7 +265,7 @@ class MPC():
 #             ineqA = np.zeros((self.N, self.n, self.nu+self.nx))
 #             ineqb = 1e11*ineqb
 # =============================================================================
-        self.hyperplane = {"A": ineqA, "bs": ineqb}
+        self.hyperplane = {"Q": ineqQ, "r": ineqR}
 #==========================================================================================
 # =============================================================================
 #         # delete later
@@ -246,12 +281,12 @@ class MPC():
             A = Ads[i]
             B = Bds[i]
             self.problem["linear_model"+str(i+1)] = np.hstack((B, A))
-            self.problem["hyperplaneA"+str(i+1)] = self.hyperplane["A"][i]
-            self.problem["hyperplaneb"+str(i+1)] = self.hyperplane["bs"][i]
-
-        self.problem["hyperplaneA"+str(self.N)] = self.hyperplane["A"][self.N-1]
-        self.problem["hyperplaneb"+str(self.N)] = self.hyperplane["bs"][self.N-1]
-
+            self.problem["hyperplaneA"+str(i+1)] = self.hyperplane["Q"][i]
+            self.problem["hyperplaneb"+str(i+1)] = self.hyperplane["r"][i]
+# # =============================================================================
+        self.problem["hyperplaneA"+str(self.N)] = self.hyperplane["Q"][N]
+        self.problem["hyperplaneb"+str(self.N)] = self.hyperplane["r"][N]
+# =============================================================================
         self.output = self.solver.MPC_Project_FORCESPRO_solve(self.problem)[0]['output']
         control = self.output[:self.nu]
 
@@ -345,8 +380,16 @@ for i in range(int(T/dt)-N):
     Bds2 = np.concatenate((zeros, Bds2), axis=2)
     Bds = np.concatenate((Bds1, Bds2), axis=1)
     # set up the linear inequality constraints for collision avoidance
-    #pc.collision_avoidance(x1, x2, Xref1[i:i+N+1], Xref2[i:i+N+1])
-    mpc.collision_avoidance(x1, x2, Xref1[i:i+N], Xref2[i:i+N])
+# =============================================================================
+#     mpc.collision_avoidance(x1, x2, Xref1[i:i+N+1], Xref2[i:i+N+1])
+# =============================================================================
+# =============================================================================
+#     x1_col = x1.copy()
+#     x2_col = x2.copy()
+#     x1_col[:2] = np.array([[np.cos(x1[2]),np.sin(x1[2])],[-np.sin(x1[2]), np.cos(x1[2])]]) @ x1[:2]
+#     x2_col[:2] = np.array([[np.cos(x2[2]),np.sin(x2[2])],[-np.sin(x2[2]), np.cos(x2[2])]]) @ x2[:2]
+# =============================================================================
+    #mpc.collision_avoidance(x1, x2, Xref1[i:i+N], Xref2[i:i+N])
     # Solve the MPC problem:
     control = mpc.control(error_t, Ads, Bds)
     # Extract the first control input (for error correction) and add the reference input (for trajectory tracking)

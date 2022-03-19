@@ -28,7 +28,7 @@ class Robot():
         self.current = State(x_, y_, z_) # zero initialization
         self.R = R_  # in meter
         self.L = L_  # in meter
-        self.dt = 2e-2
+        self.dt = 1e-3
         # self.u = np.array([0,0])
 # =============================================================================
 #     def uniToDiff(self, v, w):
@@ -46,24 +46,29 @@ class Robot():
         return np.arctan2(np.sin(angle), np.cos(angle))
 
     def step(self, v, w):
-        theta_dt = w
-        old_theta = self.current.theta
-        self.current.theta = self.fixAngle(self.current.theta + self.fixAngle(theta_dt * self.dt))
-        self.current.x = self.current.x + (v / (w+1e-20)) * (sin(self.current.theta) - sin(old_theta))
-        self.current.y = self.current.y + (v / (w+1e-20)) * (cos(old_theta) - cos(self.current.theta))
 # =============================================================================
-        # dynamic model (old one)
-        # theta_dt = w
-        # x_dt = v * cos(self.current.theta)
-        # y_dt = v * sin(self.current.theta)
-        # self.current.theta = self.fixAngle(self.current.theta + self.fixAngle(theta_dt * self.dt))
-        # self.current.x = self.current.x + x_dt * self.dt
-        # self.current.y = self.current.y + y_dt * self.dt
+#         theta_dt = w
+#         old_theta = self.current.theta
+#         self.current.theta = self.fixAngle(self.current.theta + self.fixAngle(theta_dt * self.dt))
+#         self.current.x = self.current.x + (v / (w+1e-20)) * (sin(self.current.theta) - sin(old_theta))
+#         self.current.y = self.current.y + (v / (w+1e-20)) * (cos(old_theta) - cos(self.current.theta))
+# =============================================================================
+# =============================================================================
+#        dynamic model (old one)
+        theta_dt = w
+        x_dt = v * cos(self.current.theta)
+        y_dt = v * sin(self.current.theta)
+        self.current.theta = self.fixAngle(self.current.theta + theta_dt * self.dt)
+        
+        self.current.x = self.current.x + x_dt * self.dt
+        self.current.y = self.current.y + y_dt * self.dt
 
-        # In terms of u:
-        # x_dt = (self.u[0]+self.u[1])*np.cos(self.current.theta)/2
-        # y_dt = (self.u[0]+self.u[1])*np.sin(self.current.theta)/2
-        # theta_dt = (self.u[1]-self.u[0])/(2*self.L)
+# =============================================================================
+#         # In terms of u:
+#         x_dt = (self.u[0]+self.u[1])*np.cos(self.current.theta)/2
+#         y_dt = (self.u[0]+self.u[1])*np.sin(self.current.theta)/2
+#         theta_dt = (self.u[1]-self.u[0])/(2*self.L)
+# =============================================================================
 # =============================================================================
 
         return self.current

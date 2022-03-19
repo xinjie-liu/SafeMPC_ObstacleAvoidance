@@ -19,7 +19,7 @@ Parameters of the class
 
 class MPC():
     def __init__(self, N):
-        self.dt = 2e-2
+        self.dt = 1e-3
         self.N = N  # planning horizon
         self.stages = forcespro.MultistageProblem(N)  # create the stages for the whole finite horizon
         self.nx = 3 * 2
@@ -102,15 +102,15 @@ class MPC():
 
 # #=======================================================
 T = 10
-dt = 2e-2
+dt = 1e-3
 # Xref1 = traj_generate(T/dt, T)
 # Xref2 = traj_generate(T/dt, T)
 Xref1 = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt)
 Xref2 = line_traj_generate([10.,10.,0.], [0.,0.,0.], T/dt)
 Uref1 = get_ref_input(Xref1)
 Uref2 = get_ref_input(Xref2)
-linear_models1 = linearize_model(Xref1, Uref1, dt)
-linear_models2 = linearize_model(Xref2, Uref2, dt)
+linear_models1 = linearize_model(Xref1, Uref1, 1e-3)
+linear_models2 = linearize_model(Xref2, Uref2, 1e-3)
 # #=========================================================
 x1 = np.array([0., 0, 0]) # This angle needs to be in standard notation (it gets wrapped later)
 env1 = Robot(x1[0], x1[1], x1[2])

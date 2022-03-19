@@ -25,7 +25,7 @@ class MPC:
         """
         Parameters of the class
         """
-        self.dt = 2e-2
+        self.dt = 5e-3
         self.N = N  # planning horizon
         """
         Parameters for the MPC controller
