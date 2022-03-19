@@ -1,35 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1b63bf9c-eae9-4f5c-9625-12a6d10202e7" name="Changes" comment="solved the ImportErrors" />
+    <list default="true" id="50eb18be-83f9-435f-a2ce-cac2005f4c2a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_27_22,_4_26_PM_[Changes]/FORCENLPsolver_interface.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_27_22,_4_26_PM_[Changes]/FORCENLPsolver_model.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_27_22,_4_26_PM_[Changes]/libFORCENLPsolver.a" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_27_22,_4_26_PM_[Changes]/libFORCENLPsolver.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_27_22,_4_26_PM_[Changes]/libsolver_with_model.so" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_27_22,_4_26_PM_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_27_22__4_26_PM__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_28_22,_10_13_AM_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_28_22__10_13_AM__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_2_22,_4_32_PM_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_2_22__4_32_PM__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_3_22,_2_51_PM_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_3_22__2_51_PM__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_4_22,_9_28_PM_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_4_22__9_28_PM__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_7_22,_7_04_PM_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_7_22,_9_04_AM_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_7_22,_9_06_AM_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_7_22,_9_08_AM_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_7_22__7_04_PM__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_7_22__9_04_AM__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_7_22__9_06_AM__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_7_22__9_08_AM__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_8_22,_2_05_PM_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_8_22,_2_06_PM_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_8_22__2_05_PM__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_8_22__2_06_PM__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/LinearCentral_MPC.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/LinearCentral_MPC.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/MPC_unicy_linear.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/MPC_unicy_linear.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/MPC_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/MPC_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/unicycle.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/unicycle.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Python Script" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitSEFilterConfiguration">
-    <file-type-list>
-      <filtered-out-file-type name="LOCAL_BRANCH" />
-      <filtered-out-file-type name="REMOTE_BRANCH" />
-      <filtered-out-file-type name="TAG" />
-      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
-    </file-type-list>
-  </component>
-  <component name="MarkdownSettingsMigration">
-    <option name="stateVersion" value="1" />
-  </component>
-  <component name="ProjectId" id="256u5Xg6rilFIv8TW76rjGuwVwY" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectId" id="26W3YdkzVC9L0CTxv6o27itdxBu" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -37,37 +51,11 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../forces_pro_client" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
   </component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/model" />
-    </key>
-  </component>
-  <component name="RunManager" selected="Python.MPC_unicy_linear (1)">
-    <configuration name="Centralized_unicycle" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="MPC_final_project" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/controller" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/controller/Centralized_unicycle.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="LinearCentral_MPC (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager">
+    <configuration name="LinearCentral_MPC" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="MPC_final_project" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -88,250 +76,21 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="MPC_unicy" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="MPC_final_project" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/controller" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/controller/MPC_unicy.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="MPC_unicy_linear (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="MPC_final_project" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/controller" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/controller/MPC_unicy_linear.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="unicycle" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="MPC_final_project" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/model" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/model/unicycle.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.MPC_unicy_linear (1)" />
-        <item itemvalue="Python.MPC_unicy" />
-        <item itemvalue="Python.LinearCentral_MPC (1)" />
-        <item itemvalue="Python.Centralized_unicycle" />
-        <item itemvalue="Python.unicycle" />
+        <item itemvalue="Python.LinearCentral_MPC" />
       </list>
     </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="1b63bf9c-eae9-4f5c-9625-12a6d10202e7" name="Changes" comment="" />
-      <created>1644859674984</created>
+      <changelist id="50eb18be-83f9-435f-a2ce-cac2005f4c2a" name="Changes" comment="" />
+      <created>1647525564023</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1644859674984</updated>
+      <updated>1647525564023</updated>
     </task>
-    <task id="LOCAL-00001" summary="adding some new files">
-      <created>1645724726122</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1645724726122</updated>
-    </task>
-    <task id="LOCAL-00002" summary="adding unicycle model (simulation inside)">
-      <created>1645737422471</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1645737422471</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Adding MPC for unicycle (work in progress)&#10;For now the optimization results are weird, it can only move forward, may need differential constraints">
-      <created>1645744954124</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1645744954124</updated>
-    </task>
-    <task id="LOCAL-00004" summary="adding warm start for every time step">
-      <created>1645956384820</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1645956384820</updated>
-    </task>
-    <task id="LOCAL-00005" summary="changed dynamic model (reference: https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=7312445)">
-      <created>1645964466999</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1645964466999</updated>
-    </task>
-    <task id="LOCAL-00006" summary="Add prototype of centralized MPC&#10;Adding collision avoidance makes the problem infeasible">
-      <created>1646039563118</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1646039563118</updated>
-    </task>
-    <task id="LOCAL-00007" summary="Adding initialization of Robot class">
-      <created>1646065681354</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1646065681355</updated>
-    </task>
-    <task id="LOCAL-00008" summary="move the simulation part to the respective MPC files">
-      <created>1646137762707</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1646137762707</updated>
-    </task>
-    <task id="LOCAL-00009" summary="tested simple obstacle avoidance&#10;moving the target from [10., -0.2, 0.] to [10., 0., 0.] can lead to infeasibility">
-      <created>1646141559992</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1646141559992</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Changed initial guess to the solution of previous iteration (no effect on the resulted behavior)">
-      <created>1646254836783</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1646254836783</updated>
-    </task>
-    <task id="LOCAL-00011" summary="Adding utiliy functions&#10;MPC_unicy_linear still needs debugging">
-      <created>1646431151608</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1646431151608</updated>
-    </task>
-    <task id="LOCAL-00012" summary="Finishing debugging of MPC linear">
-      <created>1646576605338</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1646576605338</updated>
-    </task>
-    <task id="LOCAL-00013" summary="Finishing skeleton of MPC linear">
-      <created>1646578922345</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1646578922345</updated>
-    </task>
-    <task id="LOCAL-00014" summary="add plot for errors">
-      <created>1646643253189</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1646643253189</updated>
-    </task>
-    <task id="LOCAL-00015" summary="add plot for errors">
-      <created>1646643807568</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1646643807568</updated>
-    </task>
-    <task id="LOCAL-00016" summary="tracking errors go to zero">
-      <created>1646658871489</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1646658871489</updated>
-    </task>
-    <task id="LOCAL-00017" summary="Adding animation">
-      <created>1646676288281</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1646676288281</updated>
-    </task>
-    <task id="LOCAL-00018" summary="Adding animation">
-      <created>1646679850272</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1646679850272</updated>
-    </task>
-    <task id="LOCAL-00019" summary="Adding line trajectory generator">
-      <created>1646684377243</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1646684377243</updated>
-    </task>
-    <task id="LOCAL-00020" summary="Finishing straight line tracking">
-      <created>1646748176314</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1646748176314</updated>
-    </task>
-    <task id="LOCAL-00021" summary="clean the code a bit">
-      <created>1646748406129</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1646748406129</updated>
-    </task>
-    <task id="LOCAL-00022" summary="clean the directories">
-      <created>1646749090589</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1646749090589</updated>
-    </task>
-    <task id="LOCAL-00023" summary="solved the ImportErrors">
-      <created>1646749559833</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1646749559833</updated>
-    </task>
-    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -344,53 +103,5 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="adding some new files" />
-    <MESSAGE value="adding unicycle model (simulation inside)" />
-    <MESSAGE value="Adding MPC for unicycle (work in progress)&#10;For now the optimization results are weird, it can only move forward, may need differential constraints" />
-    <MESSAGE value="adding warm start for every time step" />
-    <MESSAGE value="changed dynamic model (reference: https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=7312445)" />
-    <MESSAGE value="Add prototype of centralized MPC&#10;Adding collision avoidance makes the problem infeasible" />
-    <MESSAGE value="Adding initialization of Robot class" />
-    <MESSAGE value="move the simulation part to the respective MPC files" />
-    <MESSAGE value="tested simple obstacle avoidance&#10;moving the target from [10., -0.2, 0.] to [10., 0., 0.] can lead to infeasibility" />
-    <MESSAGE value="Changed initial guess to the solution of previous iteration (no effect on the resulted behavior)" />
-    <MESSAGE value="Adding utiliy functions&#10;MPC_unicy_linear still needs debugging" />
-    <MESSAGE value="Finishing debugging of MPC linear" />
-    <MESSAGE value="Finishing skeleton of MPC linear" />
-    <MESSAGE value="add plot for errors" />
-    <MESSAGE value="tracking errors go to zero" />
-    <MESSAGE value="Adding animation" />
-    <MESSAGE value="Adding line trajectory generator" />
-    <MESSAGE value="Finishing straight line tracking" />
-    <MESSAGE value="clean the code a bit" />
-    <MESSAGE value="clean the directories" />
-    <MESSAGE value="solved the ImportErrors" />
-    <option name="LAST_COMMIT_MESSAGE" value="solved the ImportErrors" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/model/MPC_utils.py</url>
-          <line>108</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-      </breakpoints>
-      <default-breakpoints>
-        <breakpoint type="python-exception">
-          <properties notifyOnTerminate="true" exception="BaseException">
-            <option name="notifyOnTerminate" value="true" />
-          </properties>
-        </breakpoint>
-      </default-breakpoints>
-    </breakpoint-manager>
-    <watches-manager>
-      <configuration name="PythonConfigurationType">
-        <watch expression="stages.option_keys" language="Python" />
-        <watch expression="Xref" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>

@@ -124,8 +124,10 @@ def line_traj_generate(start, goal, total_step):  # start: (x, y, theta)
     for i in range(total_step - 1):
         x[i + 1] = start[0] + i * x_interval
         y[i + 1] = start[1] + i * y_interval
-    xdot = np.diff(x)[1] * np.ones(len(x))  # constant velocity
-    ydot = np.diff(y)[1] * np.ones(len(y))
+    #xdot = np.sign(np.diff(x)[1])*0.5 * np.ones(len(x))  # constant velocity
+    xdot = np.diff(x)[1]*np.ones(len(x))/(1e-3)
+    #ydot = np.sign(np.diff(y)[1])*0.5 * np.ones(len(y))
+    ydot = np.diff(y)[1]*np.ones(len(y))/(1e-3)
     xddot = np.zeros(len(x))
     yddot = np.zeros(len(y))
     theta = np.arctan2(ydot, xdot)
