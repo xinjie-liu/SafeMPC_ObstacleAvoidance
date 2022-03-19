@@ -112,7 +112,7 @@ def plot_multi_robot(real_trajectory):
                                   blit=False)
     plt.show()
 
-def line_traj_generate(start, goal, total_step):  # start: (x, y, theta)
+def line_traj_generate(start, goal, total_step, dt=2e-2):  # start: (x, y, theta)
     total_step = int(total_step)
     # xr yr xrdot yrdot xrddot yrddot theta
     x = np.zeros([total_step, ])
@@ -124,8 +124,8 @@ def line_traj_generate(start, goal, total_step):  # start: (x, y, theta)
     for i in range(total_step - 1):
         x[i + 1] = start[0] + i * x_interval
         y[i + 1] = start[1] + i * y_interval
-    xdot = np.diff(x)[1] * np.ones(len(x)) / 1e-3  # constant velocity
-    ydot = np.diff(y)[1] * np.ones(len(y)) / 1e-3
+    xdot = np.diff(x)[1] * np.ones(len(x)) / dt  # constant velocity
+    ydot = np.diff(y)[1] * np.ones(len(y)) / dt
     xddot = np.zeros(len(x))
     yddot = np.zeros(len(y))
     theta = np.arctan2(ydot, xdot)

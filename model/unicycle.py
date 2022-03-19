@@ -28,7 +28,7 @@ class Robot():
         self.current = State(x_, y_, z_) # zero initialization
         self.R = R_  # in meter
         self.L = L_  # in meter
-        self.dt = 1e-3
+        self.dt = 2e-2
         # self.u = np.array([0,0])
 # =============================================================================
 #     def uniToDiff(self, v, w):

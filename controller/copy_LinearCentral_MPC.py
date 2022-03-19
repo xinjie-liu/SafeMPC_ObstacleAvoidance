@@ -99,39 +99,70 @@ class MPC():
 
         # solver settings
         self.stages.codeoptions['name'] = 'MPC_Project_FORCESPRO'
-        self.stages.codeoptions['printlevel'] = 2
+        self.stages.codeoptions['printlevel'] = 1
         self.stages.generateCode()
 
     def define_hyperplane(self, x1, y1, x2, y2):
         # given position of two robots, compute the normal vector and the value of projection of boundary point onto the normal vector
-        r = 1.2 # safety radius of each robot
-        distance = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
-        sin_theta = 2 * r / distance
-        # sin_theta = np.round(sin_theta, decimals=2)
-        if sin_theta > 1:
-            sin_theta = 1.
-        cos_theta = np.sqrt(1 - sin_theta**2)
+        # r = 1.2 # safety radius of each robot
+        # distance = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+        # sin_theta = 2 * r / distance
+        # # sin_theta = np.round(sin_theta, decimals=2)
+        # if sin_theta > 1:
+        #     sin_theta = 1.
+        # cos_theta = np.sqrt(1 - sin_theta**2)
+        # rotation = np.array([[cos_theta, -sin_theta], [sin_theta, cos_theta]])
+        # rotation2 = np.array([[np.cos(0.), -np.sin(0.)], [np.sin(0.), np.cos(0.)]])
+        # n = np.array([y2-y1, x1-x2])
+        # n = rotation2 @ rotation @ n
+        # a = n[0] * (x1+x2)/2 + n[1] * (y1+y2)/2
+#================================================================
+        # print('n: ', n)
+        # print('sin: ', sin_theta, 'cos: ', cos_theta)
+        # print('rotation matrix: ', rotation)
+#================================================================
+
+#================================================================
+        # r = 0.5 # safety radius of each robot
+        # distance = np.sqrt((x1 - 5) ** 2 + (y1 - 5) ** 2)
+        # sin_theta = 2 * r / distance
+        # # sin_theta = np.round(sin_theta, decimals=2)
+        # if sin_theta > 1:
+        #     sin_theta = 1.
+        # cos_theta = np.sqrt(1 - sin_theta**2)
+        # rotation = np.array([[cos_theta, -sin_theta], [sin_theta, cos_theta]])
+        # rotation2 = np.array([[np.cos(0.), -np.sin(0.)], [np.sin(0.), np.cos(0.)]])
+        # n = np.array([5-y1, x1-5])
+        # n = rotation2 @ rotation @ n
+        # a = n[0] * (x1+5)/2 + n[1] * (y1+5)/2
+#================================================================
+
+# ================================================================
+        r = 0.5  # safety radius of each robot
+        p_c = np.array([5, 5]) + 2*r*(np.array([x1, y1]) - np.array([5, 5]))/(np.linalg.norm(np.array([x1, y1]) - np.array([5, 5])))
+        sin_theta = np.sin(np.pi/2)
+        cos_theta = np.cos(np.pi/2)
         rotation = np.array([[cos_theta, -sin_theta], [sin_theta, cos_theta]])
-        rotation2 = np.array([[np.cos(0.), -np.sin(0.)], [np.sin(0.), np.cos(0.)]])
-        n = np.array([y2-y1, x1-x2])
-#================================================================
-        print('n: ', n)
-        print('sin: ', sin_theta, 'cos: ', cos_theta)
-        print('rotation matrix: ', rotation)
-#================================================================
-        n = rotation2 @ rotation @ n
-        a = n[0] * (x1+x2)/2 + n[1] * (y1+y2)/2
+        rotation2 = np.array([[np.cos(0.6), -np.sin(0.6)], [np.sin(0.6), np.cos(0.6)]])
+        v = rotation2 @ rotation @ (np.array([x1, y1]) - np.array([5, 5]))
+        a = v[1] / v[0]
+        b = p_c[1] - a*p_c[0]
+        # a = np.round(a, decimals=2)
+        # b = np.round(b, decimals=2)
+# ================================================================
+
 #================================================================
         # delete later
-        print('x1, y1: ' , x1, ' ', y1)
-        print('x2, y2: ', x2, ' ', y2)
-        print()
-        print('distance: ', distance)
-        print('n: ', n)
-        print('a: ', a)
-        print('middle point: ', [(x1+x2)/2, (y1+y2)/2])
+        # print('x1, y1: ' , x1, ' ', y1)
+        # print('x2, y2: ', x2, ' ', y2)
+        # print()
+        # print('distance: ', distance)
+
+        # print('n: ', n)
+        # print('a: ', a)
+        # print('middle point: ', [(x1+x2)/2, (y1+y2)/2])
 #=================================================================
-        return n, a
+        return a, b
 
     def collision_avoidance(self, X1, X2, xref1, xref2): # xref1, xref2 shape: (N, 7)
         # define the hyper-plane for collision avoidance
@@ -139,6 +170,8 @@ class MPC():
         y1 = X1[1]
         x2 = X2[0]
         y2 = X2[1]
+        # sin_1 = np.sin(X1[2])
+        # cos_1 = np.cos(X1[2])
         self.theta_ref1 = xref1[:-1, -1] # (11, 7)
         self.theta_ref2 = xref2[:-1, -1]
         # robot orientations calculated from the last time step
@@ -149,38 +182,48 @@ class MPC():
             cos_1 = np.cos(self.theta1)
             sin_2 = np.sin(self.theta2)
             cos_2 = np.cos(self.theta2)
-        distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
-        n, a = self.define_hyperplane(x1, y1, x2, y2)
+        #distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
+        a, b = self.define_hyperplane(x1, y1, x2, y2)
+#====================================================================
+        # delete later
+        if not self.theta_err1 is None:
+            print("predicted sin: ", sin_1)
+        print("hyperplane: y = {}x + {}".format(a, b))
+        distance = np.sqrt((x1-5)**2 + (y1-5)**2)
+        # n = np.array([1,1])
+        # a = 10
+#====================================================================
         # define linear constraints
         if self.theta_err1 is None: # at very first beginning, we do not have predicted angles
             # at the first step of the whole simulation, give an arbitrary constraint
             ineqA = np.zeros((self.N, self.n, self.nu + self.nx))
             ineqb = np.zeros((self.N, 2))
-            # if distance < 2:
             for i in range(self.N):
-                ineqA[i] = np.array([[0, 0, 0, 0, n[0], n[1], 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, -n[0], -n[1], 0]])
-                ineqb[i, 0] = a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1]
-                ineqb[i, 1] = -(a - n[0]*xref2[i, 0] - n[1]*xref2[i, 1])
+                ineqA[i] = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
+                ineqb[i, 0] = 1e5
+                ineqb[i, 1] = 1e5
         else: # the true constraints
             ineqA = np.zeros((self.N, self.n, self.nu+self.nx))
             ineqb = np.zeros((self.N, self.n))
             for i in range(self.N):
-                ineqA[i] = np.array([[0, 0, 0, 0, -n[0]*cos_1[i]-n[1]*sin_1[i], n[0]*sin_1[i]-n[1]*cos_1[i], 0, 0, 0, 0],\
-                                     [0, 0, 0, 0, 0, 0, 0, n[0]*cos_2[i]+n[1]*sin_2[i], -n[0]*sin_2[i]+n[1]*cos_2[i], 0]])
-                # if distance < 3:
-                ineqb[i, 0] = a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1]
-                ineqb[i, 1] = -(a - n[0]*xref2[i, 0] - n[1]*xref2[i, 1])
-                # elif distance > 3:
-                # # if two robots are far from each other, the constraints are inactive
-                #     ineqb[i, 0] = 1e2
-                #     ineqb[i, 1] = 1e2
+                # if distance < 1.5:
+                ineqA[i] = np.array([[0, 0, 0, 0, a*cos_1[i]-sin_1[i], -a*sin_1[i]-cos_1[i], 0, 0, 0, 0],\
+                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
+                ineqb[i, 0] = b + a*xref1[i,0] - xref1[i,1]
+                ineqb[i, 1] = 1e5
+                # elif distance > 1.5:
+                #     # if two robots are far from each other, the constraints are inactive
+                #     ineqA[i] = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\
+                #                          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
+                # ineqb[i, 0] = 1e5
+                # ineqb[i, 1] = 1e5
         self.hyperplane = {"A": ineqA, "bs": ineqb}
 
 #==========================================================================================
         # delete later
-        for i in range(self.N):
-            print("reference positions of robot 1: ", xref1[i, 0], ' ', xref1[i, 1])
-            print("right hand side of Ax <= b for robot1: ", a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1])
+        # for i in range(self.N):
+        #     print("reference positions of robot 1: ", xref1[i, 0], ' ', xref1[i, 1])
+        #     print("right hand side of Ax <= b for robot1: ", a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1])
 #==========================================================================================
     def control(self, state, Ads, Bds):
         self.problem = {"xinit": -state}  # eq.c = -xinit
@@ -234,7 +277,7 @@ x1 = np.array([0., 0, 0]) # This angle needs to be in standard notation (it gets
 env1 = Robot(x1[0], x1[1], x1[2])
 x2 = np.array([10., 10., 0]) # This angle needs to be in standard notation (it gets wrapped later)
 env2 = Robot(x2[0], x2[1], x2[2])
-N = 10
+N = 15
 mpc = MPC(N)
 nx = 3 # take care: nx here refers to nx for single robot!!
 real_trajectory = {'x1': [x1[0]], 'y1': [x1[1]], 'z1': [0], 'theta1': [x1[2]], 'x2': [x2[0]], 'y2': [x2[1]], 'z2': [0], 'theta2': [x2[2]]}
@@ -287,6 +330,10 @@ for i in range(int(T/dt)-N):
     state2 = env2.step(u2[0], u2[1])
     x1 = np.array([state1.x,state1.y,state1.theta])
     x2 = np.array([state2.x,state2.y,state2.theta])
+#==========================================================================
+    print("true sin: ", np.sin(state1.theta))
+    print("control input: ", u1)
+#==========================================================================
     # Store the xy position for plotting:
     real_trajectory['x1'].append(state1.x)
     real_trajectory['y1'].append(state1.y)

@@ -18,7 +18,7 @@ Parameters of the class
 
 class MPC():
     def __init__(self, N):
-        self.dt = 1e-3
+        self.dt = 2e-2
         self.N = N  # planning horizon
         self.stages = forcespro.MultistageProblem(N)  # create the stages for the whole finite horizon
         self.nx = 3
@@ -85,11 +85,11 @@ class MPC():
 # #=======================================================
 from model.MPC_utils import *
 T = 10
-dt = 1e-3
+dt = 2e-2
 # Xref = traj_generate(T/dt, T)
 Xref = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt)
 Uref = get_ref_input(Xref)
-linear_models = linearize_model(Xref, Uref, 1e-3)
+linear_models = linearize_model(Xref, Uref, dt)
 # #=========================================================
 N = 40
 nx = 3
