@@ -103,71 +103,99 @@ class MPC():
         self.stages.generateCode()
 
     def define_hyperplane(self, x1, y1, x2, y2):
-# # ================================================================
-        r = 0.5  # safety radius of each robot
-        p_c = np.array([5, 5]) + 2*r*(np.array([x1, y1]) - np.array([5, 5]))/(np.linalg.norm(np.array([x1, y1]) - np.array([5, 5])))
-        sin_theta = np.sin(np.pi/2)
-        cos_theta = np.cos(np.pi/2)
+        # # ================================================================
+        # define a hyperlane that rotates around obstacle (Benjamin's method)
+        # r = 0.5  # safety radius of each robot
+        # p_c = np.array([5, 5]) + 2*r*(np.array([x1, y1]) - np.array([5, 5]))/(np.linalg.norm(np.array([x1, y1]) - np.array([5, 5])))
+        # sin_theta = np.sin(np.pi/2)
+        # cos_theta = np.cos(np.pi/2)
+        # rotation = np.array([[cos_theta, -sin_theta], [sin_theta, cos_theta]])
+        # # rotation2 = np.array([[np.cos(0.6), -np.sin(0.6)], [np.sin(0.6), np.cos(0.6)]])
+        # v = rotation @ (np.array([x1, y1]) - np.array([5, 5]))
+        # a = v[1] / v[0]
+        # b = p_c[1] - a*p_c[0]
+        # # a = np.round(a, decimals=2)
+        # # b = np.round(b, decimals=2)
+        # # a = -1
+        # # b = 8.58
+
+        # return a, b
+        # # ================================================================
+
+        # ==================================================================
+        # define a hyper-plane that is tangent to the two robots (out original approach)
+        r = 1.2  # safety radius of each robot
+        distance = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+        sin_theta = 2 * r / distance
+        if sin_theta > 1:
+            sin_theta = 1.
+        cos_theta = np.sqrt(1 - sin_theta ** 2)
         rotation = np.array([[cos_theta, -sin_theta], [sin_theta, cos_theta]])
-        # rotation2 = np.array([[np.cos(0.6), -np.sin(0.6)], [np.sin(0.6), np.cos(0.6)]])
-        v = rotation @ (np.array([x1, y1]) - np.array([5, 5]))
-        a = v[1] / v[0]
-        b = p_c[1] - a*p_c[0]
-        # a = np.round(a, decimals=2)
-        # b = np.round(b, decimals=2)
-        # a = -1
-        # b = 8.58
-# # ================================================================
-#
-# #================================================================
-#         # delete later
-#         # print('x1, y1: ' , x1, ' ', y1)
-#         # print('x2, y2: ', x2, ' ', y2)
-#         # print()
-#         # print('distance: ', distance)
-#
-#         # print('n: ', n)
-#         # print('a: ', a)
-#         # print('middle point: ', [(x1+x2)/2, (y1+y2)/2])
-# #=================================================================
-        return a, b
+        rotation2 = np.array([[np.cos(0.), -np.sin(0.)], [np.sin(0.), np.cos(0.)]])
+        n = np.array([y2 - y1, x1 - x2])
+        n = rotation2 @ rotation @ n
+        a = n[0] * (x1 + x2) / 2 + n[1] * (y1 + y2) / 2
+
+        return n, a
+        # ==================================================================
+
 
     def collision_avoidance(self, X1, X2, xref1, xref2): # xref1, xref2 shape: (N, 7)
-        # define the hyper-plane for collision avoidance
+# ============================================================================================
+#         define a hyperlane that rotates around obstacle (Benjamin's method)
+#         x1 = X1[0]
+#         y1 = X1[1]
+#         x2 = X2[0]
+#         y2 = X2[1]
+#         #distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
+#         a, b = self.define_hyperplane(x1, y1, x2, y2)
+# #====================================================================
+#         # delete later
+#         print("hyperplane: y = {}x + {}".format(a, b))
+#         distance = np.sqrt((x1-5)**2 + (y1-5)**2)
+# #====================================================================
+#         # define linear constraints
+#         ineqA = np.zeros((self.N, self.n, self.nu+self.nx))
+#         ineqb = np.zeros((self.N, self.n))
+#         for i in range(self.N):
+#             # if distance < 1.5:
+#             ineqA[i] = np.array([[0, 0, 0, 0, -a, 1, 0, 0, 0, 0],\
+#                                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
+#             ineqb[i, 0] = b + a*xref1[i,0] - xref1[i,1]
+#             ineqb[i, 1] = 1e5
+#             # elif distance > 1.5:
+#             #     # if two robots are far from each other, the constraints are inactive
+#             #     ineqA[i] = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\
+#             #                          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
+#             #     ineqb[i, 0] = 1e5
+#             #     ineqb[i, 1] = 1e5
+#         self.hyperplane = {"A": ineqA, "bs": ineqb}
+# =============================================================================================
+
+# =============================================================================================
+        # define a hyper-plane that is tangent to the two robots (out original approach)
         x1 = X1[0]
         y1 = X1[1]
         x2 = X2[0]
         y2 = X2[1]
-        #distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
-        a, b = self.define_hyperplane(x1, y1, x2, y2)
-#====================================================================
-        # delete later
-        print("hyperplane: y = {}x + {}".format(a, b))
-        distance = np.sqrt((x1-5)**2 + (y1-5)**2)
-#====================================================================
+        distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
+        n, a = self.define_hyperplane(x1, y1, x2, y2)
         # define linear constraints
         ineqA = np.zeros((self.N, self.n, self.nu+self.nx))
         ineqb = np.zeros((self.N, self.n))
         for i in range(self.N):
-            # if distance < 1.5:
-            ineqA[i] = np.array([[0, 0, 0, 0, -a, 1, 0, 0, 0, 0],\
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
-            ineqb[i, 0] = b + a*xref1[i,0] - xref1[i,1]
-            ineqb[i, 1] = 1e5
-            # elif distance > 1.5:
-            #     # if two robots are far from each other, the constraints are inactive
-            #     ineqA[i] = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\
-            #                          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
+            ineqA[i] = np.array([[0, 0, 0, 0, n[0], n[1], 0, 0, 0, 0],\
+                                 [0, 0, 0, 0, -n[0], -n[1], 0, 0, 0, 0]])
+            # if distance < 2:
+            ineqb[i, 0] = a - n[0]*xref1[i,0] - n[1]*xref1[i,1]
+            ineqb[i, 1] = -a + n[0]*xref2[i,0] + n[1]*xref2[i,1]
+            # elif distance > 2:
+            # # if two robots are far from each other, the constraints are inactive
             #     ineqb[i, 0] = 1e5
             #     ineqb[i, 1] = 1e5
         self.hyperplane = {"A": ineqA, "bs": ineqb}
+# ============================================================================================
 
-#==========================================================================================
-        # delete later
-        # for i in range(self.N):
-        #     print("reference positions of robot 1: ", xref1[i, 0], ' ', xref1[i, 1])
-        #     print("right hand side of Ax <= b for robot1: ", a - n[0]*xref1[i, 0] - n[1]*xref1[i, 1])
-#==========================================================================================
     def control(self, state, Ads, Bds):
         self.problem = {"xinit": -state}  # eq.c = -xinit
         # set up linearized models as equality constraints
