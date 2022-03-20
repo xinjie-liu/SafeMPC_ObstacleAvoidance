@@ -112,7 +112,7 @@ def plot_multi_robot(real_trajectory):
                                   blit=False)
     plt.show()
 
-def line_traj_generate(start, goal, total_step):  # start: (x, y, theta)
+def line_traj_generate(start, goal, total_step, dt):  # start: (x, y, theta)
     total_step = int(total_step)
     # xr yr xrdot yrdot xrddot yrddot theta
     x = np.zeros([total_step, ])
@@ -125,9 +125,9 @@ def line_traj_generate(start, goal, total_step):  # start: (x, y, theta)
         x[i + 1] = start[0] + i * x_interval
         y[i + 1] = start[1] + i * y_interval
     #xdot = np.sign(np.diff(x)[1])*0.5 * np.ones(len(x))  # constant velocity
-    xdot = np.diff(x)[1]*np.ones(len(x))/(1e-3)
+    xdot = np.diff(x)[1]*np.ones(len(x))/(dt)
     #ydot = np.sign(np.diff(y)[1])*0.5 * np.ones(len(y))
-    ydot = np.diff(y)[1]*np.ones(len(y))/(1e-3)
+    ydot = np.diff(y)[1]*np.ones(len(y))/(dt)
     xddot = np.zeros(len(x))
     yddot = np.zeros(len(y))
     theta = np.arctan2(ydot, xdot)
@@ -158,6 +158,16 @@ def linearize_model(Xref, Uref, dt):
     for i in range(Xref.shape[0]):
         Ad[i] = np.array([[1, Uref[i, 1]*dt, 0], [-Uref[i, 1]*dt, 1, Uref[i, 0]*dt], [0, 0, 1]])
         Bd[i] = np.array([[-dt, 0], [0, 0], [0, -dt]])
+    return Ad, Bd
+
+def linearize_model_global(Xref, Uref, dt):
+    # linearized model in global inertial frame
+    Ad = np.zeros([Xref.shape[0], 3, 3])
+    Bd = np.zeros([Xref.shape[0], 3, 2])
+    for i in range(Xref.shape[0]):
+        Ad[i] = np.array([[1, 0, -Uref[i, 0]*np.sin(Xref[i,-1])*dt], [0, 1, Uref[i, 0]*np.cos(Xref[i,-1])*dt], [0, 0, 1]])
+        Bd[i] = np.array([[np.cos(Xref[i,-1])*dt, 0], [np.sin(Xref[i,-1])*dt, 0], [0, dt]])
+
     return Ad, Bd
 
 def wrapAngle(angle):

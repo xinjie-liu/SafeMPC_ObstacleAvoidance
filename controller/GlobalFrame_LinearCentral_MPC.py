@@ -232,9 +232,9 @@ linear_models1 = linearize_model_global(Xref1, Uref1, dt)
 linear_models2 = linearize_model_global(Xref2, Uref2, dt)
 # #=========================================================
 x1 = np.array([0., 0., 0.]) # This angle needs to be in standard notation (it gets wrapped later)
-env1 = Robot(x1[0], x1[1], x1[2])
+env1 = Robot(x1[0], x1[1], x1[2], dt=dt)
 x2 = np.array([10., 10., 0.]) # This angle needs to be in standard notation (it gets wrapped later)
-env2 = Robot(x2[0], x2[1], x2[2])
+env2 = Robot(x2[0], x2[1], x2[2], dt=dt)
 N = 5
 mpc = MPC(N)
 nx = 3 # take care: nx here refers to nx for single robot!!
