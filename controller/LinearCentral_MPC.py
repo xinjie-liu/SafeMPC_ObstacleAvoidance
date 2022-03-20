@@ -18,8 +18,8 @@ Parameters of the class
 """
 
 class MPC():
-    def __init__(self, N):
-        self.dt = 1e-3
+    def __init__(self, N,dt):
+        self.dt = dt
         self.N = N  # planning horizon
         self.stages = forcespro.MultistageProblem(N)  # create the stages for the whole finite horizon
         self.nx = 3 * 2
@@ -43,19 +43,17 @@ class MPC():
         for i in range(self.N):
             self.stages.dims[i]['n'] = self.nx + self.nu  # number of stage variables
             self.stages.dims[i]['r'] = self.nx  # number of equality constraints
-# =============================================================================
-#             self.stages.dims[i]['l'] = 2  # number of lower bounds
-#             self.stages.dims[i]['u'] = 2  # number of upper bounds
-# 
-#             # lower bounds
-#             self.stages.ineq[i]['b']['lbidx'] = np.array([1, 3])  # lower bound acts on these indices
-#             self.stages.ineq[i]['b']['lb'] = np.array([-3, -3])  # lower bound for this stage variable
-# 
-#             # upper bounds
-#             self.stages.ineq[i]['b']['ubidx'] = np.array([1, 3])  # upper bound acts on these indices
-#             self.stages.ineq[i]['b']['ub'] = np.array([3, 3])  # upper bound for this stage variable
-# 
-# =============================================================================
+            self.stages.dims[i]['l'] = 4  # number of lower bounds
+            self.stages.dims[i]['u'] = 4  # number of upper bounds
+
+            # lower bounds
+            self.stages.ineq[i]['b']['lbidx'] = np.array([1, 2, 3, 4])  # lower bound acts on these indices
+            self.stages.ineq[i]['b']['lb'] = np.array([-10, -10, -10, -10])  # lower bound for this stage variable
+
+            # upper bounds
+            self.stages.ineq[i]['b']['ubidx'] = np.array([1, 2, 3, 4])  # upper bound acts on these indices
+            self.stages.ineq[i]['b']['ub'] = np.array([10, 10, 10, 10])  # upper bound for this stage variable
+
             # collision avoidance between robots: section 8.8 of documentation(https://forces.embotech.com/Documentation/low_level_interface/index.html#cost-function)
             # QCQP problem
             
@@ -109,8 +107,8 @@ class MPC():
     def define_hyperplane(self, x1, y1, x2, y2):
         # given position of two robots, compute the normal vector and the value of projection of boundary point onto the normal vector
         r = 1 # safety radius of each robot
-
-        
+        x1,y1 = 0,0
+        x2,y2 = 10,10
         distance = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
         
         
@@ -212,7 +210,7 @@ class MPC():
 # =============================================================================
         ineqA = np.zeros((self.N, self.n, self.nu+self.nx))
         ineqb = np.zeros((self.N, self.n))
-        if distance < 5:
+        if distance < 100:
             for i in range(self.N):
                 
                 ineqA[i] = np.array([[0, 0, 0, 0, -n[0]*cos_1[i] - n[1]*sin_1[i], n[0]*sin_1[i]-n[1]*cos_1[i], 0, 0, 0, 0],\
@@ -288,23 +286,23 @@ class MPC():
 # #=======================================================
 plt.close("all")
 storeN = []
-T = 10
-dt = 1e-3
+T = 15
+dt = 1e-2
 # Xref1 = traj_generate(T/dt, T)
 # Xref2 = traj_generate(T/dt, T)
-Xref1 = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt)
-Xref2 = line_traj_generate([10.,10.,0.], [0.,0.,0.], T/dt)
+Xref1 = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt,dt)
+Xref2 = line_traj_generate([10.,10.,0.], [0.,0.,0.], T/dt,dt)
 Uref1 = get_ref_input(Xref1)
 Uref2 = get_ref_input(Xref2)
-linear_models1 = linearize_model(Xref1, Uref1, 1e-3)
-linear_models2 = linearize_model(Xref2, Uref2, 1e-3)
+linear_models1 = linearize_model(Xref1, Uref1, dt)
+linear_models2 = linearize_model(Xref2, Uref2, dt)
 # #=========================================================
-x1 = np.array([0., 0, np.pi]) # This angle needs to be in standard notation (it gets wrapped later)
+x1 = np.array([0., 0, np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env1 = Robot(x1[0], x1[1], x1[2])
-x2 = np.array([10., 10., 0]) # This angle needs to be in standard notation (it gets wrapped later)
+x2 = np.array([10., 10., -3*np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env2 = Robot(x2[0], x2[1], x2[2])
 N = 10
-mpc = MPC(N)
+mpc = MPC(N,dt)
 nx = 3 # take care: nx here refers to nx for single robot!!
 real_trajectory = {'x1': [x1[0]], 'y1': [x1[1]], 'z1': [0], 'theta1': [x1[2]], 'x2': [x2[0]], 'y2': [x2[1]], 'z2': [0], 'theta2': [x2[2]]}
 uStore = []

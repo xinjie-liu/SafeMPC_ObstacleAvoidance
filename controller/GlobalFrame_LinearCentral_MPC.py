@@ -18,8 +18,8 @@ Parameters of the class
 """
 
 class MPC():
-    def __init__(self, N):
-        self.dt = 2e-2
+    def __init__(self, N,dt):
+        self.dt = dt
         self.N = N  # planning horizon
         self.stages = forcespro.MultistageProblem(N)  # create the stages for the whole finite horizon
         self.nx = 3 * 2
@@ -40,29 +40,57 @@ class MPC():
         for i in range(self.N):
             self.stages.dims[i]['n'] = self.nx + self.nu  # number of stage variables
             self.stages.dims[i]['r'] = self.nx  # number of equality constraints
-            self.stages.dims[i]['l'] = 2  # number of lower bounds
-            self.stages.dims[i]['u'] = 2  # number of upper bounds
+            self.stages.dims[i]['l'] = 4  # number of lower bounds
+            self.stages.dims[i]['u'] = 4  # number of upper bounds
 
             # lower bounds
-            self.stages.ineq[i]['b']['lbidx'] = np.array([1, 3])  # lower bound acts on these indices
-            self.stages.ineq[i]['b']['lb'] = np.array([-5, -5])  # lower bound for this stage variable
+            self.stages.ineq[i]['b']['lbidx'] = np.array([1, 2, 3, 4])  # lower bound acts on these indices
+            self.stages.ineq[i]['b']['lb'] = np.array([-10, -10, -10, -10])  # lower bound for this stage variable
 
             # upper bounds
-            self.stages.ineq[i]['b']['ubidx'] = np.array([1, 3])  # upper bound acts on these indices
-            self.stages.ineq[i]['b']['ub'] = np.array([5, 5])  # upper bound for this stage variable
+            self.stages.ineq[i]['b']['ubidx'] = np.array([1, 2, 3, 4])  # upper bound acts on these indices
+            self.stages.ineq[i]['b']['ub'] = np.array([10, 10, 10, 10])  # upper bound for this stage variable
 
             # collision avoidance between robots: section 8.8 of documentation(https://forces.embotech.com/Documentation/low_level_interface/index.html#cost-function)
             # QCQP problem
-            # self.stages.ineq[i]['q']['idx'] = np.zeros((1,), dtype=object) # index vectors
-            # self.stages.ineq[i]['q']['idx'][0] = np.array([5, 6, 8, 9])
-            # self.stages.ineq[i]['q']['Q'] = np.zeros((1,), dtype=object) # Hessians, only one quadratic constraints
-            # self.stages.ineq[i]['q']['Q'][0] = -np.array([[1, 0, -1, 0], [0, 1, 0, -1], [-1, 0, 1, 0], [0, -1, 0, 1]]) # square distance between robots
-            # self.stages.ineq[i]['q']['r'] = -np.array([0.1])  # RHSs
-
-            # hyper-plane linear inequality constraints for collision avoidance
-            self.stages.dims[i]['p'] = 2 # two linear constraints for two robots
-            self.stages.ineq[i]['p']['A'] = np.zeros((2, self.nx + self.nu)) # Jacobian of linear inequality
-            self.stages.ineq[i]['p']['b'] = np.zeros((2, ))  # RHS of linear inequality
+# =============================================================================
+#             self.stages.dims[ i ]['q'] =1 # number of quadratic constraints
+#             
+#             self.stages.ineq[i]['q']['idx'] = np.zeros((1,), dtype=object) # index vectors          
+#             self.stages.ineq[i]['q']['idx'][0] = np.array([5, 6, 8, 9])
+# # =============================================================================
+# #             self.stages.ineq[i]['q']['idx'][1] = np.array([5])
+# #             self.stages.ineq[i]['q']['idx'][2] = np.array([6])                                                     
+# #             self.stages.ineq[i]['q']['idx'][3] = np.array([8])
+# #             self.stages.ineq[i]['q']['idx'][4] = np.array([9])
+# # =============================================================================
+#             
+#             self.stages.ineq[i]['q']['Q'] = np.zeros((1,), dtype=object) # Hessians, only one quadratic constraint
+#             self.stages.ineq[i]['q']['Q'][0] = np.array([[-1.0, 0., 1.0, 0.], [0., -1.0, 0., 1.0], [1.0, 0., -1.0, 0.], [0., 1.0, 0., -1.0]]) # square distance between robots
+# # =============================================================================
+# #             self.stages.ineq[i]['q']['Q'][1] = np.array([0.])  
+# #             self.stages.ineq[i]['q']['Q'][2] = np.array([0.])
+# #             self.stages.ineq[i]['q']['Q'][3] = np.array([0.])  
+# #             self.stages.ineq[i]['q']['Q'][4] = np.array([0.])  
+# # =============================================================================
+#             
+#             self.stages.ineq[i]['q']['l'] = np.zeros((1,), dtype=object)
+#             self.stages.ineq[i]['q']['l'][0] = np.array([[0],[0],[0],[0]])
+# # =============================================================================
+# #             self.stages.ineq[i]['q']['l'][1] = np.array([1.0])
+# #             self.stages.ineq[i]['q']['l'][2] = np.array([1.0])
+# #             self.stages.ineq[i]['q']['l'][3] = np.array([1.0])
+# #             self.stages.ineq[i]['q']['l'][4] = np.array([1.0])
+# # =============================================================================
+#             
+#             #self.stages.ineq[i]['q']['r'] = np.array([[-3],[2],[2],[2],[2]])  # RHSs
+#             self.stages.ineq[i]['q']['r'] = np.array([[-0.1]])  # RHSs
+# 
+#             # hyper-plane linear inequality constraints for collision avoidance
+#             self.stages.dims[i]['p'] = 2 # two linear constraints for two robots
+#             self.stages.ineq[i]['p']['A'] = np.zeros((2, self.nx + self.nu)) # Jacobian of linear inequality
+#             self.stages.ineq[i]['p']['b'] = np.zeros((2, ))  # RHS of linear inequality
+# =============================================================================
 
             # Cost/Objective function
             # V = sum_i(z(i)*H*z(i)) + z(N)*H*z(N) -> where z(i) = [u1,u2,x1,x2] at stage/step i.
@@ -116,85 +144,95 @@ class MPC():
         # b = p_c[1] - a*p_c[0]
         # a = np.round(a, decimals=2)
         # b = np.round(b, decimals=2)
-        a = -1
-        b = 8.58
-
-        return a, b
+# =============================================================================
+#         a = -1
+#         b = 8.58
+# 
+#         return a, b
+# =============================================================================
         # # ================================================================
 
-        # ==================================================================
-        # # define a hyper-plane that is tangent to the two robots (out original approach)
-        # r = 1.2  # safety radius of each robot
-        # distance = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
-        # sin_theta = 2 * r / distance
-        # if sin_theta > 1:
-        #     sin_theta = 1.
-        # cos_theta = np.sqrt(1 - sin_theta ** 2)
-        # rotation = np.array([[cos_theta, -sin_theta], [sin_theta, cos_theta]])
-        # rotation2 = np.array([[np.cos(0.), -np.sin(0.)], [np.sin(0.), np.cos(0.)]])
-        # n = np.array([y2 - y1, x1 - x2])
-        # n = rotation2 @ rotation @ n
-        # a = n[0] * (x1 + x2) / 2 + n[1] * (y1 + y2) / 2
-        #
-        # return n, a
-        # ==================================================================
+       
+        # define a hyper-plane that is tangent to the two robots (out original approach)
+        r = 1.2  # safety radius of each robot
+        
+        distance = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+        sin_theta = 2 * r / distance
+        if sin_theta > 1:
+            sin_theta = 1.
+# =============================================================================
+#         cos_theta = np.sqrt(1 - sin_theta ** 2)
+#         rotation = np.array([[cos_theta, -sin_theta], [sin_theta, cos_theta]])
+#    
+#         n = np.array([y2 - y1, x1 - x2])
+# =============================================================================
+        V = np.array([x2-x1,y2-y1])
+        v = V/np.linalg.norm(V)
+        theta = np.arcsin(sin_theta) + np.pi/2
+        rotation = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
+        
+        n = rotation @ v
+        a = n[0] * (x1 + x2) / 2 + n[1] * (y1 + y2) / 2
+
+        return n, a
+
 
 
     def collision_avoidance(self, X1, X2, xref1, xref2): # xref1, xref2 shape: (N, 7)
-# ============================================================================================
-        # define a hyperlane that rotates around obstacle (Benjamin's method)
-        x1 = X1[0]
-        y1 = X1[1]
-        x2 = X2[0]
-        y2 = X2[1]
-        #distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
-        a, b = self.define_hyperplane(x1, y1, x2, y2)
-#====================================================================
-        # delete later
-        print("hyperplane: y = {}x + {}".format(a, b))
-        distance = np.sqrt((x1-5)**2 + (y1-5)**2)
-#====================================================================
-        # define linear constraints
-        ineqA = np.zeros((self.N, self.n, self.nu+self.nx))
-        ineqb = np.zeros((self.N, self.n))
-        for i in range(self.N):
-            # if distance < 1.5:
-            ineqA[i] = np.array([[0, 0, 0, 0, -a, 1, 0, 0, 0, 0],\
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
-            ineqb[i, 0] = b + a*xref1[i,0] - xref1[i,1]
-            ineqb[i, 1] = 1e5
-            # elif distance > 1.5:
-            #     # if two robots are far from each other, the constraints are inactive
-            #     ineqA[i] = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\
-            #                          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
-            #     ineqb[i, 0] = 1e5
-            #     ineqb[i, 1] = 1e5
-        self.hyperplane = {"A": ineqA, "bs": ineqb}
-# =============================================================================================
-
-# =============================================================================================
-#         # define a hyper-plane that is tangent to the two robots (out original approach)
+# =============================================================================
+# # ============================================================================================
+#         # define a hyperlane that rotates around obstacle (Benjamin's method)
 #         x1 = X1[0]
 #         y1 = X1[1]
 #         x2 = X2[0]
 #         y2 = X2[1]
-#         distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
-#         n, a = self.define_hyperplane(x1, y1, x2, y2)
+#         #distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
+#         a, b = self.define_hyperplane(x1, y1, x2, y2)
+# #====================================================================
+#         # delete later
+#         print("hyperplane: y = {}x + {}".format(a, b))
+#         distance = np.sqrt((x1-5)**2 + (y1-5)**2)
+# #====================================================================
 #         # define linear constraints
 #         ineqA = np.zeros((self.N, self.n, self.nu+self.nx))
 #         ineqb = np.zeros((self.N, self.n))
 #         for i in range(self.N):
-#             ineqA[i] = np.array([[0, 0, 0, 0, n[0], n[1], 0, 0, 0, 0],\
-#                                  [0, 0, 0, 0, -n[0], -n[1], 0, 0, 0, 0]])
-#             # if distance < 2:
-#             ineqb[i, 0] = a - n[0]*xref1[i,0] - n[1]*xref1[i,1]
-#             ineqb[i, 1] = -a + n[0]*xref2[i,0] + n[1]*xref2[i,1]
-#             # elif distance > 2:
-#             # # if two robots are far from each other, the constraints are inactive
+#             # if distance < 1.5:
+#             ineqA[i] = np.array([[0, 0, 0, 0, -a, 1, 0, 0, 0, 0],\
+#                                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
+#             ineqb[i, 0] = b + a*xref1[i,0] - xref1[i,1]
+#             ineqb[i, 1] = 1e5
+#             # elif distance > 1.5:
+#             #     # if two robots are far from each other, the constraints are inactive
+#             #     ineqA[i] = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\
+#             #                          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
 #             #     ineqb[i, 0] = 1e5
 #             #     ineqb[i, 1] = 1e5
 #         self.hyperplane = {"A": ineqA, "bs": ineqb}
-# ============================================================================================
+# # =============================================================================================
+# =============================================================================
+
+        # define a hyper-plane that is tangent to the two robots (out original approach)
+        x1 = X1[0]
+        y1 = X1[1]
+        x2 = X2[0]
+        y2 = X2[1]
+        distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
+        n, a = self.define_hyperplane(x1, y1, x2, y2)
+        # define linear constraints
+        ineqA = np.zeros((self.N, self.n, self.nu+self.nx))
+        ineqb = np.zeros((self.N, self.n))
+        for i in range(self.N):
+            ineqA[i] = np.array([[0, 0, 0, 0, n[0], n[1], 0, 0, 0, 0],\
+                                 [0, 0, 0, 0, -n[0], -n[1], 0, 0, 0, 0]])
+            # if distance < 2:
+            ineqb[i, 0] = a - n[0]*xref1[i,0] - n[1]*xref1[i,1]
+            ineqb[i, 1] = -a + n[0]*xref2[i,0] + n[1]*xref2[i,1]
+            # elif distance > 2:
+            # # if two robots are far from each other, the constraints are inactive
+            #     ineqb[i, 0] = 1e5
+            #     ineqb[i, 1] = 1e5
+        self.hyperplane = {"A": ineqA, "bs": ineqb}
 
     def control(self, state, Ads, Bds):
         self.problem = {"xinit": -state}  # eq.c = -xinit
@@ -213,13 +251,6 @@ class MPC():
         self.output = self.solver.MPC_Project_FORCESPRO_solve(self.problem)[0]['output']
         control = self.output[:self.nu]
 
-#==========================================================================================
-        # delete later
-        # for i in range(self.N):
-        #     print("predicted error of robot 1 at stage {}".format(i+1), self.output[i*(self.nx+self.nu) + self.nu], ' ', self.output[i*(self.nx+self.nu) + self.nu+1])
-        #     error_vector1 = np.array([self.output[i*(self.nx+self.nu) + self.nu], self.output[i*(self.nx+self.nu) + self.nu+1]])
-        #     print("left hand side of the constrainst: ", self.hyperplane["A"][0, 4:6] @ error_vector1)
-#===========================================================================================
         return control
 
 # #=======================================================
@@ -230,8 +261,11 @@ dt = 1e-2
 #Xref2 = traj_generate(T/dt, T)
 Xref1 = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt,dt)
 Xref2 = line_traj_generate([10.,10.,0.], [0.,0.,0.], T/dt,dt)
+
+
 Uref1 = get_ref_input(Xref1)
 Uref2 = get_ref_input(Xref2)
+
 linear_models1 = linearize_model_global(Xref1, Uref1, dt)
 linear_models2 = linearize_model_global(Xref2, Uref2, dt)
 # #=========================================================
@@ -240,8 +274,8 @@ env1 = Robot(x1[0], x1[1], x1[2], dt=dt)
 x2 = np.array([10., 10., 0.]) # This angle needs to be in standard notation (it gets wrapped later)
 env2 = Robot(x2[0], x2[1], x2[2], dt=dt)
 N = 10
-mpc = MPC(N)
-nx = 3 # take care: nx here refers to nx for single robot!!
+mpc = MPC(N,dt)
+nx = 3 # take care: nx here refers to the number of states nx for a single robot!!
 real_trajectory = {'x1': [x1[0]], 'y1': [x1[1]], 'z1': [0], 'theta1': [x1[2]], 'x2': [x2[0]], 'y2': [x2[1]], 'z2': [0], 'theta2': [x2[2]]}
 uStore = []
 error_t1 = np.zeros((mpc.N,nx))
@@ -286,6 +320,11 @@ for i in range(int(T/dt)-N):
     # Extract the first control input (for error correction) and add the reference input (for trajectory tracking)
     u1 = mpc.output[0:2] + Uref1[i,:]
     u2 = mpc.output[2:mpc.nu] + Uref2[i,:]
+# =============================================================================
+#     if np.any(np.isnan(u1)) or np.any(np.isnan(u2)):
+#         break
+# =============================================================================
+    
     uStore.append([u1, u2])
     # Simulate the motion
     state1 = env1.step(u1[0], u1[1])
