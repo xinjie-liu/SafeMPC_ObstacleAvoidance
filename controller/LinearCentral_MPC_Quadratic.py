@@ -24,14 +24,12 @@ class MPC():
         self.stages = forcespro.MultistageProblem(N)  # create the stages for the whole finite horizon
         self.nx = 3 * 2
         self.nu = 2 * 2
-        self.Q = 100*np.diag([40, 40, 0.1, 40, 40, 0.1])
+        self.Q = 50*np.diag([40, 40, 0.1, 40, 40, 0.1])
         self.R = np.eye(self.nu)/100
         self.P = 0 * self.Q
         self.set_up_solver()
         import MPC_Project_FORCESPRO_py
         self.solver = MPC_Project_FORCESPRO_py
-        self.theta_err1 = None
-        self.theta_err2 = None
         self.single_nx = 3
         self.single_nu = 2
         self.n = 2
@@ -202,9 +200,9 @@ class MPC():
         ineqQ = np.zeros([self.N+1,4,4])
         ineqr = 0*np.ones([self.N+1,1])
         
-        safety_r =0# Distance to be kept between the two robots
+        safety_r =1# Distance to be kept between the two robots
         
-        if distance < 2:
+        if distance < 3:
 
             for i in range(self.N):
                 sin_1 = np.sin(self.theta[0,i])
@@ -212,11 +210,16 @@ class MPC():
                 sin_2 = np.sin(self.theta[1,i])
                 cos_2 = np.cos(self.theta[1,i])
     
-                R_1_inv = np.array([[cos_1,-sin_1,-cos_2,sin_2]])    # R is the cross rotational vector
-                R_2_inv = np.array([[sin_1,cos_1,-sin_2,-cos_2]]) 
+# =============================================================================
+#                 R_1_inv = np.array([[cos_1,-sin_1,-cos_2,sin_2]])    # R is the cross rotational vector
+#                 R_2_inv = np.array([[sin_1,cos_1,-sin_2,-cos_2]]) 
+# =============================================================================
                 
-                
-                
+                R_inv = np.array([[cos_1,-sin_1,0,0],[sin_1,cos_1,0,0],[0,0,cos_2,-sin_2],[0,0,sin_2,cos_2]])
+                #
+                #
+                R_1_inv = (R_inv[0,:] - R_inv[2,:]).reshape(1,4)
+                R_2_inv = (R_inv[1,:] - R_inv[3,:]).reshape(1,4)
                 cx = (xref1[i,0] - xref2[i,0])
                 cy = (xref1[i,1] - xref2[i,1])
                 
@@ -253,8 +256,8 @@ class MPC():
 
         # get the angle error for calculating the collision avoidance constraints
         # Extract theta_err for the n robots from the output:
-        self.theta_err[0,:] = wrapAngle(self.output[6::10])
-        self.theta_err[1,:] = wrapAngle(self.output[9::10])
+        self.theta_err[0,:] = (self.output[6::10])
+        self.theta_err[1,:] = (self.output[9::10])
         
 # =============================================================================
 #         self.theta_err1 = []
@@ -299,7 +302,7 @@ x1 = np.array([0., 0, 0]) # This angle needs to be in standard notation (it gets
 env1 = Robot(x1[0], x1[1], x1[2])
 x2 = np.array([10., 10, np.pi]) # This angle needs to be in standard notation (it gets wrapped later)
 env2 = Robot(x2[0], x2[1], x2[2])
-N = 10
+N = 5
 mpc = MPC(N,dt)
 nx = 3 # take care: nx here refers to nx for single robot!!
 real_trajectory = {'x1': [x1[0]], 'y1': [x1[1]], 'z1': [0], 'theta1': [x1[2]], 'x2': [x2[0]], 'y2': [x2[1]], 'z2': [0], 'theta2': [x2[2]]}
