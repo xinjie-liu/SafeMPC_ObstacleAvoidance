@@ -199,14 +199,17 @@ class MPC():
     def control(self, state, Ads, Bds):
         self.problem = {"xinit": -state}  # eq.c = -xinit
         # set up linearized models as equality constraints
+        avoid_collision = False # Set this parameter to true if you want to avoid collision
         for i in range(self.N - 1):
             A = Ads[i]
             B = Bds[i]
             self.problem["linear_model"+str(i+1)] = np.hstack((B, A))
-            self.problem["hyperplaneA"+str(i+1)] = self.hyperplane["A"][i]
-            self.problem["hyperplaneb"+str(i+1)] = self.hyperplane["bs"][i]
-        self.problem["hyperplaneA"+str(self.N)] = self.hyperplane["A"][self.N-1]
-        self.problem["hyperplaneb"+str(self.N)] = self.hyperplane["bs"][self.N-1]
+            if avoid_collision:
+                self.problem["hyperplaneA"+str(i+1)] = self.hyperplane["A"][i]
+                self.problem["hyperplaneb"+str(i+1)] = self.hyperplane["bs"][i]
+        if avoid_collision:
+            self.problem["hyperplaneA"+str(self.N)] = self.hyperplane["A"][self.N-1]
+            self.problem["hyperplaneb"+str(self.N)] = self.hyperplane["bs"][self.N-1]
         self.output = self.solver.MPC_Project_FORCESPRO_solve(self.problem)[0]['output']
         control = self.output[:self.nu]
 
@@ -220,12 +223,13 @@ class MPC():
         return control
 
 # #=======================================================
+plt.close("all")
 T = 10
-dt = 2e-2
-# Xref1 = traj_generate(T/dt, T)
-# Xref2 = traj_generate(T/dt, T)
-Xref1 = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt)
-Xref2 = line_traj_generate([10.,10.,0.], [0.,0.,0.], T/dt)
+dt = 1e-2
+#Xref1 = traj_generate(T/dt, T)
+#Xref2 = traj_generate(T/dt, T)
+Xref1 = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt,dt)
+Xref2 = line_traj_generate([10.,10.,0.], [0.,0.,0.], T/dt,dt)
 Uref1 = get_ref_input(Xref1)
 Uref2 = get_ref_input(Xref2)
 linear_models1 = linearize_model_global(Xref1, Uref1, dt)
@@ -235,7 +239,7 @@ x1 = np.array([0., 0., 0.]) # This angle needs to be in standard notation (it ge
 env1 = Robot(x1[0], x1[1], x1[2], dt=dt)
 x2 = np.array([10., 10., 0.]) # This angle needs to be in standard notation (it gets wrapped later)
 env2 = Robot(x2[0], x2[1], x2[2], dt=dt)
-N = 5
+N = 10
 mpc = MPC(N)
 nx = 3 # take care: nx here refers to nx for single robot!!
 real_trajectory = {'x1': [x1[0]], 'y1': [x1[1]], 'z1': [0], 'theta1': [x1[2]], 'x2': [x2[0]], 'y2': [x2[1]], 'z2': [0], 'theta2': [x2[2]]}
@@ -316,13 +320,15 @@ yPos2 = np.array(real_trajectory['y2'])
 fig1, ax1 = plt.subplots()
 ax1.plot(xPos1, yPos1, 'r')
 ax1.plot(Xref1[:, 0], Xref1[:, 1], 'g')
+ax1.title.set_text("Robot 1 vs Reference Trajectory")
 fig2, ax2 = plt.subplots()
 ax2.plot(xPos2, yPos2, 'r')
 ax2.plot(Xref2[:, 0], Xref2[:, 1], 'g')
+ax2.title.set_text("Robot 2 vs Reference Trajectory")
 fig3, ax3 = plt.subplots()
 ax3.plot(xPos1, yPos1, 'r')
 ax3.plot(xPos2, yPos2, 'b')
-
+ax3.title.set_text("Robot 1 vs Robot 2 vs Reference Trajectory")
 # plot the error
 x_error1 = np.array(x_error1)
 y_error1 = np.array(y_error1)
