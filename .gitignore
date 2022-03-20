@@ -3,4 +3,4 @@
 /workspace.xml
 model/FORCENLPsolver/
 model/__pycache__/
-controller/MPC_Project_FORCESPRO/lib/MPC_Project_FORCESPRO.dll
+controller/MPC_Project_FORCESPRO
