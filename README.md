@@ -21,3 +21,8 @@ Final project of course SC42125 Model Predictive Control
 * [decentralized NMPC, with ellipse collision constraints (references of this paper may be useful)](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8550178)
 * [separating hyper-planes by Laura Ferranti](https://arxiv.org/pdf/2006.11492.pdf)
 * [a linearization of nonlinear collision constraints: using first order Taylor approximation](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8550245)
+## 5. experiments
+* horizon length
+* terminal set & terminal cost
+* RoA
+* input constraints
