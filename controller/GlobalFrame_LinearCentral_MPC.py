@@ -99,25 +99,25 @@ class MPC():
 
         # solver settings
         self.stages.codeoptions['name'] = 'MPC_Project_FORCESPRO'
-        self.stages.codeoptions['printlevel'] = 1
+        self.stages.codeoptions['printlevel'] = 2
         self.stages.generateCode()
 
     def define_hyperplane(self, x1, y1, x2, y2):
         # # ================================================================
         # define a hyperlane that rotates around obstacle (Benjamin's method)
-        # r = 0.5  # safety radius of each robot
-        # p_c = np.array([5, 5]) + 2*r*(np.array([x1, y1]) - np.array([5, 5]))/(np.linalg.norm(np.array([x1, y1]) - np.array([5, 5])))
-        # sin_theta = np.sin(np.pi/2)
-        # cos_theta = np.cos(np.pi/2)
-        # rotation = np.array([[cos_theta, -sin_theta], [sin_theta, cos_theta]])
-        # # rotation2 = np.array([[np.cos(0.6), -np.sin(0.6)], [np.sin(0.6), np.cos(0.6)]])
-        # v = rotation @ (np.array([x1, y1]) - np.array([5, 5]))
-        # a = v[1] / v[0]
-        # b = p_c[1] - a*p_c[0]
+        r = 0.5  # safety radius of each robot
+        p_c = np.array([5, 5]) + 2*r*(np.array([x1, y1]) - np.array([5, 5]))/(np.linalg.norm(np.array([x1, y1]) - np.array([5, 5])))
+        sin_theta = np.sin(np.pi/2)
+        cos_theta = np.cos(np.pi/2)
+        rotation = np.array([[cos_theta, -sin_theta], [sin_theta, cos_theta]])
+        # rotation2 = np.array([[np.cos(0.6), -np.sin(0.6)], [np.sin(0.6), np.cos(0.6)]])
+        v = rotation @ (np.array([x1, y1]) - np.array([5, 5]))
+        a = v[1] / v[0]
+        b = p_c[1] - a*p_c[0]
         # a = np.round(a, decimals=2)
         # b = np.round(b, decimals=2)
-        a = -1
-        b = 8.58
+        # a = -1.2
+        # b = 10
 
         return a, b
         # # ================================================================
@@ -162,7 +162,10 @@ class MPC():
             ineqA[i] = np.array([[0, 0, 0, 0, -a, 1, 0, 0, 0, 0],\
                                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
             ineqb[i, 0] = b + a*xref1[i,0] - xref1[i,1]
-            ineqb[i, 1] = 1e5
+            # ineqA[i] = np.array([[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],\
+            #                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
+            # ineqb[i, 0] = -xref1[i,0] + a
+            # ineqb[i, 1] = 1e5
             # elif distance > 1.5:
             #     # if two robots are far from each other, the constraints are inactive
             #     ineqA[i] = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],\
@@ -207,8 +210,8 @@ class MPC():
             self.problem["hyperplaneb"+str(i+1)] = self.hyperplane["bs"][i]
         self.problem["hyperplaneA"+str(self.N)] = self.hyperplane["A"][self.N-1]
         self.problem["hyperplaneb"+str(self.N)] = self.hyperplane["bs"][self.N-1]
-        self.output = self.solver.MPC_Project_FORCESPRO_solve(self.problem)[0]['output']
-        control = self.output[:self.nu]
+        self.output = self.solver.MPC_Project_FORCESPRO_solve(self.problem)
+        control = self.output[0]['output'][:self.nu]
 
 #==========================================================================================
         # delete later
@@ -224,16 +227,16 @@ T = 10
 dt = 2e-2
 # Xref1 = traj_generate(T/dt, T)
 # Xref2 = traj_generate(T/dt, T)
-Xref1 = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt)
-Xref2 = line_traj_generate([10.,10.,0.], [0.,0.,0.], T/dt)
+Xref1 = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt, dt)
+Xref2 = line_traj_generate([10.,10.,0.], [0.,0.,0.], T/dt, dt)
 Uref1 = get_ref_input(Xref1)
 Uref2 = get_ref_input(Xref2)
 linear_models1 = linearize_model_global(Xref1, Uref1, dt)
 linear_models2 = linearize_model_global(Xref2, Uref2, dt)
 # #=========================================================
-x1 = np.array([0., 0., 0.]) # This angle needs to be in standard notation (it gets wrapped later)
+x1 = np.array([0., 0., np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env1 = Robot(x1[0], x1[1], x1[2], dt=dt)
-x2 = np.array([10., 10., 0.]) # This angle needs to be in standard notation (it gets wrapped later)
+x2 = np.array([10., 10., 5*np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env2 = Robot(x2[0], x2[1], x2[2], dt=dt)
 N = 5
 mpc = MPC(N)
@@ -248,7 +251,7 @@ x_error2 = []
 y_error2 = []
 
 for i in range(int(T/dt)-N):
-# for i in range(10):
+#for i in range(10):
     # Find the new linearisation (from current step to current step + N
     Ads1 = linear_models1[0][i:i+N]
     Bds1 = linear_models1[1][i:i+N]
@@ -279,9 +282,11 @@ for i in range(int(T/dt)-N):
     mpc.collision_avoidance(x1, x2, Xref1[i:i+N+1], Xref2[i:i+N+1])
     # Solve the MPC problem:
     control = mpc.control(error_t, Ads, Bds)
+    if not mpc.output[1] == 1:
+        break
     # Extract the first control input (for error correction) and add the reference input (for trajectory tracking)
-    u1 = mpc.output[0:2] + Uref1[i,:]
-    u2 = mpc.output[2:mpc.nu] + Uref2[i,:]
+    u1 = mpc.output[0]['output'][0:2] + Uref1[i,:]
+    u2 = mpc.output[0]['output'][2:mpc.nu] + Uref2[i,:]
     uStore.append([u1, u2])
     # Simulate the motion
     state1 = env1.step(u1[0], u1[1])
