@@ -33,13 +33,21 @@ class MPC():
         for i in range(self.N):
             self.stages.dims[i]['n'] = self.nx + self.nu + 1  # number of stage variables (one slack variable per stage)
             self.stages.dims[i]['r'] = self.nx  # number of equality constraints
-            self.stages.dims[i]['l'] = 0  # nx + nu  # number of lower bounds
-            self.stages.dims[i]['u'] = 0  # nx + nu  # number of upper bounds
+            self.stages.dims[i]['l'] = 3  # nx + nu  # number of lower bounds
+            self.stages.dims[i]['u'] = 2  # nx + nu  # number of upper bounds
 
             # hyper-plane linear inequality constraints for collision avoidance
             self.stages.dims[i]['p'] = 1
             self.stages.ineq[i]['p']['A'] = np.zeros((1, self.nx+self.nu+1)) # Jacobian of linear inequality
             self.stages.ineq[i]['p']['b'] = np.zeros((1, ))  # RHS of linear inequality
+
+            # lower bounds
+            self.stages.ineq[i]['b']['lbidx'] = np.array([1, 2, 6])  # lower bound acts on these indices
+            self.stages.ineq[i]['b']['lb'] = np.array([-3, -3, 0])  # lower bound for this stage variable
+            # upper bounds
+            self.stages.ineq[i]['b']['ubidx'] = np.array([1, 2])  # lower bound acts on these indices
+            self.stages.ineq[i]['b']['ub'] = np.array([3, 3])  # lower bound for this stage variable
+
 
             # Cost/Objective function
             # V = sum_i(z(i)*H*z(i)) + z(N)*H*z(N) -> where z(i) = [u1,u2,x1,x2] at stage/step i.
@@ -47,16 +55,16 @@ class MPC():
                 # For xN use the terminal cost P to penalise the xN state
                 # self.stages.cost[i]['H'] = np.vstack(
                 #     (np.hstack((self.R, np.zeros((self.nu, self.nx)))), np.hstack((np.zeros((self.nx, self.nu)), self.P))))
-                self.stages.cost[i]['H'] = block_diag(self.R, self.P, np.array([[0]]))
+                self.stages.cost[i]['H'] = block_diag(self.R, self.P, np.array([[1000]]))
             else:
                 # For i from 0 to N-1 use the stage cost Q to penalise the state
                 # self.stages.cost[i]['H'] = np.vstack(
                 #     (np.hstack((self.R, np.zeros((self.nu, self.nx)))), np.hstack((np.zeros((self.nx, self.nu)), self.Q))))
-                self.stages.cost[i]['H'] = block_diag(self.R, self.Q, np.array([[0]]))
+                self.stages.cost[i]['H'] = block_diag(self.R, self.Q, np.array([[1000]]))
 
-            f = np.zeros((self.nx + self.nu + 1, 1))
-            f[-1, 0] = 1 # slack variable
-            self.stages.cost[i]['f'] = f
+            # f = np.zeros((self.nx + self.nu + 1, 1))
+            # f[-1, 0] = 1000 # slack variable
+            self.stages.cost[i]['f'] = np.zeros((self.nx + self.nu + 1, 1))
 
             # Equality constraints (expressed in the form of C*z(i) + D*z(i+1) = 0, where C = ( B(i) | A(i) ), D = (0 | -I)
             if (i < self.N - 1):
@@ -85,7 +93,7 @@ class MPC():
     def define_hyperplane(self, x1, y1, obsx=5, obsy=5):
         # # ================================================================
         # define a hyperlane that rotates around obstacle (Benjamin's method)
-        r = 0.5  # safety radius of each robot
+        r = 1  # safety radius of each robot
         pos_obs = np.array([obsx, obsy])
         p_c = pos_obs + 2*r*(np.array([x1, y1]) - pos_obs)/np.linalg.norm(np.array([x1, y1]) - pos_obs)
         sin_theta = np.sin(np.pi/2)
@@ -107,7 +115,7 @@ class MPC():
         # define a hyperlane that rotates around obstacle (Benjamin's method)
         x1 = X1[0]
         y1 = X1[1]
-        # distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
+        distance = np.sqrt((x1-5)**2 + (y1-5)**2)
         a, b = self.define_hyperplane(x1, y1)
         # ====================================================================
         # delete later
@@ -117,9 +125,12 @@ class MPC():
         ineqA = np.zeros((self.N, self.n, self.nu + self.nx + 1))
         ineqb = np.zeros((self.N, self.n))
         for i in range(self.N):
-            # if distance < 1.5:
+            # if distance < 2.5:
             ineqA[i] = np.array([[0, 0, -a, 1, 0, -1]])
             ineqb[i][0] = b + a * xref1[i, 0] - xref1[i, 1]
+            # else:
+            #     ineqA[i] = np.zeros((1, 6))
+            #     ineqb[i][0] = 100
         self.hyperplane = {"A": ineqA, "bs": ineqb}
 
     def control(self, state, Ads, Bds):
@@ -143,13 +154,13 @@ from model.MPC_utils import *
 T = 10
 dt = 2e-2
 #Xref = traj_generate(T/dt, T)
-Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], T/dt, dt) #+ np.array([0,0,0,0,0,0,0.2])*np.random.rand(10000,7)
+Xref = line_traj_generate([0.,0., 0.], [10.,10.,0.], T/dt, dt) #+ np.array([0,0,0,0,0,0,0.2])*np.random.rand(10000,7)
 Uref = get_ref_input(Xref)
 linear_models = linearize_model_global(Xref, Uref, dt)
 # #=========================================================
 N = 15
 nx = 3
-x0 = np.array([0, 0, 0]) # This angle needs to be in standard notation (it gets wrapped later)
+x0 = np.array([0, 0, np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2], dt)
 mpc = MPC(N, dt=dt)
 real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}

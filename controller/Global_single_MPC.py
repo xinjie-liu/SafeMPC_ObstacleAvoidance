@@ -104,7 +104,7 @@ class MPC():
         # define a hyperlane that rotates around obstacle (Benjamin's method)
         x1 = X1[0]
         y1 = X1[1]
-        # distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
+        distance = np.sqrt((x1-5)**2 + (y1-5)**2)
         a, b = self.define_hyperplane(x1, y1)
         # ====================================================================
         # delete later
@@ -114,9 +114,12 @@ class MPC():
         ineqA = np.zeros((self.N, self.n, self.nu + self.nx))
         ineqb = np.zeros((self.N, self.n))
         for i in range(self.N):
-            # if distance < 1.5:
-            ineqA[i] = np.array([[0, 0, -a, 1, 0]])
-            ineqb[i][0] = b + a * xref1[i, 0] - xref1[i, 1]
+            if distance < 2.5:
+                ineqA[i] = np.array([[0, 0, -a, 1, 0]])
+                ineqb[i][0] = b + a * xref1[i, 0] - xref1[i, 1]
+            else:
+                ineqA[i] = np.zeros((1, 5))
+                ineqb[i][0] = 100
         self.hyperplane = {"A": ineqA, "bs": ineqb}
 
     def control(self, state, Ads, Bds):
@@ -165,8 +168,7 @@ for i in range(int(T/dt)-N):
     # Wrap the error too (otherwise there is a huge between -pi and pi)
     error_t[2] = wrapAngle(error_t[2])
     # set up the linear inequality constraints for collision avoidance
-
-
+    mpc.collision_avoidance(x0, Xref[i:i+N+1])
     # Solve the MPC problem:
     control = mpc.control(error_t, Ads, Bds)
     if not mpc.output[1] == 1:
