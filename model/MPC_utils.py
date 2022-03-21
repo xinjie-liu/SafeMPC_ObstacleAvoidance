@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d.axes3d as p3
 from matplotlib import animation
+import scipy.linalg as la
 
 
 
@@ -173,9 +174,20 @@ def linearize_model_global(Xref, Uref, dt):
 def wrapAngle(angle):
     return  np.arctan2(np.sin(angle), np.cos(angle))
 
+def solve_dare(Ads, Bds, Q, R):
+    P = np.zeros((len(Ads), *Q.shape))
+    for i in range(len(Ads)):
+        P[i] = la.solve_discrete_are(Ads[i], Bds[i], Q, R)
+
+    return P
+
+# dt = 1e-2
+# Q = 100 * np.diag([40, 40, 0.1])
+# R = np.eye(2) / 100
 # Xref = traj_generate(10000, 10)
 # Uref = get_ref_input(Xref)
-# linear_models = linearize_model(Xref, Uref, 1e-3)
+# linear_models = linearize_model(Xref, Uref, dt)
 # Ads = linear_models[0][:10]
 # Bds = linear_models[1][:10]
+# P = solve_dare(Ads, Bds, Q, R)
 # print(linear_models)
