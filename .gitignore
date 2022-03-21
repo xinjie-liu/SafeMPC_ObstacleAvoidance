@@ -15,4 +15,6 @@ controller/MPC_Project_FORCESPRO.zip
 controller/*.mat
 controller/*.pyc
 controller/*.forces
-
+controller/FORCESNLPsolver/
+controller/MPC_Project_FORCESPRO_py.pyc
+.idea/

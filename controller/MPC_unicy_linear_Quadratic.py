@@ -50,15 +50,15 @@ class MPC():
             self.stages.dims[ i ]['q'] =1 # number of quadratic constraints
             
             self.stages.ineq[i]['q']['idx'] = np.zeros((1,), dtype=object) # index vectors     (starting at 1)      
-            self.stages.ineq[i]['q']['idx'][0] = np.array([4,5]) # Add the constraint to e1,e2
+            self.stages.ineq[i]['q']['idx'][0] = np.array([[4],[5]]) # Add the constraint to e1,e2
 
             
             self.stages.ineq[i]['q']['Q'] = np.zeros((1,), dtype=object) # Hessians, only one quadratic constraint
-            self.stages.ineq[i]['q']['Q'][0] = 0*np.array([[1.0, 0.], [0., 1.0]]) # square distance between robots
+            self.stages.ineq[i]['q']['Q'][0] = 0*np.array([[1.0, 0.],[0.,1.]]) # square distance between robots
 
             
             self.stages.ineq[i]['q']['l'] = np.zeros((1,), dtype=object)
-            self.stages.ineq[i]['q']['l'][0] = np.array([[0],[0]])
+            self.stages.ineq[i]['q']['l'][0] = np.array([[0.],[0.]])
  
             self.stages.ineq[i]['q']['r'] = np.array([[2]])  # RHSs
 
@@ -88,14 +88,15 @@ class MPC():
         # parameter: linearized model
         for i in range(self.N-1):
             self.stages.newParam("linear_model"+str(i+1), [i+1], 'eq.C')
-            self.stages.newParam("obstacleQ"+str(i+1), [i+1], 'ineq.q.Q',1)
-            self.stages.newParam("obstaclel"+str(i+1), [i+1], 'ineq.q.l',1)
+            self.stages.newParam("obstacleQ"+str(i+1), [i+1], 'ineq.q.Q')
+            self.stages.newParam("obstaclel"+str(i+1), [i+1], 'ineq.q.l')
             self.stages.newParam("obstacleR"+str(i+1), [i+1], 'ineq.q.r')
         # define the output
         self.stages.newOutput('output', range(1, self.N+1), range(1, self.nu + self.nx + 1))
         # solver settings
         self.stages.codeoptions['name'] = 'MPC_Project_FORCESPRO'
         self.stages.codeoptions['printlevel'] = 2
+        self.stages.codeoptions['overwrite'] = 1
         self.stages.generateCode()
 
     def collision_avoidance(self, X1, xref):
@@ -127,7 +128,7 @@ class MPC():
                 
                 ineql[i] = -np.array([[2*cx],[2*cy]])
     
-                ineqQ[i] = -np.array([[1,0],[0,1]])
+                ineqQ[i] = -np.array([[1.,0.],[0.,1.]])
            
                 ineqr[i] = -np.array([[safety_r**2-cx**2-cy**2]])
                 
@@ -162,16 +163,16 @@ class MPC():
 from model.MPC_utils import *
 plt.close("all")
 T = 10
-dt = 1e-2
+dt = 5e-3
 #Xref = traj_generate(T/dt, T)
 Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], T/dt,dt) 
 Uref = get_ref_input(Xref)
 linear_models = linearize_model_global(Xref, Uref, dt)
 # #=========================================================
-x0 = np.array([1., 0., 0.]) # This angle needs to be in standard notation (it gets wrapped later)
+x0 = np.array([0., 0., np.pi/4.]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2], dt=dt)
 
-N = 10
+N = 20
 nx = 3
 mpc = MPC(N,dt)
 real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
@@ -198,8 +199,8 @@ for i in range(int(T/dt)-N):
                 break_loop = True
             else:
                 break_loop = False
-    if break_loop:
-        break
+    #if break_loop:
+        #break
     # Solve the MPC problem:
     control = mpc.control(error_t[0,:], Ads, Bds)
     # Extract the first control input (for error correction) and add the reference input (for trajectory tracking)
