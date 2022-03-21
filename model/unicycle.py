@@ -24,7 +24,7 @@ class State():
         return str(self.x) + "," + str(self.y) + "," + str(self.theta)
 
 class Robot():
-    def __init__(self, x_=0, y_=0, z_=0, R_=0.0325, L_=0.1, dt=1e-3):
+    def __init__(self, x_=0, y_=0, z_=0, R_=0.0325, L_=0.1, dt=2e-2):
         self.current = State(x_, y_, z_) # zero initialization
         self.R = R_  # in meter
         self.L = L_  # in meter

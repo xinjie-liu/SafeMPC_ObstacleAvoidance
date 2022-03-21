@@ -158,6 +158,7 @@ def linearize_model(Xref, Uref, dt):
     for i in range(Xref.shape[0]):
         Ad[i] = np.array([[1, Uref[i, 1]*dt, 0], [-Uref[i, 1]*dt, 1, Uref[i, 0]*dt], [0, 0, 1]])
         Bd[i] = np.array([[-dt, 0], [0, 0], [0, -dt]])
+
     return Ad, Bd
 
 def linearize_model_global(Xref, Uref, dt):

@@ -24,7 +24,7 @@ class MPC():
         self.stages = forcespro.MultistageProblem(N)  # create the stages for the whole finite horizon
         self.nx = 3 * 2
         self.nu = 2 * 2
-        self.Q = 100*np.diag([4, 40, 0.1, 4, 40, 0.1])
+        self.Q = 100*np.diag([40, 40, 0.1, 40, 40, 0.1])
         self.R = np.eye(self.nu)/100
         self.P = 0 * self.Q
         self.set_up_solver()
