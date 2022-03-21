@@ -15,10 +15,10 @@ import casadi
 """
 Parameters of the class
 """
-
+dt = 1e-2
 class MPC():
     def __init__(self, N):
-        self.dt = 1e-3
+        self.dt = dt
         self.N = N  # planning horizon
         self.stages = forcespro.MultistageProblem(N)  # create the stages for the whole finite horizon
         self.nx = 3
@@ -62,6 +62,8 @@ class MPC():
         # parameter: linearized model
         for i in range(self.N-1):
             self.stages.newParam("linear_model"+str(i+1), [i+1], 'eq.C')
+        # parameter: terminal cost matrix P
+        self.stages.newParam("terminal_cost", [N], 'cost.H')
         # define the output
         self.stages.newOutput('output', range(1, 11), range(1, self.nu + self.nx + 1))
 
@@ -77,6 +79,8 @@ class MPC():
             A = Ads[i]
             B = Bds[i]
             problem["linear_model"+str(i+1)] = np.hstack((B, A))
+        problem['terminal_cost'] = np.vstack(
+            (np.hstack((self.R, np.zeros((self.nu, self.nx)))), np.hstack((np.zeros((self.nx, self.nu)), self.P))))
         self.output = self.solver.MPC_Project_FORCESPRO_solve(problem)[0]['output']
         control = self.output[:2]
 
@@ -85,27 +89,28 @@ class MPC():
 # #=======================================================
 from model.MPC_utils import *
 T = 10
-dt = 1e-3
-#Xref = traj_generate(T/dt, T)
-Xref = line_traj_generate([10.,10.,0], [0.,0.,0.], T/dt) #+ np.array([0,0,0,0,0,0,0.2])*np.random.rand(10000,7)
+Xref = traj_generate(T/dt, T)
+#Xref = line_traj_generate([10.,10.,0], [0.,0.,0.], T/dt, dt=dt)
 Uref = get_ref_input(Xref)
-linear_models = linearize_model(Xref, Uref, 1e-3)
+linear_models = linearize_model(Xref, Uref, dt)
 # #=========================================================
 N = 10
 nx = 3
-x0 = np.array([10, 10, 0]) # This angle needs to be in standard notation (it gets wrapped later)
-env = Robot(x0[0], x0[1], x0[2])
+x0 = np.array([1.5, 0, np.pi/2]) # This angle needs to be in standard notation (it gets wrapped later)
+env = Robot(x0[0], x0[1], x0[2], dt=dt)
 mpc = MPC(N)
 real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
 uStore = []
 error_t = np.zeros((nx))
 x_error = []
 y_error = []
+Ps = solve_dare(linear_models[0], linear_models[1], mpc.Q, mpc.R)
 
 for i in range(int(T/dt)-N):
     # Find the new linearisation (from current step to current step + N
     Ads = linear_models[0][i:i+N]
     Bds = linear_models[1][i:i+N]
+    mpc.P = Ps[i+N-1] # set the terminal cost
     # Calculate the new errors (current pose vs reference pose)
     error_t[:2] = np.array([[np.cos(x0[2]),np.sin(x0[2])],[-np.sin(x0[2]), np.cos(x0[2])]])@(Xref[i,:2] - x0[:2])
     #np.array([np.array([[np.cos(x0[2]),np.sin(x0[2])],[-np.sin(x0[2]), np.cos(x0[2])]])@(Xref[i+k,:2] - x0[:2]) for k in range(N)])
@@ -132,7 +137,7 @@ for i in range(int(T/dt)-N):
 
     x_error.append(error_t[0])
     y_error.append(error_t[1])
-print(mpc)
+
 # plot the robot position
 xPos = np.array(real_trajectory['x'])
 yPos = np.array(real_trajectory['y'])
@@ -147,4 +152,4 @@ ax2.plot(range(len(x_error)), x_error, 'b')
 ax2.plot(range(len(y_error)), y_error, 'g')
 plt.show()
 # animation
-# plot_single_robot(real_trajectory)
+plot_single_robot(real_trajectory)
