@@ -79,47 +79,60 @@ class MPC():
         self.stages.codeoptions['printlevel'] = 2
         self.stages.generateCode()
 
-    def define_hyperplane(self, x1, y1, obsx=5, obsy=5):
-        # # ================================================================
-        # define a hyperlane that rotates around obstacle (Benjamin's method)
-        r = 0.5  # safety radius of each robot
-        pos_obs = np.array([obsx, obsy])
-        p_c = pos_obs + 2*r*(np.array([x1, y1]) - pos_obs)/np.linalg.norm(np.array([x1, y1]) - pos_obs)
-        sin_theta = np.sin(np.pi/2)
-        cos_theta = np.cos(np.pi/2)
-        rotation = np.array([[cos_theta, -sin_theta], [sin_theta, cos_theta]])
-        # rotation2 = np.array([[np.cos(0.6), -np.sin(0.6)], [np.sin(0.6), np.cos(0.6)]])
-        v = rotation @ (np.array([x1, y1]) - pos_obs)
-        a = v[1] / v[0]
-        b = p_c[1] - a*p_c[0]
-        # a = np.round(a, decimals=2)
-        # b = np.round(b, decimals=2)
-        a = -1
-        b = 10
-
-        return a, b
+    # def define_hyperplane(self, x1, y1, obsx=5, obsy=5):
+    #     # # ================================================================
+    #     # define a hyperlane that rotates around obstacle (Benjamin's method)
+    #     r = 0.5  # safety radius of each robot
+    #     pos_obs = np.array([obsx, obsy])
+    #     p_c = pos_obs + 2*r*(np.array([x1, y1]) - pos_obs)/np.linalg.norm(np.array([x1, y1]) - pos_obs)
+    #     sin_theta = np.sin(np.pi/2)
+    #     cos_theta = np.cos(np.pi/2)
+    #     rotation = np.array([[cos_theta, -sin_theta], [sin_theta, cos_theta]])
+    #     # rotation2 = np.array([[np.cos(0.6), -np.sin(0.6)], [np.sin(0.6), np.cos(0.6)]])
+    #     v = rotation @ (np.array([x1, y1]) - pos_obs)
+    #     a = v[1] / v[0]
+    #     b = p_c[1] - a*p_c[0]
+    #     # a = np.round(a, decimals=2)
+    #     # b = np.round(b, decimals=2)
+    #     a = -1
+    #     b = 10
+    #
+    #     return a, b
 
     def collision_avoidance(self, X1, xref1):  # xref1, xref2 shape: (N, 7)
         # ============================================================================================
         # define a hyperlane that rotates around obstacle (Benjamin's method)
-        x1 = X1[0]
-        y1 = X1[1]
-        distance = np.sqrt((x1-5)**2 + (y1-5)**2)
-        a, b = self.define_hyperplane(x1, y1)
-        # ====================================================================
-        # delete later
-        print("hyperplane: y = {}x + {}".format(a, b))
-        # ====================================================================
-        # define linear constraints
+        # x1 = X1[0]
+        # y1 = X1[1]
+        # distance = np.sqrt((x1-5)**2 + (y1-5)**2)
+        # a, b = self.define_hyperplane(x1, y1)
+        # # ====================================================================
+        # # delete later
+        # print("hyperplane: y = {}x + {}".format(a, b))
+        # # ====================================================================
+        # # define linear constraints
+        # ineqA = np.zeros((self.N, self.n, self.nu + self.nx))
+        # ineqb = np.zeros((self.N, self.n))
+        # for i in range(self.N):
+        #     if distance < 2.5:
+        #         ineqA[i] = np.array([[0, 0, -a, 1, 0]])
+        #         ineqb[i][0] = b + a * xref1[i, 0] - xref1[i, 1]
+        #     else:
+        #         ineqA[i] = np.zeros((1, 5))
+        #         ineqb[i][0] = 100
+        # self.hyperplane = {"A": ineqA, "bs": ineqb}
+        # ============================================================================================
+        # approach: linearize Euclidian distance to obstacle as linear constraint
+        # x1 = X1[0]
+        # y1 = X1[1]
+        xobs = 5
+        yobs = 5
+        r = 0.2 # safety radius
         ineqA = np.zeros((self.N, self.n, self.nu + self.nx))
         ineqb = np.zeros((self.N, self.n))
         for i in range(self.N):
-            if distance < 2.5:
-                ineqA[i] = np.array([[0, 0, -a, 1, 0]])
-                ineqb[i][0] = b + a * xref1[i, 0] - xref1[i, 1]
-            else:
-                ineqA[i] = np.zeros((1, 5))
-                ineqb[i][0] = 100
+                ineqA[i] = np.array([[0, 0, 10-2*xref1[i,0], 10-2*xref1[i,1], 0]])
+                ineqb[i][0] = -r**2 + xobs**2 + yobs**2
         self.hyperplane = {"A": ineqA, "bs": ineqb}
 
     def control(self, state, Ads, Bds):
