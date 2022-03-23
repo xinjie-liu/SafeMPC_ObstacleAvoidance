@@ -108,13 +108,17 @@ class MPC():
         r = 0.5  # safety radius of each robot
         distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
         sin_theta = 2*r / distance
+        if sin_theta >= 1:
+            sin_theta = 1
+        cos_theta = np.sqrt(1 - sin_theta**2)
         p_c = np.array([x2, y2]) - np.array([x1, y1])
 
-        sin_theta = np.sin(np.pi/2)
-        cos_theta = np.cos(np.pi/2)
-        rotation = np.array([[cos_theta, sin_theta], [-sin_theta, cos_theta]]) # 90 degree, clockwise
+        sin_ = np.sin(np.pi/2)
+        cos_ = np.cos(np.pi/2)
+        rotation = np.array([[cos_, sin_], [-sin_, cos_]]) # 90 degree, clockwise
+        rotation2 = np.array([[cos_theta, sin_theta], [-sin_theta, cos_theta]])
 
-        normal_vec = (rotation @ p_c) / np.linalg.norm(p_c) # TODO: rotation angle
+        normal_vec = (rotation2 @ rotation @ p_c) / np.linalg.norm(p_c)
         print(normal_vec)
 
         return normal_vec
@@ -137,7 +141,7 @@ class MPC():
         ineqA = np.zeros((self.N, self.n, self.nu+self.nx))
         ineqb = np.zeros((self.N, self.n))
         for i in range(self.N):
-            ineqA[i] = np.array([[-v[0]*cos_-v[1]*sin_, 0, 0, 0, 0, 0, 0, 0, 0, 0],\
+            ineqA[i] = np.array([[-v[0]*cos_-v[1]*sin_, 0, 0, 0, 0, 0, 0, 0, 0, 0],\ # TODO: deal with omega
                                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
             ineqb[i, 0] = v[0]*Uref1[i,0]*cos_ + v[1]*Uref1[i,0]*sin_
         self.hyperplane = {"A": ineqA, "bs": ineqb}
