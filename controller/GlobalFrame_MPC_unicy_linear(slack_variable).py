@@ -55,12 +55,12 @@ class MPC():
                 # For xN use the terminal cost P to penalise the xN state
                 # self.stages.cost[i]['H'] = np.vstack(
                 #     (np.hstack((self.R, np.zeros((self.nu, self.nx)))), np.hstack((np.zeros((self.nx, self.nu)), self.P))))
-                self.stages.cost[i]['H'] = block_diag(self.R, self.P, np.array([[1000]]))
+                self.stages.cost[i]['H'] = block_diag(self.R, self.P, np.array([[3]]))
             else:
                 # For i from 0 to N-1 use the stage cost Q to penalise the state
                 # self.stages.cost[i]['H'] = np.vstack(
                 #     (np.hstack((self.R, np.zeros((self.nu, self.nx)))), np.hstack((np.zeros((self.nx, self.nu)), self.Q))))
-                self.stages.cost[i]['H'] = block_diag(self.R, self.Q, np.array([[1000]]))
+                self.stages.cost[i]['H'] = block_diag(self.R, self.Q, np.array([[3]]))
 
             # f = np.zeros((self.nx + self.nu + 1, 1))
             # f[-1, 0] = 1000 # slack variable
@@ -90,10 +90,10 @@ class MPC():
         self.stages.codeoptions['printlevel'] = 2
         self.stages.generateCode()
 
-    def define_hyperplane(self, x1, y1, obsx=5, obsy=5):
+    def define_hyperplane(self, x1, y1, obsx=0.5, obsy=0):
         # # ================================================================
         # define a hyperlane that rotates around obstacle (Benjamin's method)
-        r = 1  # safety radius of each robot
+        r = 0.1  # safety radius of each robot
         pos_obs = np.array([obsx, obsy])
         p_c = pos_obs + 2*r*(np.array([x1, y1]) - pos_obs)/np.linalg.norm(np.array([x1, y1]) - pos_obs)
         sin_theta = np.sin(np.pi/2)
@@ -101,6 +101,7 @@ class MPC():
         rotation = np.array([[cos_theta, -sin_theta], [sin_theta, cos_theta]])
         # rotation2 = np.array([[np.cos(0.6), -np.sin(0.6)], [np.sin(0.6), np.cos(0.6)]])
         v = rotation @ (np.array([x1, y1]) - pos_obs)
+        v = v / np.linalg.norm(v)
         a = v[1] / v[0]
         b = p_c[1] - a*p_c[0]
         # a = np.round(a, decimals=2)
@@ -111,11 +112,11 @@ class MPC():
         return a, b
 
     def collision_avoidance(self, X1, xref1):  # xref1, xref2 shape: (N, 7)
-        # ============================================================================================
+        # # ============================================================================================
         # define a hyperlane that rotates around obstacle (Benjamin's method)
         x1 = X1[0]
         y1 = X1[1]
-        distance = np.sqrt((x1-5)**2 + (y1-5)**2)
+        distance = np.sqrt((x1-0.5)**2 + (y1-0)**2)
         a, b = self.define_hyperplane(x1, y1)
         # ====================================================================
         # delete later
@@ -125,13 +126,30 @@ class MPC():
         ineqA = np.zeros((self.N, self.n, self.nu + self.nx + 1))
         ineqb = np.zeros((self.N, self.n))
         for i in range(self.N):
-            # if distance < 2.5:
-            ineqA[i] = np.array([[0, 0, -a, 1, 0, -1]])
-            ineqb[i][0] = b + a * xref1[i, 0] - xref1[i, 1]
-            # else:
-            #     ineqA[i] = np.zeros((1, 6))
-            #     ineqb[i][0] = 100
+            if distance < 0.35:
+                ineqA[i] = np.array([[0, 0, a, -1, 0, -1]])
+                ineqb[i][0] = -b - a * xref1[i, 0] + xref1[i, 1]
+            else:
+                ineqA[i] = np.zeros((1, 6))
+                ineqb[i][0] = 100
         self.hyperplane = {"A": ineqA, "bs": ineqb}
+        # ============================================================================================
+        # # approach: linearize Euclidian distance to obstacle as linear constraint
+        # x1 = X1[0]
+        # y1 = X1[1]
+        # xobs = 0.5
+        # yobs = 0
+        # r = 0.1 # safety radius
+        # distance = np.sqrt((x1 - xobs) ** 2 + (y1 - yobs) ** 2)
+        # ineqA = np.zeros((self.N, self.n, self.nu + self.nx + 1))
+        # ineqb = np.zeros((self.N, self.n))
+        # for i in range(self.N):
+        #     # if distance < 0.4:
+        #     ineqA[i] = np.array([[0, 0, 2*xobs-2*xref1[i,0], 2*yobs-2*xref1[i,1], 0, -1]])
+        #     ineqb[i][0] = -r**2 + (xref1[i,0]-xobs)**2 + (xref1[i,1]-yobs)**2
+        #     # else:
+        #     #     pass
+        # self.hyperplane = {"A": ineqA, "bs": ineqb}
 
     def control(self, state, Ads, Bds):
         self.problem = {"xinit": -state}  # eq.c = -xinit
@@ -153,14 +171,14 @@ class MPC():
 from model.MPC_utils import *
 T = 10
 dt = 2e-2
-#Xref = traj_generate(T/dt, T)
-Xref = line_traj_generate([0.,0., 0.], [10.,10.,0.], T/dt, dt) #+ np.array([0,0,0,0,0,0,0.2])*np.random.rand(10000,7)
+Xref = traj_generate(T/dt, T)
+#Xref = line_traj_generate([0.,0., 0.], [10.,10.,0.], T/dt, dt) #+ np.array([0,0,0,0,0,0,0.2])*np.random.rand(10000,7)
 Uref = get_ref_input(Xref)
 linear_models = linearize_model_global(Xref, Uref, dt)
 # #=========================================================
 N = 15
 nx = 3
-x0 = np.array([0, 0, np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
+x0 = np.array([1, 0, np.pi/2]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2], dt)
 mpc = MPC(N, dt=dt)
 real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
