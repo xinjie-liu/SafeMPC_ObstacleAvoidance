@@ -189,10 +189,7 @@ class MPC():
 
         # get the angle error for calculating the collision avoidance constraints
         # Extract theta_err for the n robots from the output:
-       
 
-        
-        
         return control
 
 # #=======================================================
