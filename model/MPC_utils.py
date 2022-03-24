@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d.axes3d as p3
 from matplotlib import animation
 import scipy.linalg as la
-
+from control import dare
 
 
 def plot_single_robot(real_trajectory):
@@ -181,6 +181,24 @@ def solve_dare(Ads, Bds, Q, R):
 
     return P
 
+def find_P(Ads,Bds,Q,R):
+    n = len(Ads)
+    
+    P = np.zeros((n,*Q.shape))
+    P[-1],_,_ = dare(Ads[-1],Bds[-1],Q,R)
+
+    for i in range(n-1):
+        _,_,K = dare(Ads[n-2-i],Bds[n-2-i],Q,R)
+        K = -K
+        # print(Ads[n-2-i].shape)
+        # print(Bds[n-2-i].shape)
+        # print(K)
+        Q_k = Q + K.T @ R @ K
+        A_k = Ads[n-2-i] + Bds[n-2-i] @ K
+        P[n-2-i] = A_k.T @ P[n-1-i] @ A_k  + Q_k
+        
+    return P
+
 # dt = 1e-2
 # Q = 100 * np.diag([40, 40, 0.1])
 # R = np.eye(2) / 100
@@ -189,5 +207,7 @@ def solve_dare(Ads, Bds, Q, R):
 # linear_models = linearize_model(Xref, Uref, dt)
 # Ads = linear_models[0][:10]
 # Bds = linear_models[1][:10]
-# P = solve_dare(Ads, Bds, Q, R)
-# print(linear_models)
+# P = find_P(Ads, Bds, Q, R)
+# #print(linear_models)
+# print(P)
+
