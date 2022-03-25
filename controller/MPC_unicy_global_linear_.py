@@ -73,6 +73,7 @@ class MPC():
 
         # parameter: initial state
         self.stages.newParam("xinit", [1], 'eq.c')  # 1-indexed
+        self.stages.newParam("terminal_cost", [N], 'cost.H')
         # parameter: linearized model
         for i in range(self.N-1):
             self.stages.newParam("linear_model"+str(i+1), [i+1], 'eq.C')  
@@ -88,7 +89,7 @@ class MPC():
         self.stages.codeoptions['overwrite'] = 1
         self.stages.generateCode()
 
-    def collision_avoidance(self, X1, xref,start,goal,obs):
+    def collision_avoidance(self, X1, xref,start,goal,obs,timestep):
         # define the hyper-plane for collision avoidance
         
 
@@ -102,21 +103,21 @@ class MPC():
             x1,y1 = goal
             sign = 1
         
-
+        #x1 = X1[0]
+        #y1 = X1[1]
         # obstacle at 5,5
         distance = np.sqrt((x1 - obs[0]) ** 2 + (y1 - obs[1]) ** 2)       
         #distance_to_goal = np.sqrt((x1 - 10) ** 2 + (y1 - 10) ** 2) 
-        
             
         ineqA = np.zeros((self.N, self.nu+self.nx))
         ineqb = np.zeros((self.N))
         
         safety_r =.5 # Distance to be kept between the two robots
-        
+
         sin_theta = 2 * safety_r / distance
 # =============================================================================
-#         if sin_theta > 1:
-#             sin_theta = 1.
+#         if np.abs(sin_theta) > 1:
+#             sin_theta = np.sign(sin_theta)*1.
 # =============================================================================
         
 
@@ -147,9 +148,16 @@ class MPC():
             ineqA[i] = np.array([0, 0, n[0], n[1], 0])
             ineqb[i] = a - n[0]*xref[i,0] - n[1]*xref[i,1]
 
+# =============================================================================
+#         if timestep%100!=0:
+#             ineqA = self.hyperplane["A"]
+#             ineqb = self.hyperplane["b"]
+# =============================================================================
+
         global storeConstraints
         if sign==-1:
             storeConstraints[0,:] = np.array([n[0],n[1],a]) 
+            #storeConstraints.append(np.array([n[0],n[1],a]) )
         else:
             storeConstraints[1,:] = np.array([n[0],n[1],a]) 
         self.hyperplane = {"A": ineqA, "b": ineqb}
@@ -181,9 +189,11 @@ class MPC():
 #            # print(f_cost)
 #             self.problem["linear_cost"+str(i+1)] = f_cost
 # =============================================================================
+
             self.problem["hyperplaneA"+str(i+1)] = self.hyperplane["A"][i]
             self.problem["hyperplaneb"+str(i+1)] = self.hyperplane["b"][i]
-            
+        self.problem['terminal_cost'] = np.vstack(
+            (np.hstack((self.R, np.zeros((self.nu, self.nx)))), np.hstack((np.zeros((self.nx, self.nu)), self.P))))
         self.output = self.solver.MPC_Project_FORCESPRO_solve(self.problem)[0]['output']
         control = self.output[:self.nu]
 
@@ -219,11 +229,12 @@ error_t = np.zeros((mpc.N,nx))
 x_error = []
 y_error = []
 theta_error = []
-
+Ps = find_P(linear_models[0], linear_models[1], mpc.Q, mpc.R)
 for i in range(int(T/dt)-N):
     # Find the new linearisation (from current step to current step + N
     Ads = linear_models[0][i:i+N]
     Bds = linear_models[1][i:i+N]
+    mpc.P = Ps[i + N - 1]  # set the terminal cost
     # Calculate the new errors (current pose vs reference pose)
     error_t[:,:2] = np.array([(x0[:2] - Xref[i+k,:2]) for k in range(N)])
     error_t[:,2] = np.array([wrapAngle(x0[2]) - Xref[i+k,6] for k in range(N)])
@@ -232,7 +243,7 @@ for i in range(int(T/dt)-N):
     # mpc.theta_err = error_t[2]
     start = Xref[0,0:2]
     goal = Xref[-1,0:2]
-    mpc.collision_avoidance(x0, Xref[i:i+N],start,goal,obs)
+    mpc.collision_avoidance(x0, Xref[i:i+N],start,goal,obs,i)
     for k in range(N):
             #e = error_t[k,:2].reshape(2,1)
             e = np.array([0,0,error_t[k,0],error_t[k,1],error_t[k,2]])
@@ -279,6 +290,13 @@ ax1.add_patch(circle)
 xx1 = np.linspace(-1,10,100)
 yy1 = (-storeConstraints[0,0]*xx1 + storeConstraints[0,2])/storeConstraints[0,1]
 #
+# =============================================================================
+# for k in range(len(storeConstraints)):
+#     if k%100==0:
+#         xx1 = np.linspace(-1,10,100)
+#         yy1 = (-storeConstraints[k][0]*xx1 + storeConstraints[k][2])/storeConstraints[k][1]
+#         ax1.plot(xx1,yy1,'b--')
+# =============================================================================
 xx2 = np.linspace(2,10,100)
 yy2 = (-storeConstraints[1,0]*xx2 + storeConstraints[1,2])/storeConstraints[1,1]
 
