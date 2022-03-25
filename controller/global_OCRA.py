@@ -130,20 +130,25 @@ class MPC():
         x1 = X1[0]
         y1 = X1[1]
         theta1 = wrapAngle(X1[2])
-        sin_ = np.sin(theta1)
-        cos_ = np.cos(theta1)
-        x2 = X2[0]
-        y2 = X2[1]
+        sin_ = np.sin(theta1 + Uref1[:,1] * self.dt)
+        cos_ = np.cos(theta1 + Uref1[:,1] * self.dt)
+
+        x2 = 5
+        y2 = 5
         distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
+
         v = self.define_hyperplane(x1, y1)
 
         # define linear constraints
         ineqA = np.zeros((self.N, self.n, self.nu+self.nx))
         ineqb = np.zeros((self.N, self.n))
         for i in range(self.N):
-            ineqA[i] = np.array([[-v[0]*cos_-v[1]*sin_, 0, 0, 0, 0, 0, 0, 0, 0, 0],\ # TODO: deal with omega
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
-            ineqb[i, 0] = v[0]*Uref1[i,0]*cos_ + v[1]*Uref1[i,0]*sin_
+            if distance < 2.:
+                ineqA[i] = np.array([[-v[0]*cos_[i]-v[1]*sin_[i], v[0]*Uref1[i,0]*sin_[i]*self.dt-v[1]*Uref1[i,0]*cos_[i]*self.dt, 0, 0, 0, 0, 0, 0, 0, 0],\
+                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
+                ineqb[i, 0] = v[0]*Uref1[i,0]*cos_[i] + v[1]*Uref1[i,0]*sin_[i]
+            else:
+                pass
         self.hyperplane = {"A": ineqA, "bs": ineqb}
 # =============================================================================================
 
@@ -187,7 +192,7 @@ x1 = np.array([0., 0., np.pi/4]) # This angle needs to be in standard notation (
 env1 = Robot(x1[0], x1[1], x1[2], dt=dt)
 x2 = np.array([10., 10., 5*np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env2 = Robot(x2[0], x2[1], x2[2], dt=dt)
-N = 1
+N = 4
 mpc = MPC(N)
 nx = 3 # take care: nx here refers to nx for single robot!!
 real_trajectory = {'x1': [x1[0]], 'y1': [x1[1]], 'z1': [0], 'theta1': [x1[2]], 'x2': [x2[0]], 'y2': [x2[1]], 'z2': [0], 'theta2': [x2[2]]}
