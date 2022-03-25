@@ -104,7 +104,8 @@ uStore = []
 error_t = np.zeros((nx))
 x_error = []
 y_error = []
-Ps = solve_dare(linear_models[0], linear_models[1], mpc.Q, mpc.R)
+# Ps = solve_dare(linear_models[0], linear_models[1], mpc.Q, mpc.R)
+Ps = find_P(linear_models[0], linear_models[1], mpc.Q, mpc.R)
 
 for i in range(int(T/dt)-N):
     # Find the new linearisation (from current step to current step + N
