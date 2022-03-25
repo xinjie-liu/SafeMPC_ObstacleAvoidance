@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d.axes3d as p3
 from matplotlib import animation
-
+from control import dare
 
 
 def plot_single_robot(real_trajectory):
@@ -170,6 +170,26 @@ def linearize_model_global(Xref, Uref, dt):
         Bd[i] = np.array([[np.cos(Xref[i,-1])*dt, 0], [np.sin(Xref[i,-1])*dt, 0], [0, dt]])
 
     return Ad, Bd
+
+
+def find_P(Ads, Bds, Q, R):
+    n = len(Ads)
+
+    P = np.zeros((n, *Q.shape))
+    K = np.zeros((n, Bds.shape[-1], Ads.shape[1]))
+    P[-1], _, K[-1] = dare(Ads[-1], Bds[-1], Q, R)
+    K[-1] = -K[-1]
+    for i in range(n - 1):
+        _, _, Ki = dare(Ads[n - 2 - i], Bds[n - 2 - i], Q, R)
+        Ki = -Ki
+        # print(Ads[n-2-i].shape)
+        # print(Bds[n-2-i].shape)
+        # print(K)
+        Q_k = Q + Ki.T @ R @ Ki
+        A_k = Ads[n - 2 - i] + Bds[n - 2 - i] @ Ki
+        P[n - 2 - i] = A_k.T @ P[n - 1 - i] @ A_k + Q_k
+        K[n - 2 - i] = Ki
+    return P, K
 
 def wrapAngle(angle):
     return  np.arctan2(np.sin(angle), np.cos(angle))

@@ -3,6 +3,7 @@ File containing the class definition of the Model Predictive Controller
 """
 
 import numpy as np
+from scipy.linalg import block_diag
 import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d.axes3d as p3
 from matplotlib import animation
@@ -87,6 +88,8 @@ class MPC():
 
         # parameter: initial state
         self.stages.newParam("xinit", [1], 'eq.c')  # 1-indexed
+        # parameter: terminal cost
+        self.stages.newParam("terminal_cost", [N], 'cost.H')
         # parameter: linearized model
         for i in range(self.N-1):
             self.stages.newParam("linear_model"+str(i+1), [i+1], 'eq.C')
@@ -151,7 +154,7 @@ class MPC():
                 theta1 += wrapAngle(Uref1[i-1,1]*self.dt)
             sin_ = np.sin(theta1)
             cos_ = np.cos(theta1)
-            if distance < 5.7:
+            if distance < 5.5:
                 ineqA[i] = np.array([[-v[0]*cos_-v[1]*sin_, v[0]*Uref1[i,0]*sin_*self.dt-v[1]*Uref1[i,0]*cos_*self.dt, 0, 0, 0, 0, 0, 0, 0, 0],\
                                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
                 ineqb[i, 0] = v[0]*Uref1[i,0]*cos_ + v[1]*Uref1[i,0]*sin_ - a
@@ -172,6 +175,8 @@ class MPC():
             self.problem["hyperplaneb"+str(i+1)] = self.hyperplane["bs"][i]
         self.problem["hyperplaneA"+str(self.N)] = self.hyperplane["A"][self.N-1]
         self.problem["hyperplaneb"+str(self.N)] = self.hyperplane["bs"][self.N-1]
+        self.problem['terminal_cost'] = np.vstack(
+            (np.hstack((self.R, np.zeros((self.nu, self.nx)))), np.hstack((np.zeros((self.nx, self.nu)), self.P))))
         self.output = self.solver.MPC_Project_FORCESPRO_solve(self.problem)
         control = self.output[0]['output'][:self.nu]
 
@@ -211,6 +216,7 @@ x_error1 = []
 y_error1 = []
 x_error2 = []
 y_error2 = []
+Ps,_ = find_P(linear_models1[0], linear_models1[1], mpc.Q[:3,:3], mpc.R[:2,:2])
 
 for i in range(int(T/dt)-N):
 #for i in range(10):
@@ -219,6 +225,7 @@ for i in range(int(T/dt)-N):
     Bds1 = linear_models1[1][i:i+N]
     Ads2 = linear_models2[0][i:i+N]
     Bds2 = linear_models2[1][i:i+N]
+    mpc.P = np.zeros((2*nx, 2*nx))#block_diag(Ps[i + N - 1], 0*np.eye(nx))  # set the terminal cost (only for robot 1)
     # Calculate the new errors (current pose vs reference pose)
     # robot 1
     error_t1[:,:2] = np.array([(x1[:2] - Xref1[i+k,:2]) for k in range(N)])
