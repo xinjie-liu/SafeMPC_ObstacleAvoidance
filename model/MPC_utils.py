@@ -4,7 +4,7 @@ import mpl_toolkits.mplot3d.axes3d as p3
 from matplotlib import animation
 import scipy.linalg as la
 from control import dare
-
+from matplotlib.patches import Ellipse
 
 def plot_single_robot(real_trajectory):
     def animate(i):
@@ -185,29 +185,58 @@ def find_P(Ads,Bds,Q,R):
     n = len(Ads)
     
     P = np.zeros((n,*Q.shape))
-    P[-1],_,_ = dare(Ads[-1],Bds[-1],Q,R)
-
+    K = np.zeros((n,Bds.shape[-1],Ads.shape[1]))
+    P[-1],_,K[-1] = dare(Ads[-1],Bds[-1],Q,R)
+    K[-1] = -K[-1]
     for i in range(n-1):
-        _,_,K = dare(Ads[n-2-i],Bds[n-2-i],Q,R)
-        K = -K
+        _,_,Ki = dare(Ads[n-2-i],Bds[n-2-i],Q,R)
+        Ki = -Ki
         # print(Ads[n-2-i].shape)
         # print(Bds[n-2-i].shape)
         # print(K)
-        Q_k = Q + K.T @ R @ K
-        A_k = Ads[n-2-i] + Bds[n-2-i] @ K
+        Q_k = Q + Ki.T @ R @ Ki
+        A_k = Ads[n-2-i] + Bds[n-2-i] @ Ki
         P[n-2-i] = A_k.T @ P[n-1-i] @ A_k  + Q_k
-        
-    return P
+        K[n-2-i] = Ki
+    return P,K
 
-# dt = 1e-2
-# Q = 100 * np.diag([40, 40, 0.1])
-# R = np.eye(2) / 100
-# Xref = traj_generate(10000, 10)
-# Uref = get_ref_input(Xref)
-# linear_models = linearize_model(Xref, Uref, dt)
-# Ads = linear_models[0][:10]
-# Bds = linear_models[1][:10]
-# P = find_P(Ads, Bds, Q, R)
-# #print(linear_models)
-# print(P)
+def find_Terminal_set(c,P,K):
+    lambd,v = la.eig(P)
+    
+    r = lambd/c
+    
+    origin = np.array([0,0,0])
+    vertex = np.zeros([4,3])
 
+
+    vertex[0,:] = origin + r[0]*v[0]
+    print(vertex[0,:])
+    vertex[1,:] = origin - r[0]*v[0]
+    vertex[2,:] = origin + r[1]*v[1]
+    vertex[3,:] = origin - r[1]*v[1]
+    constraint = True
+
+    for vert in vertex:
+        if np.linalg.norm(K@vert) > 10: # 10 is the constraint on u
+            return vertex,False
+    return vertex, True
+            
+dt = 1e-2
+Q = 100 * np.diag([40, 40, 0.1])
+R = np.eye(2) / 100
+Xref = traj_generate(10000, 10)
+Uref = get_ref_input(Xref)
+linear_models = linearize_model(Xref, Uref, dt)
+Ads = linear_models[0][:10]
+Bds = linear_models[1][:10]
+P,K = find_P(Ads, Bds, Q, R)
+c=4
+vertices, feasible = find_Terminal_set(c, P[0], K[0])
+plt.figure()
+ax = plt.gca()
+for vertex in vertices:
+    ax.plot(vertex[0],vertex[1],'b*')
+ellipse = Ellipse(xy=(0,0), width=2*np.linalg.norm(vertices[0, :2]), height=2*np.linalg.norm(vertices[2, :2]),
+                        edgecolor='r', fc='None', lw=2)
+ax.add_patch(ellipse)
+plt.show()
