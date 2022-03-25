@@ -11,6 +11,7 @@ from model.unicycle import Robot
 import forcespro
 import get_userid
 import casadi
+from scipy.io import savemat
 
 """
 Parameters of the class
@@ -175,6 +176,7 @@ class MPC():
 # =============================================================================
     
     def control(self, state, Ads, Bds,x0,xref):
+        obs_avoidance = False
         self.problem = {"xinit": -state}  # eq.c = -xinit
         # set up linearized models as equality constraints
         #if np.sqrt((x0[0] - 5) ** 2 + (x0[1] - 5) ** 2) <= 2:
@@ -189,9 +191,9 @@ class MPC():
 #            # print(f_cost)
 #             self.problem["linear_cost"+str(i+1)] = f_cost
 # =============================================================================
-
-            self.problem["hyperplaneA"+str(i+1)] = self.hyperplane["A"][i]
-            self.problem["hyperplaneb"+str(i+1)] = self.hyperplane["b"][i]
+            if obs_avoidance:
+                self.problem["hyperplaneA"+str(i+1)] = self.hyperplane["A"][i]
+                self.problem["hyperplaneb"+str(i+1)] = self.hyperplane["b"][i]
         self.problem['terminal_cost'] = np.vstack(
             (np.hstack((self.R, np.zeros((self.nu, self.nx)))), np.hstack((np.zeros((self.nx, self.nu)), self.P))))
         self.output = self.solver.MPC_Project_FORCESPRO_solve(self.problem)[0]['output']
@@ -209,15 +211,15 @@ storeConstraints = np.zeros((2,3))
 T = 10
 dt = 5e-3
 #Xref = traj_generate(T/dt, T)
-Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], T/dt,dt) 
+Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], T/dt,dt)
 obs = np.array([5,5])
 Uref = get_ref_input(Xref)
 linear_models = linearize_model_global(Xref, Uref, dt)
 # #=========================================================
-x0 = np.array([0., 0., 0.]) # This angle needs to be in standard notation (it gets wrapped later)
+x0 = np.array([2., 0., 0.]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2], dt=dt)
 
-N = 20
+N = 10
 nx = 3
 mpc = MPC(N,dt)
 real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
@@ -226,7 +228,7 @@ error_t = np.zeros((mpc.N,nx))
 x_error = []
 y_error = []
 theta_error = []
-Ps = find_P(linear_models[0], linear_models[1], mpc.Q, mpc.R)
+Ps,_ = find_P(linear_models[0], linear_models[1], mpc.Q, mpc.R)
 for i in range(int(T/dt)-N):
     # Find the new linearisation (from current step to current step + N
     Ads = linear_models[0][i:i+N]
@@ -306,24 +308,22 @@ ax1.legend()
 x_error = np.array(x_error)
 y_error = np.array(y_error)
 theta_error = np.array(theta_error)
-error = np.abs(np.vstack((x_error,y_error,theta_error)))
-total_error = np.sum(error,0)
+# =============================================================================
+# error = np.abs(np.vstack((x_error,y_error,theta_error)))
+# total_error = np.sum(error,0)
+# =============================================================================
+# Save variables to .mat:
 
-# =============================================================================
-# f=open('tests.txt','a')
-# np.savetxt(f, total_error, fmt='%1.3f', newline='\n')
-# f.write("\n")
-# f.close()
-# =============================================================================
-# if not 'fig2' in locals():
-#     fig2, ax2 = plt.subplots()
-#
-# ax2.plot(total_error, label='N='+str(N),color='b')
-
-# =============================================================================
-# ax2.plot(range(len(x_error)), x_error, 'b')
-# ax2.plot(range(len(y_error)), y_error, 'g')
-# =============================================================================
+# Change save_var to True if you want to save the variables to a .mat file. Change trial number
+# if you want to save multiple trials.
+save_var = False
+trial = 1
+if save_var:
+    data = {"x": real_trajectory['x'], "y":  real_trajectory['y'], "theta":  real_trajectory['theta'],
+            "x_error": x_error, "y_error": y_error, "theta_error": theta_error,
+            "ref_x": Xref[:,0], "ref_y": Xref[:,1], "ref_theta": Xref[:,-1]}
+    savemat("experiment_"+str(trial)+"_data.mat", data)
+    
 plt.show()
 # animation
 # plot_single_robot(real_trajectory)
