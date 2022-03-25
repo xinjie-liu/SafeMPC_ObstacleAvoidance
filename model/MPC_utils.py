@@ -221,22 +221,22 @@ def find_Terminal_set(c,P,K):
             return vertex,False
     return vertex, True
             
-dt = 1e-2
-Q = 100 * np.diag([40, 40, 0.1])
-R = np.eye(2) / 100
-Xref = traj_generate(10000, 10)
-Uref = get_ref_input(Xref)
-linear_models = linearize_model(Xref, Uref, dt)
-Ads = linear_models[0][:10]
-Bds = linear_models[1][:10]
-P,K = find_P(Ads, Bds, Q, R)
-c=4
-vertices, feasible = find_Terminal_set(c, P[0], K[0])
-plt.figure()
-ax = plt.gca()
-for vertex in vertices:
-    ax.plot(vertex[0],vertex[1],'b*')
-ellipse = Ellipse(xy=(0,0), width=2*np.linalg.norm(vertices[0, :2]), height=2*np.linalg.norm(vertices[2, :2]),
-                        edgecolor='r', fc='None', lw=2)
-ax.add_patch(ellipse)
-plt.show()
+# dt = 1e-2
+# Q = 100 * np.diag([40, 40, 0.1])
+# R = np.eye(2) / 100
+# Xref = traj_generate(10000, 10)
+# Uref = get_ref_input(Xref)
+# linear_models = linearize_model(Xref, Uref, dt)
+# Ads = linear_models[0][:10]
+# Bds = linear_models[1][:10]
+# P,K = find_P(Ads, Bds, Q, R)
+# c=4
+# vertices, feasible = find_Terminal_set(c, P[0], K[0])
+# plt.figure()
+# ax = plt.gca()
+# for vertex in vertices:
+#     ax.plot(vertex[0],vertex[1],'b*')
+# ellipse = Ellipse(xy=(0,0), width=2*np.linalg.norm(vertices[0, :2]), height=2*np.linalg.norm(vertices[2, :2]),
+#                         edgecolor='r', fc='None', lw=2)
+# ax.add_patch(ellipse)
+# plt.show()
