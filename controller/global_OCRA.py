@@ -102,7 +102,7 @@ class MPC():
         self.stages.codeoptions['printlevel'] = 2
         self.stages.generateCode()
 
-    def define_hyperplane(self, x1, y1, x2=5, y2=5):
+    def define_hyperplane(self, x1, y1, x2, y2, theta2, Uref2):
         # # ================================================================
         # velocity obstacle
         r = 0.5  # safety radius of each robot
@@ -121,32 +121,40 @@ class MPC():
         normal_vec = (rotation2 @ rotation @ p_c) / np.linalg.norm(p_c)
         print(normal_vec)
 
-        return normal_vec
+        # calculate normal_vec @ velocity_robot2
+        print('theta2: ', theta2)
+        vel2 = Uref2[0,0] # approximate the velocity of robot2 with its reference (for simplicity)
+        R = np.array([[np.cos(theta2), np.sin(theta2)], [-np.sin(theta2), np.cos(theta2)]])
+        vel2_vec = R @ np.array([vel2, 0]) # get the vector of velocity of robot2
+        a = normal_vec @ vel2_vec
+        return normal_vec, a
         # # ================================================================
 
-    def collision_avoidance(self, X1, X2, xref1, xref2, Uref1): # xref1, xref2 shape: (N, 7)
+    def collision_avoidance(self, X1, X2, Xref1, Xref2, Uref1, Uref2): # xref1, xref2 shape: (N, 7)
 # ============================================================================================
         # define a hyperlane that rotates around obstacle (Benjamin's method)
         x1 = X1[0]
         y1 = X1[1]
         theta1 = wrapAngle(X1[2])
-        sin_ = np.sin(theta1 + Uref1[:,1] * self.dt)
-        cos_ = np.cos(theta1 + Uref1[:,1] * self.dt)
-
-        x2 = 5
-        y2 = 5
+        # sin_ = np.sin(theta1 + Uref1[:,1] * self.dt)
+        # cos_ = np.cos(theta1 + Uref1[:,1] * self.dt)
+        x2 = X2[0]
+        y2 = X2[1]
         distance = np.sqrt((x1-x2)**2 + (y1-y2)**2)
-
-        v = self.define_hyperplane(x1, y1)
+        v, a = self.define_hyperplane(x1, y1, x2, y2, wrapAngle(X2[2]), Uref2) # normal vector in velocity space
 
         # define linear constraints
         ineqA = np.zeros((self.N, self.n, self.nu+self.nx))
         ineqb = np.zeros((self.N, self.n))
         for i in range(self.N):
-            if distance < 2.:
-                ineqA[i] = np.array([[-v[0]*cos_[i]-v[1]*sin_[i], v[0]*Uref1[i,0]*sin_[i]*self.dt-v[1]*Uref1[i,0]*cos_[i]*self.dt, 0, 0, 0, 0, 0, 0, 0, 0],\
+            if not i == 0:
+                theta1 += wrapAngle(Uref1[i-1,1]*self.dt)
+            sin_ = np.sin(theta1)
+            cos_ = np.cos(theta1)
+            if distance < 5.7:
+                ineqA[i] = np.array([[-v[0]*cos_-v[1]*sin_, v[0]*Uref1[i,0]*sin_*self.dt-v[1]*Uref1[i,0]*cos_*self.dt, 0, 0, 0, 0, 0, 0, 0, 0],\
                                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
-                ineqb[i, 0] = v[0]*Uref1[i,0]*cos_[i] + v[1]*Uref1[i,0]*sin_[i]
+                ineqb[i, 0] = v[0]*Uref1[i,0]*cos_ + v[1]*Uref1[i,0]*sin_ - a
             else:
                 pass
         self.hyperplane = {"A": ineqA, "bs": ineqb}
@@ -192,7 +200,7 @@ x1 = np.array([0., 0., np.pi/4]) # This angle needs to be in standard notation (
 env1 = Robot(x1[0], x1[1], x1[2], dt=dt)
 x2 = np.array([10., 10., 5*np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env2 = Robot(x2[0], x2[1], x2[2], dt=dt)
-N = 4
+N = 3
 mpc = MPC(N)
 nx = 3 # take care: nx here refers to nx for single robot!!
 real_trajectory = {'x1': [x1[0]], 'y1': [x1[1]], 'z1': [0], 'theta1': [x1[2]], 'x2': [x2[0]], 'y2': [x2[1]], 'z2': [0], 'theta2': [x2[2]]}
@@ -233,7 +241,7 @@ for i in range(int(T/dt)-N):
     Bds2 = np.concatenate((zeros, Bds2), axis=2)
     Bds = np.concatenate((Bds1, Bds2), axis=1)
     # set up the linear inequality constraints for collision avoidance
-    mpc.collision_avoidance(x1, x2, Xref1[i:i+N+1], Xref2[i:i+N+1], Uref1[i:i+N+1])
+    mpc.collision_avoidance(x1, x2, Xref1[i:i+N+1], Xref2[i:i+N+1], Uref1[i:i+N+1], Uref2[i:i+N+1])
     # Solve the MPC problem:
     control = mpc.control(error_t, Ads, Bds)
     if not mpc.output[1] == 1:
