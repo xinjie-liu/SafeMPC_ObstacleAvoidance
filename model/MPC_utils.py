@@ -5,7 +5,9 @@ from matplotlib import animation
 import scipy.linalg as la
 from control import dare
 from matplotlib.patches import Ellipse
-
+from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+from scipy.spatial import ConvexHull
 def plot_single_robot(real_trajectory):
     def animate(i):
         line.set_xdata(real_trajectory['x'][:i + 1])
@@ -202,41 +204,89 @@ def find_P(Ads,Bds,Q,R):
 
 def find_Terminal_set(c,P,K):
     lambd,v = la.eig(P)
-    
-    r = lambd/c
-    
+    lambd = np.real(lambd)
+    r = lambd*c
     origin = np.array([0,0,0])
-    vertex = np.zeros([4,3])
-
-
-    vertex[0,:] = origin + r[0]*v[0]
-    print(vertex[0,:])
-    vertex[1,:] = origin - r[0]*v[0]
-    vertex[2,:] = origin + r[1]*v[1]
-    vertex[3,:] = origin - r[1]*v[1]
-    constraint = True
+    vertex = np.zeros([8,3])
+    # Bottom 4 vertices
+    vertex[0,:] = origin + r[0]*v[0] - r[2]*v[2]
+    vertex[1,:] = origin + r[1]*v[1] - r[2]*v[2]
+    vertex[2,:] = origin - r[0]*v[0] - r[2]*v[2]
+    vertex[3,:] = origin - r[1]*v[1] - r[2]*v[2]
+    # Top 4 vertices
+    vertex[4,:] = origin + r[0]*v[0] + r[2]*v[2]
+    vertex[5,:] = origin + r[1]*v[1] + r[2]*v[2]
+    vertex[6,:] = origin - r[0]*v[0] + r[2]*v[2]
+    vertex[7,:] = origin - r[1]*v[1] + r[2]*v[2]
+    
+    constraint = True 
 
     for vert in vertex:
         if np.linalg.norm(K@vert) > 10: # 10 is the constraint on u
-            return vertex,False
-    return vertex, True
-            
-# dt = 1e-2
-# Q = 100 * np.diag([40, 40, 0.1])
-# R = np.eye(2) / 100
-# Xref = traj_generate(10000, 10)
-# Uref = get_ref_input(Xref)
-# linear_models = linearize_model(Xref, Uref, dt)
-# Ads = linear_models[0][:10]
-# Bds = linear_models[1][:10]
-# P,K = find_P(Ads, Bds, Q, R)
-# c=4
-# vertices, feasible = find_Terminal_set(c, P[0], K[0])
-# plt.figure()
-# ax = plt.gca()
-# for vertex in vertices:
-#     ax.plot(vertex[0],vertex[1],'b*')
-# ellipse = Ellipse(xy=(0,0), width=2*np.linalg.norm(vertices[0, :2]), height=2*np.linalg.norm(vertices[2, :2]),
-#                         edgecolor='r', fc='None', lw=2)
-# ax.add_patch(ellipse)
-# plt.show()
+            constraint = False
+    return vertex, constraint
+
+
+def find_final_terminal_set(Ads, Bds, Q, R):
+    P,K = find_P(Ads, Bds, Q, R)
+    c = 100 # Start with some large c
+    for i in range(len(P)): # Iterate through all the terminal costs along the reference trajectory
+        feasible = False
+        while feasible == False: # If the set is infeasible reduce c by a small factor and try again
+            c = c/1.01
+            vertices, feasible = find_Terminal_set(c, P[i], K[i])
+    # Test that it works:
+    for i in range(len(P)):
+        vertices, feasible = find_Terminal_set(c, P[i], K[i])
+        print(feasible)
+    return vertices,c
+
+def plot_terminal_set(vertices):
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+    # From https://stackoverflow.com/questions/63207496/how-to-visualize-polyhedrons-defined-by-their-vertices-in-3d-with-matplotlib-or
+    hull = ConvexHull(vertices)
+    # draw the polygons of the convex hull
+    for s in hull.simplices:
+        tri = Poly3DCollection(vertices[s])
+        tri.set_color('red')
+        tri.set_alpha(0.2)
+        tri.set_edgecolor('none')
+        ax.add_collection3d(tri)
+    # draw the vertices
+    ax.scatter(vertices[:4, 0], vertices[:4, 1], vertices[:4, 2], marker='o', color='red') # bottom vertices
+    ax.scatter(vertices[4::, 0], vertices[4::, 1], vertices[4::, 2], marker='o', color='blue') # top vertices
+    ax.set_xlabel('X axis')
+    ax.set_ylabel('Y axis')
+    ax.set_zlabel('Theta axis')
+    
+    
+    xlim = np.max(np.abs(vertices[:,0]))
+    ylim = np.max(np.abs(vertices[:,1]))
+    zlim = np.max(np.abs(vertices[:,2]))
+    
+    ax.axes.set_xlim3d(left=-xlim, right=xlim) 
+    ax.axes.set_ylim3d(bottom=-ylim, top=ylim) 
+    ax.axes.set_zlim3d(bottom=-zlim, top=zlim) 
+    
+    plt.show()
+
+
+plt.close("all")
+dt = 1e-2
+Q = .01 * np.diag([4, 40, 0.1])
+R = .0001 * np.eye(2)
+Xref = traj_generate(10000, 10)
+#Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], 10000,dt)
+Uref = get_ref_input(Xref)
+linear_models = linearize_model_global(Xref, Uref, dt)
+Ads = linear_models[0][:10]
+Bds = linear_models[1][:10]
+
+
+vertices,c = find_final_terminal_set(Ads, Bds, Q, R)
+print("Final sublevel terminal set is at c = " + str(c))
+
+plot = True
+if plot:
+    plot_terminal_set(vertices)
