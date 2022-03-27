@@ -195,8 +195,8 @@ T = 10
 dt = 1e-2
 # Xref1 = traj_generate(T/dt, T)
 # Xref2 = traj_generate(T/dt, T)
-Xref1 = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt, dt)
-Xref2 = line_traj_generate([10.,10.,0.], [0.,0.,0.], T/dt, dt)
+Xref1 = line_traj_generate([0.,0.,0.], [10.,6.,0.], T/dt, dt)
+Xref2 = line_traj_generate([0.,6.,0.], [10.,0.,0.], T/dt, dt)
 Uref1 = get_ref_input(Xref1)
 Uref2 = get_ref_input(Xref2)
 linear_models1 = linearize_model_global(Xref1, Uref1, dt)
@@ -204,7 +204,7 @@ linear_models2 = linearize_model_global(Xref2, Uref2, dt)
 # #=========================================================
 x1 = np.array([0., 0., np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env1 = Robot(x1[0], x1[1], x1[2], dt=dt)
-x2 = np.array([10., 10., 5*np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
+x2 = np.array([0., 6., -np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env2 = Robot(x2[0], x2[1], x2[2], dt=dt)
 N = 5
 mpc = MPC(N)
