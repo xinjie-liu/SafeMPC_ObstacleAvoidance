@@ -24,8 +24,8 @@ class MPC():
         self.stages = forcespro.MultistageProblem(N)  # create the stages for the whole finite horizon
         self.nx = 3
         self.nu = 2
-        self.Q = 100*np.diag([4, 40, 0.1])
-        self.R = np.eye(self.nu)/100
+        self.Q = .01*np.diag([4, 4, 0.1])
+        self.R = .001*np.eye(self.nu)
         self.P = 0 * self.Q
         self.Q_obs = 0*np.diag([4, 4, 0])
         self.set_up_solver()
@@ -47,10 +47,10 @@ class MPC():
             self.stages.ineq[i]['b']['ubidx'] = np.array([1, 2])  # upper bound acts on these indices
             self.stages.ineq[i]['b']['ub'] = np.array([10, 10])  # upper bound for this stage variable
 
-
             self.stages.dims[i]['p'] = 1 # number of polytopic (linear) constraints
             self.stages.ineq[i]['p']['A'] = np.zeros((1,self.nx + self.nu)) # Jacobian of linear inequality
             self.stages.ineq[i]['p']['b'] = np.zeros((1,))# RHS of linear inequality
+
             
 
             # Cost/Objective function
@@ -82,6 +82,7 @@ class MPC():
             self.stages.newParam("linear_cost"+str(i+1), [i+1], 'cost.f',i+1)
             self.stages.newParam("hyperplaneA"+str(i+1), [i+1], 'ineq.p.A')
             self.stages.newParam("hyperplaneb"+str(i+1), [i+1], 'ineq.p.b')
+
         # define the output
         self.stages.newOutput('output', range(1, self.N+1), range(1, self.nu + self.nx + 1))
         # solver settings
@@ -149,34 +150,22 @@ class MPC():
             ineqA[i] = np.array([0, 0, n[0], n[1], 0])
             ineqb[i] = a - n[0]*xref[i,0] - n[1]*xref[i,1]
 
-# =============================================================================
-#         if timestep%100!=0:
-#             ineqA = self.hyperplane["A"]
-#             ineqb = self.hyperplane["b"]
-# =============================================================================
 
         global storeConstraints
         if sign==-1:
-            storeConstraints[0,:] = np.array([n[0],n[1],a]) 
-            #storeConstraints.append(np.array([n[0],n[1],a]) )
+            storeConstraints[0,:] = np.array([n[0],n[1],a])
         else:
             storeConstraints[1,:] = np.array([n[0],n[1],a]) 
         self.hyperplane = {"A": ineqA, "b": ineqb}
         self.distance = distance
-# =============================================================================
-#         xx = np.linspace(-c[0]/2,c[0]/2,10)
-#         yy = (a - n[0]*xx) / n[1]
-#         global ConstraintsX, ConstraintsY
-#         ConstraintsX.append(xx)
-#         ConstraintsY.append(yy)
-# =============================================================================
+
 # =============================================================================
 #         ax3.plot(xx,yy,'b')
 #         plt.show()
 # =============================================================================
     
     def control(self, state, Ads, Bds,x0,xref):
-        obs_avoidance = False
+        obs_avoidance = True
         self.problem = {"xinit": -state}  # eq.c = -xinit
         # set up linearized models as equality constraints
         #if np.sqrt((x0[0] - 5) ** 2 + (x0[1] - 5) ** 2) <= 2:
@@ -209,17 +198,17 @@ from model.MPC_utils import *
 plt.close("all")
 storeConstraints = np.zeros((2,3))
 T = 10
-dt = 5e-3
+dt = 1e-2
 #Xref = traj_generate(T/dt, T)
 Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], T/dt,dt)
 obs = np.array([5,5])
 Uref = get_ref_input(Xref)
 linear_models = linearize_model_global(Xref, Uref, dt)
 # #=========================================================
-x0 = np.array([2., 0., 0.]) # This angle needs to be in standard notation (it gets wrapped later)
+x0 = np.array([1., 0., np.pi/4.]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2], dt=dt)
 
-N = 10
+N = 20
 nx = 3
 mpc = MPC(N,dt)
 real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
@@ -308,10 +297,10 @@ ax1.legend()
 x_error = np.array(x_error)
 y_error = np.array(y_error)
 theta_error = np.array(theta_error)
-# =============================================================================
-# error = np.abs(np.vstack((x_error,y_error,theta_error)))
-# total_error = np.sum(error,0)
-# =============================================================================
+#
+#
+#
+#
 # Save variables to .mat:
 
 # Change save_var to True if you want to save the variables to a .mat file. Change trial number
