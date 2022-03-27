@@ -25,10 +25,10 @@ class MPC():
         self.stages = forcespro.MultistageProblem(N)  # create the stages for the whole finite horizon
         self.nx = 3 * 2
         self.nu = 2 * 2
-        self.Q = 100*np.diag([40, 40, 0.1, 40, 40, 0.1])
-        self.R = np.eye(self.nu)/100
-        # self.Q = 0.01*np.diag([4, 4, 0.1, 4, 4, 0.1])
-        # self.R = 0.0001*np.eye(self.nu)
+        # self.Q = 100*np.diag([40, 40, 0.1, 40, 40, 0.1])
+        # self.R = np.eye(self.nu)/100
+        self.Q = 0.01*np.diag([4, 4, 0.1, 4, 4, 0.1])
+        self.R = 0.001*np.eye(self.nu)
         self.P = 0 * self.Q
         self.set_up_solver()
         import MPC_Project_FORCESPRO_py
@@ -47,11 +47,11 @@ class MPC():
             self.stages.dims[i]['u'] = 2  # number of upper bounds
 
             # lower bounds
-            self.stages.ineq[i]['b']['lbidx'] = np.array([1, 3])  # lower bound acts on these indices
+            self.stages.ineq[i]['b']['lbidx'] = np.array([1, 2])  # lower bound acts on these indices
             self.stages.ineq[i]['b']['lb'] = np.array([-10, -10])  # lower bound for this stage variable
 
             # upper bounds
-            self.stages.ineq[i]['b']['ubidx'] = np.array([1, 3])  # upper bound acts on these indices
+            self.stages.ineq[i]['b']['ubidx'] = np.array([1, 2])  # upper bound acts on these indices
             self.stages.ineq[i]['b']['ub'] = np.array([10, 10])  # upper bound for this stage variable
 
             # collision avoidance between robots: section 8.8 of documentation(https://forces.embotech.com/Documentation/low_level_interface/index.html#cost-function)
@@ -156,7 +156,7 @@ class MPC():
                 theta1 += wrapAngle(Uref1[i-1,1]*self.dt)
             sin_ = np.sin(theta1)
             cos_ = np.cos(theta1)
-            if distance < 1.50:
+            if distance < 3.50:
                 ineqA[i] = np.array([[-v[0]*cos_-v[1]*sin_, v[0]*Uref1[i,0]*sin_*self.dt-v[1]*Uref1[i,0]*cos_*self.dt, 0, 0, 0, 0, 0, 0, 0, 0],\
                                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
                 ineqb[i, 0] = v[0]*Uref1[i,0]*cos_ + v[1]*Uref1[i,0]*sin_ - a
@@ -192,11 +192,11 @@ class MPC():
 
 # #=======================================================
 T = 10
-dt = 2e-2
+dt = 1e-2
 # Xref1 = traj_generate(T/dt, T)
 # Xref2 = traj_generate(T/dt, T)
-Xref1 = line_traj_generate([0.,0.,0.], [10.,6.,0.], T/dt, dt)
-Xref2 = line_traj_generate([0.,6.,0.], [10.,0.,0.], T/dt, dt)
+Xref1 = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt, dt)
+Xref2 = line_traj_generate([10.,10.,0.], [0.,0.,0.], T/dt, dt)
 Uref1 = get_ref_input(Xref1)
 Uref2 = get_ref_input(Xref2)
 linear_models1 = linearize_model_global(Xref1, Uref1, dt)
@@ -204,9 +204,9 @@ linear_models2 = linearize_model_global(Xref2, Uref2, dt)
 # #=========================================================
 x1 = np.array([0., 0., np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env1 = Robot(x1[0], x1[1], x1[2], dt=dt)
-x2 = np.array([0., 6., -np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
+x2 = np.array([10., 10., 5*np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env2 = Robot(x2[0], x2[1], x2[2], dt=dt)
-N = 3
+N = 5
 mpc = MPC(N)
 nx = 3 # take care: nx here refers to nx for single robot!!
 real_trajectory = {'x1': [x1[0]], 'y1': [x1[1]], 'z1': [0], 'theta1': [x1[2]], 'x2': [x2[0]], 'y2': [x2[1]], 'z2': [0], 'theta2': [x2[2]]}
@@ -226,8 +226,8 @@ for i in range(int(T/dt)-N):
     Bds1 = linear_models1[1][i:i+N]
     Ads2 = linear_models2[0][i:i+N]
     Bds2 = linear_models2[1][i:i+N]
-    mpc.P = np.zeros((2*nx, 2*nx)) # set the terminal cost (only for robot 1)
-    #mpc.P = block_diag(Ps[i + N - 1], 0*np.eye(nx))
+    #mpc.P = np.zeros((2*nx, 2*nx)) # set the terminal cost (only for robot 1)
+    mpc.P = block_diag(Ps[i + N - 1], 0*np.eye(nx))
     # Calculate the new errors (current pose vs reference pose)
     # robot 1
     error_t1[:,:2] = np.array([(x1[:2] - Xref1[i+k,:2]) for k in range(N)])

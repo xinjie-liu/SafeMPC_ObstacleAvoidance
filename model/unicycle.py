@@ -59,7 +59,7 @@ class Robot():
         x_dt = v * cos(self.current.theta)
         y_dt = v * sin(self.current.theta)
         self.current.theta = self.fixAngle(self.current.theta + theta_dt * self.dt)
-        
+
         self.current.x = self.current.x + x_dt * self.dt
         self.current.y = self.current.y + y_dt * self.dt
 
