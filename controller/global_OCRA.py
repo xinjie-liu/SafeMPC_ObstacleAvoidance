@@ -27,6 +27,8 @@ class MPC():
         self.nu = 2 * 2
         self.Q = 100*np.diag([40, 40, 0.1, 40, 40, 0.1])
         self.R = np.eye(self.nu)/100
+        # self.Q = 0.01*np.diag([4, 4, 0.1, 4, 4, 0.1])
+        # self.R = 0.0001*np.eye(self.nu)
         self.P = 0 * self.Q
         self.set_up_solver()
         import MPC_Project_FORCESPRO_py
@@ -46,11 +48,11 @@ class MPC():
 
             # lower bounds
             self.stages.ineq[i]['b']['lbidx'] = np.array([1, 3])  # lower bound acts on these indices
-            self.stages.ineq[i]['b']['lb'] = np.array([-5, -5])  # lower bound for this stage variable
+            self.stages.ineq[i]['b']['lb'] = np.array([-10, -10])  # lower bound for this stage variable
 
             # upper bounds
             self.stages.ineq[i]['b']['ubidx'] = np.array([1, 3])  # upper bound acts on these indices
-            self.stages.ineq[i]['b']['ub'] = np.array([5, 5])  # upper bound for this stage variable
+            self.stages.ineq[i]['b']['ub'] = np.array([10, 10])  # upper bound for this stage variable
 
             # collision avoidance between robots: section 8.8 of documentation(https://forces.embotech.com/Documentation/low_level_interface/index.html#cost-function)
             # QCQP problem
@@ -127,7 +129,7 @@ class MPC():
         # calculate normal_vec @ velocity_robot2
         print('theta2: ', theta2)
         vel2 = Uref2[0,0] # approximate the velocity of robot2 with its reference (for simplicity)
-        R = np.array([[np.cos(theta2), np.sin(theta2)], [-np.sin(theta2), np.cos(theta2)]])
+        R = np.array([[np.cos(theta2), -np.sin(theta2)], [np.sin(theta2), np.cos(theta2)]])
         vel2_vec = R @ np.array([vel2, 0]) # get the vector of velocity of robot2
         a = normal_vec @ vel2_vec
         return normal_vec, a
@@ -154,7 +156,7 @@ class MPC():
                 theta1 += wrapAngle(Uref1[i-1,1]*self.dt)
             sin_ = np.sin(theta1)
             cos_ = np.cos(theta1)
-            if distance < 5.5:
+            if distance < 1.50:
                 ineqA[i] = np.array([[-v[0]*cos_-v[1]*sin_, v[0]*Uref1[i,0]*sin_*self.dt-v[1]*Uref1[i,0]*cos_*self.dt, 0, 0, 0, 0, 0, 0, 0, 0],\
                                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
                 ineqb[i, 0] = v[0]*Uref1[i,0]*cos_ + v[1]*Uref1[i,0]*sin_ - a
@@ -162,7 +164,6 @@ class MPC():
                 pass
         self.hyperplane = {"A": ineqA, "bs": ineqb}
 # =============================================================================================
-
 
     def control(self, state, Ads, Bds):
         self.problem = {"xinit": -state}  # eq.c = -xinit
@@ -194,8 +195,8 @@ T = 10
 dt = 2e-2
 # Xref1 = traj_generate(T/dt, T)
 # Xref2 = traj_generate(T/dt, T)
-Xref1 = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt, dt)
-Xref2 = line_traj_generate([10.,10.,0.], [0.,0.,0.], T/dt, dt)
+Xref1 = line_traj_generate([0.,0.,0.], [10.,6.,0.], T/dt, dt)
+Xref2 = line_traj_generate([0.,6.,0.], [10.,0.,0.], T/dt, dt)
 Uref1 = get_ref_input(Xref1)
 Uref2 = get_ref_input(Xref2)
 linear_models1 = linearize_model_global(Xref1, Uref1, dt)
@@ -203,7 +204,7 @@ linear_models2 = linearize_model_global(Xref2, Uref2, dt)
 # #=========================================================
 x1 = np.array([0., 0., np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env1 = Robot(x1[0], x1[1], x1[2], dt=dt)
-x2 = np.array([10., 10., 5*np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
+x2 = np.array([0., 6., -np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env2 = Robot(x2[0], x2[1], x2[2], dt=dt)
 N = 3
 mpc = MPC(N)
@@ -225,13 +226,14 @@ for i in range(int(T/dt)-N):
     Bds1 = linear_models1[1][i:i+N]
     Ads2 = linear_models2[0][i:i+N]
     Bds2 = linear_models2[1][i:i+N]
-    mpc.P = np.zeros((2*nx, 2*nx))#block_diag(Ps[i + N - 1], 0*np.eye(nx))  # set the terminal cost (only for robot 1)
+    mpc.P = np.zeros((2*nx, 2*nx)) # set the terminal cost (only for robot 1)
+    #mpc.P = block_diag(Ps[i + N - 1], 0*np.eye(nx))
     # Calculate the new errors (current pose vs reference pose)
     # robot 1
     error_t1[:,:2] = np.array([(x1[:2] - Xref1[i+k,:2]) for k in range(N)])
     error_t1[:,2] = np.array([wrapAngle(x1[2]) - Xref1[i+k,6] for k in range(N)])
     # Wrap the error too (otherwise there is a huge between -pi and pi)
-    error_t1[:,2] = wrapAngle(error_t1[:,2])
+    error_t1[:,2] = wrapAngle(error_t1[:,2]) #+ np.random.normal(-0.1, 1e-2)
     # robot 2
     error_t2[:,:2] = np.array([(x2[:2] - Xref2[i+k,:2]) for k in range(N)])
     error_t2[:,2] = np.array([wrapAngle(x2[2] - Xref2[i+k,6]) for k in range(N)])
@@ -288,26 +290,35 @@ yPos1 = np.array(real_trajectory['y1'])
 xPos2 = np.array(real_trajectory['x2'])
 yPos2 = np.array(real_trajectory['y2'])
 fig1, ax1 = plt.subplots()
-ax1.plot(xPos1, yPos1, 'r')
-ax1.plot(Xref1[:, 0], Xref1[:, 1], 'g')
+ax1.plot(xPos1, yPos1, 'r', label='robot_trajectory')
+ax1.plot(Xref1[:, 0], Xref1[:, 1], 'g', label='reference_trajectory')
+ax1.legend()
+ax1.set_title('Robot1')
 fig2, ax2 = plt.subplots()
-ax2.plot(xPos2, yPos2, 'r')
-ax2.plot(Xref2[:, 0], Xref2[:, 1], 'g')
+ax2.plot(xPos2, yPos2, 'r', label='robot_trajectory')
+ax2.plot(Xref2[:, 0], Xref2[:, 1], 'g', label='reference_trajectory')
+ax1.set_title('Robot2')
+ax2.legend()
 fig3, ax3 = plt.subplots()
-ax3.plot(xPos1, yPos1, 'r')
-ax3.plot(xPos2, yPos2, 'b')
-
+ax3.plot(xPos1, yPos1, 'r', label='robot1_trajectory')
+ax3.plot(xPos2, yPos2, 'b', label='robot2_trajectory')
+ax3.legend()
 # plot the error
 x_error1 = np.array(x_error1)
 y_error1 = np.array(y_error1)
 x_error2 = np.array(x_error2)
 y_error2 = np.array(y_error2)
 fig4, ax4 = plt.subplots()
-ax4.plot(range(len(x_error1)), x_error1, 'b')
-ax4.plot(range(len(y_error1)), y_error1, 'g')
+ax4.plot(range(len(x_error1)), x_error1, 'b', label='x_error')
+ax4.plot(range(len(y_error1)), y_error1, 'g', label='y_error')
+ax4.set_title('Robot1')
+ax4.legend()
 fig5, ax5 = plt.subplots()
-ax5.plot(range(len(x_error2)), x_error2, 'b')
-ax5.plot(range(len(y_error2)), y_error2, 'g')
+ax5.plot(range(len(x_error2)), x_error2, 'b', label='x_error')
+ax5.plot(range(len(y_error2)), y_error2, 'g', label='y_error')
+ax5.set_title('Robot2')
+ax5.legend()
 plt.show()
 # animation
+#plot_single_robot(real_trajectory)
 plot_multi_robot(real_trajectory)

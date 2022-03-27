@@ -60,6 +60,7 @@ def plot_multi_robot(real_trajectory):
         point.set_xdata(real_trajectory['x1'][i])
         point.set_ydata(real_trajectory['y1'][i])
         point.set_3d_properties(real_trajectory['z1'][i])
+
         line2.set_xdata(real_trajectory['x2'][:i + 1])
         line2.set_ydata(real_trajectory['y2'][:i + 1])
         line2.set_3d_properties(real_trajectory['z2'][:i + 1])
@@ -84,6 +85,8 @@ def plot_multi_robot(real_trajectory):
     real_trajectory['z2'] = np.array(real_trajectory['z2'])
     point, = ax1.plot([real_trajectory['x1'][0]], [real_trajectory['y1'][0]], [real_trajectory['z1'][0]], 'ro',
                       label='Robot1', markersize=10)
+    # obstacle, = ax1.plot(5, 5, 0, 'yo',
+    #                   label='Obstacle', markersize=15)
     point2, = ax1.plot([real_trajectory['x2'][0]], [real_trajectory['y2'][0]], [real_trajectory['z2'][0]], 'bo',
                       label='Robot2', markersize=10)
 
@@ -108,7 +111,7 @@ def plot_multi_robot(real_trajectory):
                                   func=animate,
                                   frames=len(real_trajectory['x1']),
                                   interval=5,
-                                  repeat=False,
+                                  repeat=True,
                                   blit=False)
     plt.show()
 
@@ -156,9 +159,8 @@ def linearize_model(Xref, Uref, dt):
     Ad = np.zeros([Xref.shape[0], 3, 3])
     Bd = np.zeros([Xref.shape[0], 3, 2])
     for i in range(Xref.shape[0]):
-        Ad[i] = np.array([[1, Uref[i, 1]*dt, 0], [-Uref[i, 1]*dt, 1, Uref[i, 0]*dt], [0, 0, 1]])
+        Ad[i] = np.array([[1, Uref[i, 1]*dt, 0], [-Uref[i, 1]*dt, 0, Uref[i, 0]*dt], [0, 0, 1]])
         Bd[i] = np.array([[-dt, 0], [0, 0], [0, -dt]])
-
     return Ad, Bd
 
 def linearize_model_global(Xref, Uref, dt):
@@ -170,6 +172,10 @@ def linearize_model_global(Xref, Uref, dt):
         Bd[i] = np.array([[np.cos(Xref[i,-1])*dt, 0], [np.sin(Xref[i,-1])*dt, 0], [0, dt]])
 
     return Ad, Bd
+
+def wrapAngle(angle):
+    return  np.arctan2(np.sin(angle), np.cos(angle))
+
 
 
 def find_P(Ads, Bds, Q, R):
@@ -191,8 +197,6 @@ def find_P(Ads, Bds, Q, R):
         K[n - 2 - i] = Ki
     return P, K
 
-def wrapAngle(angle):
-    return  np.arctan2(np.sin(angle), np.cos(angle))
 
 # Xref = traj_generate(10000, 10)
 # Uref = get_ref_input(Xref)

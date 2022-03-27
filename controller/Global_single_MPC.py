@@ -140,10 +140,10 @@ class MPC():
             A = Ads[i]
             B = Bds[i]
             self.problem["linear_model"+str(i+1)] = np.hstack((B, A))
-            self.problem["hyperplaneA"+str(i+1)] = self.hyperplane["A"][i]
-            self.problem["hyperplaneb"+str(i+1)] = self.hyperplane["bs"][i]
-        self.problem["hyperplaneA"+str(self.N)] = self.hyperplane["A"][self.N-1]
-        self.problem["hyperplaneb"+str(self.N)] = self.hyperplane["bs"][self.N-1]
+        #     self.problem["hyperplaneA"+str(i+1)] = self.hyperplane["A"][i]
+        #     self.problem["hyperplaneb"+str(i+1)] = self.hyperplane["bs"][i]
+        # self.problem["hyperplaneA"+str(self.N)] = self.hyperplane["A"][self.N-1]
+        # self.problem["hyperplaneb"+str(self.N)] = self.hyperplane["bs"][self.N-1]
         self.output = self.solver.MPC_Project_FORCESPRO_solve(self.problem)
         control = self.output[0]['output'][:self.nu]
 
@@ -153,14 +153,14 @@ class MPC():
 from model.MPC_utils import *
 T = 10
 dt = 2e-2
-Xref = traj_generate(T/dt, T)
-# Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], T/dt, dt) #+ np.array([0,0,0,0,0,0,0.2])*np.random.rand(10000,7)
+#Xref = traj_generate(T/dt, T)
+Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], T/dt, dt) #+ np.array([0,0,0,0,0,0,0.2])*np.random.rand(10000,7)
 Uref = get_ref_input(Xref)
 linear_models = linearize_model_global(Xref, Uref, dt)
 # #=========================================================
 N = 15
 nx = 3
-x0 = np.array([1, 0, 0]) # This angle needs to be in standard notation (it gets wrapped later)
+x0 = np.array([0, -1, np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2], dt)
 mpc = MPC(N, dt=dt)
 real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
