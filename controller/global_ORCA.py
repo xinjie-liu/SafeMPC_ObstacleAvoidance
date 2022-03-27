@@ -105,6 +105,7 @@ class MPC():
         # solver settings
         self.stages.codeoptions['name'] = 'MPC_Project_FORCESPRO'
         self.stages.codeoptions['printlevel'] = 2
+        self.stages.codeoptions['overwrite'] = 1
         self.stages.generateCode()
 
     def define_hyperplane(self, x1, y1, x2, y2, theta2, Uref2):
@@ -191,6 +192,7 @@ class MPC():
         return control
 
 # #=======================================================
+plt.close("all")
 T = 10
 dt = 1e-2
 # Xref1 = traj_generate(T/dt, T)
@@ -289,35 +291,36 @@ xPos1 = np.array(real_trajectory['x1'])
 yPos1 = np.array(real_trajectory['y1'])
 xPos2 = np.array(real_trajectory['x2'])
 yPos2 = np.array(real_trajectory['y2'])
-fig1, ax1 = plt.subplots()
-ax1.plot(xPos1, yPos1, 'r', label='robot_trajectory')
-ax1.plot(Xref1[:, 0], Xref1[:, 1], 'g', label='reference_trajectory')
-ax1.legend()
-ax1.set_title('Robot1')
-fig2, ax2 = plt.subplots()
-ax2.plot(xPos2, yPos2, 'r', label='robot_trajectory')
-ax2.plot(Xref2[:, 0], Xref2[:, 1], 'g', label='reference_trajectory')
-ax1.set_title('Robot2')
-ax2.legend()
+# fig1, ax1 = plt.subplots()
+# ax1.plot(xPos1, yPos1, 'r', label='robot_trajectory')
+# ax1.plot(Xref1[:, 0], Xref1[:, 1], 'g', label='reference_trajectory')
+# ax1.legend()
+# ax1.set_title('Robot1')
+# fig2, ax2 = plt.subplots()
+# ax2.plot(xPos2, yPos2, 'r', label='robot_trajectory')
+# ax2.plot(Xref2[:, 0], Xref2[:, 1], 'g', label='reference_trajectory')
+# ax1.set_title('Robot2')
+# ax2.legend()
 fig3, ax3 = plt.subplots()
-ax3.plot(xPos1, yPos1, 'r', label='robot1_trajectory')
-ax3.plot(xPos2, yPos2, 'b', label='robot2_trajectory')
+ax3.plot(xPos1, yPos1, 'r', label='Robot 1 Trajectory')
+ax3.plot(xPos2, yPos2, 'b', label='Robot 2 Trajectory')
+ax3.plot(Xref2[:, 0], Xref2[:, 1], 'g', label='Reference Trajectory')
 ax3.legend()
-# plot the error
-x_error1 = np.array(x_error1)
-y_error1 = np.array(y_error1)
-x_error2 = np.array(x_error2)
-y_error2 = np.array(y_error2)
-fig4, ax4 = plt.subplots()
-ax4.plot(range(len(x_error1)), x_error1, 'b', label='x_error')
-ax4.plot(range(len(y_error1)), y_error1, 'g', label='y_error')
-ax4.set_title('Robot1')
-ax4.legend()
-fig5, ax5 = plt.subplots()
-ax5.plot(range(len(x_error2)), x_error2, 'b', label='x_error')
-ax5.plot(range(len(y_error2)), y_error2, 'g', label='y_error')
-ax5.set_title('Robot2')
-ax5.legend()
+# # plot the error
+# x_error1 = np.array(x_error1)
+# y_error1 = np.array(y_error1)
+# x_error2 = np.array(x_error2)
+# y_error2 = np.array(y_error2)
+# fig4, ax4 = plt.subplots()
+# ax4.plot(range(len(x_error1)), x_error1, 'b', label='x_error')
+# ax4.plot(range(len(y_error1)), y_error1, 'g', label='y_error')
+# ax4.set_title('Robot1')
+# ax4.legend()
+# fig5, ax5 = plt.subplots()
+# ax5.plot(range(len(x_error2)), x_error2, 'b', label='x_error')
+# ax5.plot(range(len(y_error2)), y_error2, 'g', label='y_error')
+# ax5.set_title('Robot2')
+# ax5.legend()
 plt.show()
 # animation
 #plot_single_robot(real_trajectory)
