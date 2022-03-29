@@ -131,3 +131,25 @@ for trial=1:4
     xlabel('Timestep')
     legend()
 end
+
+%% Check LQR
+clear;
+clc;
+xlimit = 900;
+load(strcat("experiment_LQR_",num2str(1),"_data.mat"));
+figure(1);
+hold on;
+control_input = (uStore-uref(1:990,:));
+plot(control_input(1:xlimit,1),'DisplayName',"Control input v for LQR");
+plot(control_input(1:xlimit,2),'DisplayName',"Control input w for LQR");
+ylabel('Total control input')
+xlabel('Timestep')
+legend()
+% N = 10
+load(strcat("experiment_LQR_",num2str(4),"_data.mat"));
+control_input = (uStore-uref(1:990,:));
+plot(control_input(1:xlimit,1),'DisplayName',"Control input v for MPC");
+plot(control_input(1:xlimit,2),'DisplayName',"Control input w for MPC");
+ylabel('Total control input')
+xlabel('Timestep')
+legend()

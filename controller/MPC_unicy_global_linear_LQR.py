@@ -43,11 +43,11 @@ class MPC():
             self.stages.dims[i]['u'] = 2  # nx + nu  # number of upper bounds
             # lower bounds
             self.stages.ineq[i]['b']['lbidx'] = np.array([1, 2])  # lower bound acts on these indices
-            self.stages.ineq[i]['b']['lb'] = np.array([-10, -10])  # lower bound for this stage variable
+            self.stages.ineq[i]['b']['lb'] = np.array([-8, -8])  # lower bound for this stage variable
 
             # upper bounds
             self.stages.ineq[i]['b']['ubidx'] = np.array([1, 2])  # upper bound acts on these indices
-            self.stages.ineq[i]['b']['ub'] = np.array([10, 10])  # upper bound for this stage variable
+            self.stages.ineq[i]['b']['ub'] = np.array([8, 8])  # upper bound for this stage variable
 
             self.stages.dims[i]['p'] = 1 # number of polytopic (linear) constraints
             self.stages.ineq[i]['p']['A'] = np.zeros((1,self.nx + self.nu)) # Jacobian of linear inequality
@@ -212,26 +212,23 @@ env = Robot(x0[0], x0[1], x0[2], dt=dt)
 
 N = 10
 beta = 5
-trial = 4
-# Change save_var to True if you want to save the variables to a .mat file. Change trial number
-# if you want to save multiple trials.
-save_var = True
-
+trial = 2
 
 nx = 3
 mpc = MPC(N,dt)
 real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
 uStore = []
-error_t = np.zeros((mpc.N,nx))
+error_t = np.zeros((N,nx))
 x_error = []
 y_error = []
 theta_error = []
-Ps,_ = find_P(linear_models[0], linear_models[1], mpc.Q, mpc.R)
+Ps,Ks = find_P(linear_models[0], linear_models[1], mpc.Q, mpc.R)
 for i in range(int(T/dt)-N):
     # Find the new linearisation (from current step to current step + N
     Ads = linear_models[0][i:i+N]
     Bds = linear_models[1][i:i+N]
-    mpc.P = beta*Ps[i + N - 1]  # set the terminal cost
+    #mpc.P = beta*Ps[i + N - 1]  # set the terminal cost
+    K = Ks[i]
     # Calculate the new errors (current pose vs reference pose)
     error_t[:,:2] = np.array([(x0[:2] - Xref[i+k,:2]) for k in range(N)])
     error_t[:,2] = np.array([wrapAngle(x0[2]) - Xref[i+k,6] for k in range(N)])
@@ -240,11 +237,8 @@ for i in range(int(T/dt)-N):
     # mpc.theta_err = error_t[2]
     start = Xref[0,0:2]
     goal = Xref[-1,0:2]
-    mpc.collision_avoidance(x0, Xref[i:i+N],start,goal,obs,i)
-    for k in range(N):
-            #e = error_t[k,:2].reshape(2,1)
-            e = np.array([0,0,error_t[k,0],error_t[k,1],error_t[k,2]])
-            print(e.T @ mpc.hyperplane['A'][k] <= mpc.hyperplane['b'][k])
+    # mpc.collision_avoidance(x0, Xref[i:i+N],start,goal,obs,i)
+
 # =============================================================================
 #             if (e.T@mpc.obstacle['Q'][k]@e + mpc.obstacle['l'][k].T@e <= mpc.obstacle['r'][k]) == False:
 #                 break_loop = True
@@ -254,9 +248,9 @@ for i in range(int(T/dt)-N):
     #if break_loop:
         #break
     # Solve the MPC problem:
-    control = mpc.control(error_t[0,:], Ads, Bds,x0,Xref[i:i+N])
+    #control = mpc.control(error_t[0,:], Ads, Bds,x0,Xref[i:i+N])
     # Extract the first control input (for error correction) and add the reference input (for trajectory tracking)
-    u = mpc.output[0:2] + Uref[i,:]
+    u = K @ error_t[0,:] + Uref[i,:]
     uStore.append(u)
 
     # Simulate the motion
@@ -275,7 +269,7 @@ for i in range(int(T/dt)-N):
     y_error.append(error_t[0,1])
     theta_error.append(error_t[0,2])
     
-print(mpc)
+#print(mpc)
 # plot the robot position
 xPos = np.array(real_trajectory['x'])
 yPos = np.array(real_trajectory['y'])
@@ -285,23 +279,6 @@ fig1, ax1 = plt.subplots()
 # plot of constraints and obstacles
 circle = plt.Circle((obs[0],obs[1]),0.5,color='m',alpha=0.2)
 #ax1.add_patch(circle)
-# Plot the constraints:
-xx1 = np.linspace(-1,10,100)
-yy1 = (-storeConstraints[0,0]*xx1 + storeConstraints[0,2])/storeConstraints[0,1]
-#
-# =============================================================================
-# for k in range(len(storeConstraints)):
-#     if k%100==0:
-#         xx1 = np.linspace(-1,10,100)
-#         yy1 = (-storeConstraints[k][0]*xx1 + storeConstraints[k][2])/storeConstraints[k][1]
-#         ax1.plot(xx1,yy1,'b--')
-# =============================================================================
-xx2 = np.linspace(2,10,100)
-yy2 = (-storeConstraints[1,0]*xx2 + storeConstraints[1,2])/storeConstraints[1,1]
-
-# line1 = ax1.plot(xx1,yy1,'b--',label='Constraint 1')
-# line2 = ax1.plot(xx2,yy2,'m--',label='Constraint 2')
-#=====================================================================
 
 
 line3 = ax1.plot(Xref[:, 0], Xref[:, 1], 'g', label='Reference Trajectory')
@@ -317,7 +294,9 @@ theta_error = np.array(theta_error)
 #
 # Save variables to .mat:
 
-
+# Change save_var to True if you want to save the variables to a .mat file. Change trial number
+# if you want to save multiple trials.
+save_var = True
 
 
 if save_var:
