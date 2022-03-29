@@ -22,11 +22,12 @@ Final project of course SC42125 Model Predictive Control
 * [separating hyper-planes by Laura Ferranti](https://arxiv.org/pdf/2006.11492.pdf)
 * [a linearization of nonlinear collision constraints: using first order Taylor approximation](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8550245)
 ## 5. experiments
-* horizon length
-* terminal set & terminal cost
+* horizon length (x)
+* terminal set & terminal cost (x)
 * RoA
-* input constraints
-* old Q,R without terminal cost V.S. new Q, R with terminal cost (compare control input)
+* input constraints (x)
+* old Q,R without terminal cost V.S. new Q, R with terminal cost (compare control input) (x)
+* LQR V.S. MPC
 ## 6. report fine tunning
 * vector notations
 * numerical results
