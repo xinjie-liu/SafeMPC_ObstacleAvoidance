@@ -211,7 +211,9 @@ x0 = np.array([1., 0., 0.]) # This angle needs to be in standard notation (it ge
 env = Robot(x0[0], x0[1], x0[2], dt=dt)
 
 N = 10
-beta = 0.1
+beta = 5
+trial = 4
+
 nx = 3
 mpc = MPC(N,dt)
 real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
@@ -313,15 +315,15 @@ theta_error = np.array(theta_error)
 
 # Change save_var to True if you want to save the variables to a .mat file. Change trial number
 # if you want to save multiple trials.
-save_var = False
-trial = 1
+save_var = True
+
 
 if save_var:
     data = {"x": real_trajectory['x'], "y":  real_trajectory['y'], "theta":  real_trajectory['theta'],
             "x_error": x_error, "y_error": y_error, "theta_error": theta_error,
             "ref_x": Xref[:,0], "ref_y": Xref[:,1], "ref_theta": Xref[:,-1],
             "uStore": uStore, "uref": Uref}
-    savemat("experiment_uref_"+str(trial)+"_data.mat", data)
+    savemat("experiment_beta_"+str(trial)+"_data.mat", data)
     
 plt.show()
 # animation

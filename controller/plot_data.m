@@ -106,3 +106,28 @@ for trial=1:2
     xlabel('Timestep')
     legend()
 end
+%% Compare beta*terminal_cost effects for N=10
+clear;
+clc;
+beta = [0.1,1,2,5];
+xlimit = 500;
+load(strcat("experiment_uref_",num2str(1),"_data.mat"));
+for trial=1:4
+    % Load the data
+    load(strcat("experiment_beta_",num2str(trial),"_data.mat"));
+    figure(1);
+    hold on;
+    xy_error = abs(x_error(1:xlimit)) + abs(y_error(1:xlimit));
+    plot(xy_error(1:xlimit),'DisplayName',strcat("Total error in X and Y for beta = ",num2str(beta(trial))));
+    ylabel('Total absolute error in X and Y')
+    xlabel('Timestep')
+    legend()
+
+    figure(2);
+    hold on;
+    control_input = sum(abs(uStore-uref(1:990,:)),2);
+    plot(control_input(1:xlimit),'DisplayName',strcat("Control input for beta = ",num2str(beta(trial))));
+    ylabel('Total control input')
+    xlabel('Timestep')
+    legend()
+end
