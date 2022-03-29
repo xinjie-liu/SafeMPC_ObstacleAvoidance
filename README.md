@@ -26,6 +26,7 @@ Final project of course SC42125 Model Predictive Control
 * terminal set & terminal cost
 * RoA
 * input constraints
+* old Q,R without terminal cost V.S. new Q, R (compare control input)
 ## 6. report fine tunning
 * vector notations
 * numerical results
