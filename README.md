@@ -27,7 +27,7 @@ Final project of course SC42125 Model Predictive Control
 * RoA
 * input constraints (x)
 * old Q,R without terminal cost V.S. new Q, R with terminal cost (compare control input) (x)
-* LQR V.S. MPC
+* LQR V.S. MPC (x)
 * Increase the terminal cost
 ## 6. report fine tunning
 * vector notations
