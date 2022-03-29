@@ -210,7 +210,8 @@ linear_models = linearize_model_global(Xref, Uref, dt)
 x0 = np.array([1., 0., 0.]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2], dt=dt)
 
-N = 50
+N = 10
+beta = 0.1
 nx = 3
 mpc = MPC(N,dt)
 real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
@@ -224,7 +225,7 @@ for i in range(int(T/dt)-N):
     # Find the new linearisation (from current step to current step + N
     Ads = linear_models[0][i:i+N]
     Bds = linear_models[1][i:i+N]
-    #mpc.P = Ps[i + N - 1]  # set the terminal cost
+    mpc.P = beta*Ps[i + N - 1]  # set the terminal cost
     # Calculate the new errors (current pose vs reference pose)
     error_t[:,:2] = np.array([(x0[:2] - Xref[i+k,:2]) for k in range(N)])
     error_t[:,2] = np.array([wrapAngle(x0[2]) - Xref[i+k,6] for k in range(N)])
@@ -312,13 +313,15 @@ theta_error = np.array(theta_error)
 
 # Change save_var to True if you want to save the variables to a .mat file. Change trial number
 # if you want to save multiple trials.
-save_var = True
-trial = 4
+save_var = False
+trial = 1
+
 if save_var:
     data = {"x": real_trajectory['x'], "y":  real_trajectory['y'], "theta":  real_trajectory['theta'],
             "x_error": x_error, "y_error": y_error, "theta_error": theta_error,
-            "ref_x": Xref[:,0], "ref_y": Xref[:,1], "ref_theta": Xref[:,-1]}
-    savemat("experiment_horizon_no_Vf"+str(trial)+"_data.mat", data)
+            "ref_x": Xref[:,0], "ref_y": Xref[:,1], "ref_theta": Xref[:,-1],
+            "uStore": uStore, "uref": Uref}
+    savemat("experiment_uref_"+str(trial)+"_data.mat", data)
     
 plt.show()
 # animation
