@@ -26,7 +26,6 @@ Final project of course SC42125 Model Predictive Control
 * terminal set & terminal cost
 * RoA
 * input constraints
-* vectors should be bolded!
 ## 6. report fine tunning
 * vector notations
 * numerical results
