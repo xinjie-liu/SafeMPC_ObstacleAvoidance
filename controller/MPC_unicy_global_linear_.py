@@ -25,7 +25,9 @@ class MPC():
         self.nx = 3
         self.nu = 2
         self.Q = .01*np.diag([4, 4, 0.1])
-        self.R = .001*np.eye(self.nu)
+        self.R = .0001*np.eye(self.nu)
+        # self.Q = 100 * np.diag([4, 40, 0.1])
+        # self.R = np.eye(self.nu)/100
         self.P = 0 * self.Q
         self.Q_obs = 0*np.diag([4, 4, 0])
         self.set_up_solver()
@@ -165,7 +167,7 @@ class MPC():
 # =============================================================================
     
     def control(self, state, Ads, Bds,x0,xref):
-        obs_avoidance = True
+        obs_avoidance = False
         self.problem = {"xinit": -state}  # eq.c = -xinit
         # set up linearized models as equality constraints
         #if np.sqrt((x0[0] - 5) ** 2 + (x0[1] - 5) ** 2) <= 2:
@@ -199,16 +201,16 @@ plt.close("all")
 storeConstraints = np.zeros((2,3))
 T = 10
 dt = 1e-2
-#Xref = traj_generate(T/dt, T)
-Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], T/dt,dt)
+Xref = traj_generate(T/dt, T)
+#Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], T/dt,dt)
 obs = np.array([5,5])
 Uref = get_ref_input(Xref)
 linear_models = linearize_model_global(Xref, Uref, dt)
 # #=========================================================
-x0 = np.array([1., 0., np.pi/4.]) # This angle needs to be in standard notation (it gets wrapped later)
+x0 = np.array([1., 0., 0.]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2], dt=dt)
 
-N = 20
+N = 50
 nx = 3
 mpc = MPC(N,dt)
 real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
@@ -222,12 +224,12 @@ for i in range(int(T/dt)-N):
     # Find the new linearisation (from current step to current step + N
     Ads = linear_models[0][i:i+N]
     Bds = linear_models[1][i:i+N]
-    mpc.P = Ps[i + N - 1]  # set the terminal cost
+    #mpc.P = Ps[i + N - 1]  # set the terminal cost
     # Calculate the new errors (current pose vs reference pose)
     error_t[:,:2] = np.array([(x0[:2] - Xref[i+k,:2]) for k in range(N)])
     error_t[:,2] = np.array([wrapAngle(x0[2]) - Xref[i+k,6] for k in range(N)])
     # Wrap the error too (otherwise there is a huge between -pi and pi)
-    error_t[:,2] = (error_t[:,2])
+    error_t[:,2] = wrapAngle(error_t[:,2])
     # mpc.theta_err = error_t[2]
     start = Xref[0,0:2]
     goal = Xref[-1,0:2]
@@ -272,8 +274,10 @@ xPos = np.array(real_trajectory['x'])
 yPos = np.array(real_trajectory['y'])
 fig1, ax1 = plt.subplots()
 
+#===================================================================
+# plot of constraints and obstacles
 circle = plt.Circle((obs[0],obs[1]),0.5,color='m',alpha=0.2)
-ax1.add_patch(circle)
+#ax1.add_patch(circle)
 # Plot the constraints:
 xx1 = np.linspace(-1,10,100)
 yy1 = (-storeConstraints[0,0]*xx1 + storeConstraints[0,2])/storeConstraints[0,1]
@@ -288,8 +292,11 @@ yy1 = (-storeConstraints[0,0]*xx1 + storeConstraints[0,2])/storeConstraints[0,1]
 xx2 = np.linspace(2,10,100)
 yy2 = (-storeConstraints[1,0]*xx2 + storeConstraints[1,2])/storeConstraints[1,1]
 
-line1 = ax1.plot(xx1,yy1,'b--',label='Constraint 1')
-line2 = ax1.plot(xx2,yy2,'m--',label='Constraint 2')
+# line1 = ax1.plot(xx1,yy1,'b--',label='Constraint 1')
+# line2 = ax1.plot(xx2,yy2,'m--',label='Constraint 2')
+#=====================================================================
+
+
 line3 = ax1.plot(Xref[:, 0], Xref[:, 1], 'g', label='Reference Trajectory')
 line4 = ax1.plot(xPos, yPos, 'r',label='Real Trajectory')
 ax1.legend()
@@ -305,13 +312,13 @@ theta_error = np.array(theta_error)
 
 # Change save_var to True if you want to save the variables to a .mat file. Change trial number
 # if you want to save multiple trials.
-save_var = False
-trial = 1
+save_var = True
+trial = 4
 if save_var:
     data = {"x": real_trajectory['x'], "y":  real_trajectory['y'], "theta":  real_trajectory['theta'],
             "x_error": x_error, "y_error": y_error, "theta_error": theta_error,
             "ref_x": Xref[:,0], "ref_y": Xref[:,1], "ref_theta": Xref[:,-1]}
-    savemat("experiment_"+str(trial)+"_data.mat", data)
+    savemat("experiment_horizon_no_Vf"+str(trial)+"_data.mat", data)
     
 plt.show()
 # animation
