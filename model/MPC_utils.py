@@ -88,7 +88,7 @@ def plot_multi_robot(real_trajectory):
     # obstacle, = ax1.plot(5, 5, 0, 'yo',
     #                   label='Obstacle', markersize=15)
     point2, = ax1.plot([real_trajectory['x2'][0]], [real_trajectory['y2'][0]], [real_trajectory['z2'][0]], 'bo',
-                      label='Robot2', markersize=10)
+                     label='Robot2', markersize=10)
 
     # heading, = ax1.plot([real_trajectory['x1'][0], real_trajectory['x1'][0] + 0.8 * np.cos(real_trajectory['theta1'][0])], \
     #                     [real_trajectory['y1'][0], real_trajectory['y1'][0] + 0.8 * np.sin(real_trajectory['theta1'][0])],
@@ -97,15 +97,15 @@ def plot_multi_robot(real_trajectory):
     line, = ax1.plot([real_trajectory['x1'][0]], [real_trajectory['y1'][0]], [real_trajectory['z1'][0]],
                      label='Real_Trajectory1')
     line2, = ax1.plot([real_trajectory['x2'][0]], [real_trajectory['y2'][0]], [real_trajectory['z2'][0]],
-                     label='Real_Trajectory2')
+                    label='Real_Trajectory2')
 
     ax1.set_xlabel('x')
     ax1.set_ylabel('y')
     ax1.set_zlabel('z')
     ax1.set_title('3D animate')
-    ax1.set_xlim(-15., 15.)
-    ax1.set_ylim(-15., 15.)
-    ax1.set_zlim(0., 3.)
+    ax1.set_xlim(0., 10.)
+    ax1.set_ylim(0., 10.)
+    ax1.set_zlim(0., 0.5)
     ax1.legend(loc='lower right')
     ani = animation.FuncAnimation(fig=fig,
                                   func=animate,
