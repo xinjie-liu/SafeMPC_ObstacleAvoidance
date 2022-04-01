@@ -35,3 +35,4 @@ Final project of course SC42125 Model Predictive Control
 * a-priori check
 * make the equations smaller
 * try to use new parameters to plot RoA using mpt3
+* a clean code repository
