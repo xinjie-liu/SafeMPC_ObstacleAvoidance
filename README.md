@@ -31,4 +31,8 @@ Final project of course SC42125 Model Predictive Control
 * Increase the terminal cost
 ## 6. report fine tunning
 * vector notations
-* numerical results
+* plot of reference trajectory (two plots, one the original sinusoid one, the other some new one)
+* a-priori check
+* make the equations smaller
+* try to use new parameters to plot RoA using mpt3
+* a clean code repository
