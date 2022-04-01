@@ -103,18 +103,23 @@ def plot_multi_robot(real_trajectory):
     ax1.set_ylabel('y')
     ax1.set_zlabel('z')
     ax1.set_title('3D animate')
-    ax1.set_xlim(-15., 15.)
-    ax1.set_ylim(-15., 15.)
-    ax1.set_zlim(0., 3.)
+    ax1.set_xlim(-12., 12.)
+    ax1.set_ylim(-12., 12.)
+    ax1.set_zlim(0., 1.)
     ax1.legend(loc='lower right')
+    ax1.view_init(elev=60.)
     ani = animation.FuncAnimation(fig=fig,
                                   func=animate,
                                   frames=len(real_trajectory['x1']),
                                   interval=5,
                                   repeat=False,
                                   blit=False)
+    fig.suptitle('Intersecting Trajectory With Terminal Cost', fontsize=14)
+    writervideo = animation.FFMpegWriter(fps=60)
+    #ani.save('results.mp4', writer=writervideo)
+    print('Animation')
     plt.show()
-
+    fig.savefig('results_VO_non-conservative_terminal_3d.jpg',dpi=720)
 def line_traj_generate(start, goal, total_step, dt):  # start: (x, y, theta)
     total_step = int(total_step)
     # xr yr xrdot yrdot xrddot yrddot theta
