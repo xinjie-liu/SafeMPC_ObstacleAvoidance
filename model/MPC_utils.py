@@ -37,7 +37,7 @@ def plot_single_robot(real_trajectory):
                         [real_trajectory['z'][0]], 'b')
 
     line, = ax1.plot([real_trajectory['x'][0]], [real_trajectory['y'][0]], [real_trajectory['z'][0]],
-                     label='Real_Trajectory')
+                     label='Real Trajectory')
     ax1.set_xlabel('x')
     ax1.set_ylabel('y')
     ax1.set_zlabel('z')
@@ -86,18 +86,18 @@ def plot_multi_robot(real_trajectory):
     real_trajectory['y2'] = np.array(real_trajectory['y2'])
     real_trajectory['z2'] = np.array(real_trajectory['z2'])
     point, = ax1.plot([real_trajectory['x1'][0]], [real_trajectory['y1'][0]], [real_trajectory['z1'][0]], 'ro',
-                      label='Robot1', markersize=10)
+                      label='Robot 1', markersize=10)
     point2, = ax1.plot([real_trajectory['x2'][0]], [real_trajectory['y2'][0]], [real_trajectory['z2'][0]], 'bo',
-                      label='Robot2', markersize=10)
+                      label='Robot 2', markersize=10)
 
     # heading, = ax1.plot([real_trajectory['x1'][0], real_trajectory['x1'][0] + 0.8 * np.cos(real_trajectory['theta1'][0])], \
     #                     [real_trajectory['y1'][0], real_trajectory['y1'][0] + 0.8 * np.sin(real_trajectory['theta1'][0])],
     #                     [real_trajectory['z1'][0]], 'b')
 
-    line, = ax1.plot([real_trajectory['x1'][0]], [real_trajectory['y1'][0]], [real_trajectory['z1'][0]],
-                     label='Real_Trajectory1')
-    line2, = ax1.plot([real_trajectory['x2'][0]], [real_trajectory['y2'][0]], [real_trajectory['z2'][0]],
-                     label='Real_Trajectory2')
+    line, = ax1.plot([real_trajectory['x1'][0]], [real_trajectory['y1'][0]], [real_trajectory['z1'][0]], 'r',
+                     label='Real Trajectory R1')
+    line2, = ax1.plot([real_trajectory['x2'][0]], [real_trajectory['y2'][0]], [real_trajectory['z2'][0]],'b',
+                     label='Real Trajectory R2')
 
     ax1.set_xlabel('x')
     ax1.set_ylabel('y')
@@ -235,10 +235,12 @@ def find_final_terminal_set(Ads, Bds, Q, R):
         while feasible == False: # If the set is infeasible reduce c by a small factor and try again
             c = c/1.01
             vertices, feasible = find_Terminal_set(c, P[i], K[i])
-    # Test that it works:
-    for i in range(len(P)):
-        vertices, feasible = find_Terminal_set(c, P[i], K[i])
-        print(feasible)
+# =============================================================================
+#     # Test that it works:
+#     for i in range(len(P)):
+#         vertices, feasible = find_Terminal_set(c, P[i], K[i])
+#         print(feasible)
+# =============================================================================
     return vertices,c
 
 def plot_terminal_set(vertices):
@@ -273,8 +275,8 @@ def plot_terminal_set(vertices):
 
 plt.close("all")
 dt = 1e-2
-Q = .01 * np.diag([4, 40, 0.1])
-R = .001 * np.eye(2)
+Q = .01*np.diag([4, 4, 0.1])
+R = .0001*np.eye(2)
 
 
 Xref = traj_generate(10000, 10)
@@ -292,3 +294,25 @@ print("Final sublevel terminal set is at c = " + str(c))
 plot = False
 if plot:
     plot_terminal_set(vertices)
+    
+
+# =============================================================================
+# from matplotlib.patches import Ellipse
+# 
+# delta = 45.0  # degrees
+# 
+# angles = np.arange(0, 360 + delta, delta)
+# ells = [Ellipse((1, 1), 4, 2, a) for a in angles]
+# 
+# a = plt.subplot(111, aspect='equal')
+# 
+# for e in ells:
+#     e.set_clip_box(a.bbox)
+#     e.set_alpha(0.1)
+#     a.add_artist(e)
+# 
+# plt.xlim(-2, 4)
+# plt.ylim(-1, 3)
+# 
+# plt.show()
+# =============================================================================

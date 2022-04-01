@@ -212,10 +212,10 @@ env = Robot(x0[0], x0[1], x0[2], dt=dt)
 
 N = 10
 beta = 5
-trial = 4
+trial = 1
 # Change save_var to True if you want to save the variables to a .mat file. Change trial number
 # if you want to save multiple trials.
-save_var = True
+save_var = False
 
 
 nx = 3
