@@ -306,6 +306,13 @@ ax3.plot(xPos1, yPos1, 'r', label='Robot 1 Trajectory')
 ax3.plot(xPos2, yPos2, 'b', label='Robot 2 Trajectory')
 ax3.plot(Xref2[:, 0], Xref2[:, 1], 'g', label='Reference Trajectory')
 ax3.legend()
+#
+fig4,ax4 = plt.subplots(2)
+t = np.linspace(0,T,len(xPos1))
+ax4[0].plot(t,xPos1, 'r', label='Robot 1 X Trajectory')
+ax4[0].plot(t,xPos2, 'b', label='Robot 2 X Trajectory')
+ax4[1].plot(t,yPos1, 'r', label='Robot 1 Y Trajectory')
+ax4[1].plot(t,yPos2, 'b', label='Robot 2 Y Trajectory')
 # # plot the error
 # x_error1 = np.array(x_error1)
 # y_error1 = np.array(y_error1)
