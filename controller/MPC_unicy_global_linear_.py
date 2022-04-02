@@ -26,7 +26,7 @@ class MPC():
         self.nu = 2
         self.Q = .01*np.diag([4, 4, 0.1])
         self.R = .0001*np.eye(self.nu)
-        # self.Q = 100 * np.diag([4, 40, 0.1])
+        # self.Q = 100 * np.diag([40, 40, 0.1])
         # self.R = np.eye(self.nu)/100
         self.P = 0 * self.Q
         self.Q_obs = 0*np.diag([4, 4, 0])
@@ -211,7 +211,7 @@ x0 = np.array([1., 0., 0.]) # This angle needs to be in standard notation (it ge
 env = Robot(x0[0], x0[1], x0[2], dt=dt)
 
 N = 10
-beta = 5
+beta = 1
 trial = 1
 # Change save_var to True if you want to save the variables to a .mat file. Change trial number
 # if you want to save multiple trials.
@@ -226,7 +226,11 @@ error_t = np.zeros((mpc.N,nx))
 x_error = []
 y_error = []
 theta_error = []
-Ps,_ = find_P(linear_models[0], linear_models[1], mpc.Q, mpc.R)
+Ps,Ks = find_P(linear_models[0], linear_models[1], mpc.Q, mpc.R)
+prev_terminal_cost = 0
+Vf_diffs = []
+stage_costs = []
+
 for i in range(int(T/dt)-N):
     # Find the new linearisation (from current step to current step + N
     Ads = linear_models[0][i:i+N]
@@ -259,6 +263,18 @@ for i in range(int(T/dt)-N):
     u = mpc.output[0:2] + Uref[i,:]
     uStore.append(u)
 
+    # a-priori check
+    #print('terminal cost{}: '.format(i), 0.5*error_t[0].T@Ps[i]@error_t[0])
+    #print('stage cost{}: '.format(i), 0.5*error_t[0]@mpc.Q@error_t[0] + 0.5*control.T@mpc.R@control)
+    terminal_cost = 0.5*error_t[0].T@Ps[i]@error_t[0]
+    stage_cost = 0.5 * error_t[0] @ mpc.Q @ error_t[0] + 0.5 * control.T @ mpc.R @ control
+    Vf_diff =  prev_terminal_cost - terminal_cost
+
+    Vf_diffs.append(Vf_diff)
+    stage_costs.append(stage_cost)
+
+    prev_terminal_cost = terminal_cost
+
     # Simulate the motion
     state = env.step(u[0], u[1])
     x0 = np.array([state.x,state.y,state.theta])
@@ -283,11 +299,11 @@ fig1, ax1 = plt.subplots()
 
 #===================================================================
 # plot of constraints and obstacles
-circle = plt.Circle((obs[0],obs[1]),0.5,color='m',alpha=0.2)
+# circle = plt.Circle((obs[0],obs[1]),0.5,color='m',alpha=0.2)
 #ax1.add_patch(circle)
 # Plot the constraints:
-xx1 = np.linspace(-1,10,100)
-yy1 = (-storeConstraints[0,0]*xx1 + storeConstraints[0,2])/storeConstraints[0,1]
+# xx1 = np.linspace(-1,10,100)
+# yy1 = (-storeConstraints[0,0]*xx1 + storeConstraints[0,2])/storeConstraints[0,1]
 #
 # =============================================================================
 # for k in range(len(storeConstraints)):
@@ -296,8 +312,8 @@ yy1 = (-storeConstraints[0,0]*xx1 + storeConstraints[0,2])/storeConstraints[0,1]
 #         yy1 = (-storeConstraints[k][0]*xx1 + storeConstraints[k][2])/storeConstraints[k][1]
 #         ax1.plot(xx1,yy1,'b--')
 # =============================================================================
-xx2 = np.linspace(2,10,100)
-yy2 = (-storeConstraints[1,0]*xx2 + storeConstraints[1,2])/storeConstraints[1,1]
+# xx2 = np.linspace(2,10,100)
+# yy2 = (-storeConstraints[1,0]*xx2 + storeConstraints[1,2])/storeConstraints[1,1]
 
 # line1 = ax1.plot(xx1,yy1,'b--',label='Constraint 1')
 # line2 = ax1.plot(xx2,yy2,'m--',label='Constraint 2')
@@ -317,8 +333,11 @@ theta_error = np.array(theta_error)
 #
 # Save variables to .mat:
 
-
-
+fig2, ax2 = plt.subplots()
+stage_costs = stage_costs[:-1]
+Vf_diffs = Vf_diffs[1:]
+ax2.plot(range(len(stage_costs)), stage_costs, 'r', label='l(x,u,i)')
+ax2.plot(range(len(Vf_diffs)), Vf_diffs, 'g', label='Vf(x,i)-Vf(f(x,u),i)')
 
 if save_var:
     data = {"x": real_trajectory['x'], "y":  real_trajectory['y'], "theta":  real_trajectory['theta'],
@@ -329,4 +348,4 @@ if save_var:
     
 plt.show()
 # animation
-# plot_single_robot(real_trajectory)
+plot_single_robot(real_trajectory)
