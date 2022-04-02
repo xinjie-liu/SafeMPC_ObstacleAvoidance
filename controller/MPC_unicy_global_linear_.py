@@ -207,7 +207,7 @@ obs = np.array([5,5])
 Uref = get_ref_input(Xref)
 linear_models = linearize_model_global(Xref, Uref, dt)
 # #=========================================================
-x0 = np.array([1., 0., 0.]) # This angle needs to be in standard notation (it gets wrapped later)
+x0 = np.array([1, 0., 0]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2], dt=dt)
 
 N = 10
@@ -334,10 +334,13 @@ theta_error = np.array(theta_error)
 # Save variables to .mat:
 
 fig2, ax2 = plt.subplots()
-stage_costs = stage_costs[:-1]
-Vf_diffs = Vf_diffs[1:]
+stage_costs = np.array(stage_costs[:-1])
+Vf_diffs = np.array(Vf_diffs[1:])
+diff = Vf_diffs - stage_costs
 ax2.plot(range(len(stage_costs)), stage_costs, 'r', label='l(x,u,i)')
 ax2.plot(range(len(Vf_diffs)), Vf_diffs, 'g', label='Vf(x,i)-Vf(f(x,u),i)')
+#ax2.plot(range(len(diff)), diff, 'g', label='Vf(x,i)-Vf(f(x,u),i)')
+ax2.legend()
 
 if save_var:
     data = {"x": real_trajectory['x'], "y":  real_trajectory['y'], "theta":  real_trajectory['theta'],
