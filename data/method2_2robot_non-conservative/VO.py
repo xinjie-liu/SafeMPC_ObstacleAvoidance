@@ -103,6 +103,7 @@ class MPC():
         # solver settings
         self.stages.codeoptions['name'] = 'MPC_Project_FORCESPRO'
         self.stages.codeoptions['printlevel'] = 2
+        self.stages.codeoptions['overwrite'] = 1
         self.stages.generateCode()
 
     def define_hyperplane(self, x1, y1, x2, y2, theta2, Uref2):
@@ -205,7 +206,7 @@ x1 = np.array([0., 0., np.pi/4]) # This angle needs to be in standard notation (
 env1 = Robot(x1[0], x1[1], x1[2], dt=dt)
 x2 = np.array([0., 6., -np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env2 = Robot(x2[0], x2[1], x2[2], dt=dt)
-N = 3
+N = 10
 mpc = MPC(N)
 nx = 3 # take care: nx here refers to nx for single robot!!
 real_trajectory = {'x1': [x1[0]], 'y1': [x1[1]], 'z1': [0], 'theta1': [x1[2]], 'x2': [x2[0]], 'y2': [x2[1]], 'z2': [0], 'theta2': [x2[2]]}
@@ -225,7 +226,7 @@ for i in range(int(T/dt)-N):
     Bds1 = linear_models1[1][i:i+N]
     Ads2 = linear_models2[0][i:i+N]
     Bds2 = linear_models2[1][i:i+N]
-    mpc.P = np.zeros((2*nx, 2*nx))#block_diag(Ps[i + N - 1], 0*np.eye(nx))  # set the terminal cost (only for robot 1)
+    mpc.P = block_diag(Ps[i + N - 1], 0*np.eye(nx))  # set the terminal cost (only for robot 1)
     # Calculate the new errors (current pose vs reference pose)
     # robot 1
     error_t1[:,:2] = np.array([(x1[:2] - Xref1[i+k,:2]) for k in range(N)])
@@ -302,12 +303,23 @@ x_error1 = np.array(x_error1)
 y_error1 = np.array(y_error1)
 x_error2 = np.array(x_error2)
 y_error2 = np.array(y_error2)
+# fig4, ax4 = plt.subplots()
+# ax4.plot(range(len(x_error1)), x_error1, 'b')
+# ax4.plot(range(len(y_error1)), y_error1, 'g')
+# fig5, ax5 = plt.subplots()
+# ax5.plot(range(len(x_error2)), x_error2, 'b')
+# ax5.plot(range(len(y_error2)), y_error2, 'g')
 fig4, ax4 = plt.subplots()
-ax4.plot(range(len(x_error1)), x_error1, 'b')
-ax4.plot(range(len(y_error1)), y_error1, 'g')
-fig5, ax5 = plt.subplots()
-ax5.plot(range(len(x_error2)), x_error2, 'b')
-ax5.plot(range(len(y_error2)), y_error2, 'g')
+t = np.linspace(0,T,len(x_error1))
+ax4.plot(t, np.abs(x_error1)+np.abs(y_error1), 'r', label='Robot 1 Trajectory')
+ax4.plot(t, np.abs(x_error2)+np.abs(y_error2), 'b', label='Robot 2 Trajectory')
+ax4.set_xlabel('Time [s]')
+ax4.set_ylabel('Error in X-Y')
+ax4.legend(loc='upper right')
+ax4.grid(True)
+ax4.set_title('Trajectory in the Error Space')
+
+fig4.savefig('results_VO_non-conservative_terminal.jpg',dpi=720)
 plt.show()
 # animation
 plot_multi_robot(real_trajectory)
