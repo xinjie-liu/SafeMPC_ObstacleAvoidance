@@ -36,5 +36,5 @@ Final project of course SC42125 Model Predictive Control
 * make the equations smaller [x]
 * try to use new parameters to plot RoA using mpt3
 * a clean code repository
-* split the figures for dynamic obstacle avoidance (also note that the words on the figures should be 'terminal cost' not 'terminal set') 
+* split the figures for dynamic obstacle avoidance (also note that the words on the figures should be 'terminal cost' not 'terminal set') [x]
 * a video
