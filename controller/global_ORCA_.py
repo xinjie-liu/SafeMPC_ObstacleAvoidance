@@ -28,7 +28,7 @@ class MPC():
         # self.Q = 100*np.diag([40, 40, 0.1, 40, 40, 0.1])
         # self.R = np.eye(self.nu)/100
         self.Q = 0.01*np.diag([4, 4, 0.1, 4, 4, 0.1])
-        self.R = 0.0001*np.eye(self.nu)
+        self.R = 0.001*np.eye(self.nu)
         self.P = 0 * self.Q
         self.set_up_solver()
         import MPC_Project_FORCESPRO_py
@@ -156,7 +156,7 @@ class MPC():
                 theta1 += wrapAngle(Uref1[i-1,1]*self.dt)
             sin_ = np.sin(theta1)
             cos_ = np.cos(theta1)
-            if distance < 3:
+            if distance < 4.5:
                 ineqA[i] = np.array([[-v[0]*cos_-v[1]*sin_, v[0]*Uref1[i,0]*sin_*self.dt-v[1]*Uref1[i,0]*cos_*self.dt, 0, 0, 0, 0, 0, 0, 0, 0],\
                                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
                 ineqb[i, 0] = v[0]*Uref1[i,0]*cos_ + v[1]*Uref1[i,0]*sin_ - a
