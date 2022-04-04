@@ -30,7 +30,7 @@ def plot_single_robot(real_trajectory):
     real_trajectory['y'] = np.array(real_trajectory['y'])
     real_trajectory['z'] = np.array(real_trajectory['z'])
     point, = ax1.plot([real_trajectory['x'][0]], [real_trajectory['y'][0]], [real_trajectory['z'][0]], 'ro',
-                      label='Robot', markersize=15)
+                      label='Robot', markersize=7)
 
     heading, = ax1.plot([real_trajectory['x'][0], real_trajectory['x'][0] + 0.8 * np.cos(real_trajectory['theta'][0])], \
                         [real_trajectory['y'][0], real_trajectory['y'][0] + 0.8 * np.sin(real_trajectory['theta'][0])],
@@ -42,9 +42,9 @@ def plot_single_robot(real_trajectory):
     ax1.set_ylabel('y')
     ax1.set_zlabel('z')
     ax1.set_title('3D animate')
-    ax1.set_xlim(-15., 15.)
-    ax1.set_ylim(-15., 15.)
-    ax1.set_zlim(0., 3.)
+    ax1.set_xlim(-5., 12.)
+    ax1.set_ylim(-5., 12.)
+    ax1.set_zlim(0., 1.)
     ax1.legend(loc='lower right')
     ani = animation.FuncAnimation(fig=fig,
                                   func=animate,
@@ -86,9 +86,9 @@ def plot_multi_robot(real_trajectory):
     real_trajectory['y2'] = np.array(real_trajectory['y2'])
     real_trajectory['z2'] = np.array(real_trajectory['z2'])
     point, = ax1.plot([real_trajectory['x1'][0]], [real_trajectory['y1'][0]], [real_trajectory['z1'][0]], 'ro',
-                      label='Robot 1', markersize=10)
+                      label='Robot 1', markersize=7)
     point2, = ax1.plot([real_trajectory['x2'][0]], [real_trajectory['y2'][0]], [real_trajectory['z2'][0]], 'bo',
-                      label='Robot 2', markersize=10)
+                      label='Robot 2', markersize=7)
 
     # heading, = ax1.plot([real_trajectory['x1'][0], real_trajectory['x1'][0] + 0.8 * np.cos(real_trajectory['theta1'][0])], \
     #                     [real_trajectory['y1'][0], real_trajectory['y1'][0] + 0.8 * np.sin(real_trajectory['theta1'][0])],
@@ -103,8 +103,8 @@ def plot_multi_robot(real_trajectory):
     ax1.set_ylabel('y')
     ax1.set_zlabel('z')
     ax1.set_title('3D animate')
-    ax1.set_xlim(-12., 12.)
-    ax1.set_ylim(-12., 12.)
+    ax1.set_xlim(-5., 12.)
+    ax1.set_ylim(-5., 12.)
     ax1.set_zlim(0., 1.)
     ax1.legend(loc='lower right')
     ax1.view_init(elev=60.)
@@ -114,9 +114,9 @@ def plot_multi_robot(real_trajectory):
                                   interval=5,
                                   repeat=False,
                                   blit=False)
-    fig.suptitle('Intersecting Trajectory With Terminal Cost', fontsize=14)
+    #fig.suptitle('Intersecting Trajectory With Terminal Cost', fontsize=14)
     writervideo = animation.FFMpegWriter(fps=60)
-    #ani.save('results.mp4', writer=writervideo)
+    ani.save('results.mp4', writer=writervideo, dpi=300)
     print('Animation')
     plt.show()
     fig.savefig('results_VO_non-conservative_terminal_3d.jpg',dpi=720)

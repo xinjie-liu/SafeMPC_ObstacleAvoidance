@@ -167,7 +167,7 @@ class MPC():
 # =============================================================================
     
     def control(self, state, Ads, Bds,x0,xref):
-        obs_avoidance = False
+        obs_avoidance = True
         self.problem = {"xinit": -state}  # eq.c = -xinit
         # set up linearized models as equality constraints
         #if np.sqrt((x0[0] - 5) ** 2 + (x0[1] - 5) ** 2) <= 2:
@@ -201,13 +201,13 @@ plt.close("all")
 storeConstraints = np.zeros((2,3))
 T = 10
 dt = 1e-2
-Xref = traj_generate(T/dt, T)
-#Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], T/dt,dt)
+#Xref = traj_generate(T/dt, T)
+Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], T/dt,dt)
 obs = np.array([5,5])
 Uref = get_ref_input(Xref)
 linear_models = linearize_model_global(Xref, Uref, dt)
 # #=========================================================
-x0 = np.array([1, 0., 0]) # This angle needs to be in standard notation (it gets wrapped later)
+x0 = np.array([0, 0., 0]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2], dt=dt)
 
 N = 10
