@@ -207,7 +207,7 @@ obs = np.array([5,5])
 Uref = get_ref_input(Xref)
 linear_models = linearize_model_global(Xref, Uref, dt)
 # #=========================================================
-x0 = np.array([1, 0., np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
+x0 = np.array([0, 0., np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2], dt=dt)
 
 N = 10
@@ -220,7 +220,7 @@ save_var = False
 
 nx = 3
 mpc = MPC(N,dt)
-real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
+real_trajectory = {'x1': [], 'y1': [], 'z1': [], 'theta1': []}
 uStore = []
 error_t = np.zeros((mpc.N,nx))
 x_error = []
@@ -280,10 +280,10 @@ for i in range(int(T/dt)-N):
     x0 = np.array([state.x,state.y,state.theta])
 
     # Store the xy position for plotting:
-    real_trajectory['x'].append(state.x)
-    real_trajectory['y'].append(state.y)
-    real_trajectory['z'].append(0)
-    real_trajectory['theta'].append(state.theta)
+    real_trajectory['x1'].append(state.x)
+    real_trajectory['y1'].append(state.y)
+    real_trajectory['z1'].append(0)
+    real_trajectory['theta1'].append(state.theta)
     print('current position: x: ', state.x, ', y: ', state.y)
 
 
@@ -293,8 +293,8 @@ for i in range(int(T/dt)-N):
     
 print(mpc)
 # plot the robot position
-xPos = np.array(real_trajectory['x'])
-yPos = np.array(real_trajectory['y'])
+xPos = np.array(real_trajectory['x1'])
+yPos = np.array(real_trajectory['y1'])
 fig1, ax1 = plt.subplots()
 
 #===================================================================
@@ -368,4 +368,4 @@ if save_var:
     
 plt.show()
 # animation
-plot_single_robot(real_trajectory)
+plot_multi_robot(real_trajectory)
