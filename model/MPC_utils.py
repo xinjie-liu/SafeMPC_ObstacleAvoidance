@@ -30,7 +30,7 @@ def plot_single_robot(real_trajectory):
     real_trajectory['y'] = np.array(real_trajectory['y'])
     real_trajectory['z'] = np.array(real_trajectory['z'])
     point, = ax1.plot([real_trajectory['x'][0]], [real_trajectory['y'][0]], [real_trajectory['z'][0]], 'ro',
-                      label='Robot', markersize=15)
+                      label='Robot', markersize=8)
 
     heading, = ax1.plot([real_trajectory['x'][0], real_trajectory['x'][0] + 0.8 * np.cos(real_trajectory['theta'][0])], \
                         [real_trajectory['y'][0], real_trajectory['y'][0] + 0.8 * np.sin(real_trajectory['theta'][0])],
@@ -42,10 +42,12 @@ def plot_single_robot(real_trajectory):
     ax1.set_ylabel('y')
     ax1.set_zlabel('z')
     ax1.set_title('3D animate')
-    ax1.set_xlim(-15., 15.)
-    ax1.set_ylim(-15., 15.)
-    ax1.set_zlim(0., 3.)
+    ax1.set_xlim(-12., 12.)
+    ax1.set_ylim(-12., 12.)
+    ax1.set_zlim(0., 1.)
     ax1.legend(loc='lower right')
+    ax1.view_init(elev=60.)
+
     ani = animation.FuncAnimation(fig=fig,
                                   func=animate,
                                   frames=len(real_trajectory['x']),
@@ -86,9 +88,9 @@ def plot_multi_robot(real_trajectory):
     real_trajectory['y2'] = np.array(real_trajectory['y2'])
     real_trajectory['z2'] = np.array(real_trajectory['z2'])
     point, = ax1.plot([real_trajectory['x1'][0]], [real_trajectory['y1'][0]], [real_trajectory['z1'][0]], 'ro',
-                      label='Robot 1', markersize=10)
+                      label='Robot 1', markersize=6)
     point2, = ax1.plot([real_trajectory['x2'][0]], [real_trajectory['y2'][0]], [real_trajectory['z2'][0]], 'bo',
-                      label='Robot 2', markersize=10)
+                      label='Robot 2', markersize=6)
 
     # heading, = ax1.plot([real_trajectory['x1'][0], real_trajectory['x1'][0] + 0.8 * np.cos(real_trajectory['theta1'][0])], \
     #                     [real_trajectory['y1'][0], real_trajectory['y1'][0] + 0.8 * np.sin(real_trajectory['theta1'][0])],
@@ -114,12 +116,12 @@ def plot_multi_robot(real_trajectory):
                                   interval=5,
                                   repeat=False,
                                   blit=False)
-    fig.suptitle('Intersecting Trajectory With Terminal Cost', fontsize=14)
+    fig.suptitle('Intersecting Trajectory Without Terminal Cost (N=3)', fontsize=14)
     writervideo = animation.FFMpegWriter(fps=60)
     #ani.save('results.mp4', writer=writervideo)
     print('Animation')
     plt.show()
-    fig.savefig('results_VO_non-conservative_terminal_3d.jpg',dpi=720)
+    fig.savefig('results_VO_circular_3d.jpg',dpi=720)
 def line_traj_generate(start, goal, total_step, dt):  # start: (x, y, theta)
     total_step = int(total_step)
     # xr yr xrdot yrdot xrddot yrddot theta
@@ -278,27 +280,27 @@ def plot_terminal_set(vertices):
     
     plt.show()
 
-plt.close("all")
-dt = 1e-2
-Q = .01*np.diag([4, 4, 0.1])
-R = .0001*np.eye(2)
-
-
-Xref = traj_generate(10000, 10)
-#Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], 10000,dt)
-
-Uref = get_ref_input(Xref)
-linear_models = linearize_model_global(Xref, Uref, dt)
-Ads = linear_models[0][:10]
-Bds = linear_models[1][:10]
-
-
-vertices,c = find_final_terminal_set(Ads, Bds, Q, R)
-print("Final sublevel terminal set is at c = " + str(c))
-
-plot = False
-if plot:
-    plot_terminal_set(vertices)
+# plt.close("all")
+# dt = 1e-2
+# Q = .01*np.diag([4, 4, 0.1])
+# R = .0001*np.eye(2)
+#
+#
+# Xref = traj_generate(10000, 10)
+# #Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], 10000,dt)
+#
+# Uref = get_ref_input(Xref)
+# linear_models = linearize_model_global(Xref, Uref, dt)
+# Ads = linear_models[0][:10]
+# Bds = linear_models[1][:10]
+#
+#
+# vertices,c = find_final_terminal_set(Ads, Bds, Q, R)
+# print("Final sublevel terminal set is at c = " + str(c))
+#
+# plot = False
+# if plot:
+#     plot_terminal_set(vertices)
     
 
 # =============================================================================

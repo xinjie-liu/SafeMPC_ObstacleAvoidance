@@ -24,10 +24,10 @@ class MPC():
         self.stages = forcespro.MultistageProblem(N)  # create the stages for the whole finite horizon
         self.nx = 3
         self.nu = 2
-        self.Q = .01*np.diag([4, 4, 0.1])
-        self.R = .0001*np.eye(self.nu)
-        # self.Q = 100 * np.diag([40, 40, 0.1])
-        # self.R = np.eye(self.nu)/100
+        # self.Q = .01*np.diag([4, 4, 0.1])
+        # self.R = .001*np.eye(self.nu)
+        self.Q = 100 * np.diag([4, 40, 0.1])
+        self.R = np.eye(self.nu)/100
         self.P = 0 * self.Q
         self.Q_obs = 0*np.diag([4, 4, 0])
         self.set_up_solver()
@@ -116,7 +116,7 @@ class MPC():
         ineqA = np.zeros((self.N, self.nu+self.nx))
         ineqb = np.zeros((self.N))
         
-        safety_r =.5 # Distance to be kept between the two robots
+        safety_r = .5 # Distance to be kept between the two robots
 
         sin_theta = 2 * safety_r / distance
 # =============================================================================
@@ -167,14 +167,14 @@ class MPC():
 # =============================================================================
     
     def control(self, state, Ads, Bds,x0,xref):
-        obs_avoidance = False
+        obs_avoidance = True
         self.problem = {"xinit": -state}  # eq.c = -xinit
         # set up linearized models as equality constraints
         #if np.sqrt((x0[0] - 5) ** 2 + (x0[1] - 5) ** 2) <= 2:
         for i in range(self.N - 1):
             A = Ads[i]
             B = Bds[i]
-            xr = np.array([0,0,xref[i,0],xref[i,1],xref[i,-1]])
+
             self.problem["linear_model"+str(i+1)] = np.hstack((B, A))
 # =============================================================================
 #             Q_stacked = np.vstack((np.zeros((self.nu,self.nx+self.nu)), np.hstack((np.zeros((self.nx, self.nu)), self.Q_obs))))
@@ -201,17 +201,17 @@ plt.close("all")
 storeConstraints = np.zeros((2,3))
 T = 10
 dt = 1e-2
-Xref = traj_generate(T/dt, T)
-#Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], T/dt,dt)
+#Xref = traj_generate(T/dt, T)
+Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], T/dt,dt)
 obs = np.array([5,5])
 Uref = get_ref_input(Xref)
 linear_models = linearize_model_global(Xref, Uref, dt)
 # #=========================================================
-x0 = np.array([1, 0., 0]) # This angle needs to be in standard notation (it gets wrapped later)
+x0 = np.array([1, 0., np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2], dt=dt)
 
 N = 10
-beta = 1
+beta = 0
 trial = 1
 # Change save_var to True if you want to save the variables to a .mat file. Change trial number
 # if you want to save multiple trials.
@@ -230,7 +230,7 @@ Ps,Ks = find_P(linear_models[0], linear_models[1], mpc.Q, mpc.R)
 prev_terminal_cost = 0
 Vf_diffs = []
 stage_costs = []
-
+Vf_s = []
 for i in range(int(T/dt)-N):
     # Find the new linearisation (from current step to current step + N
     Ads = linear_models[0][i:i+N]
@@ -269,7 +269,7 @@ for i in range(int(T/dt)-N):
     terminal_cost = 0.5*error_t[0].T@Ps[i]@error_t[0]
     stage_cost = 0.5 * error_t[0] @ mpc.Q @ error_t[0] + 0.5 * control.T @ mpc.R @ control
     Vf_diff =  prev_terminal_cost - terminal_cost
-
+    Vf_s.append(terminal_cost)
     Vf_diffs.append(Vf_diff)
     stage_costs.append(stage_cost)
 
@@ -333,14 +333,31 @@ theta_error = np.array(theta_error)
 #
 # Save variables to .mat:
 
-fig2, ax2 = plt.subplots()
-stage_costs = np.array(stage_costs[:-1])
-Vf_diffs = np.array(Vf_diffs[1:])
-diff = Vf_diffs - stage_costs
-ax2.plot(range(len(stage_costs)), stage_costs, 'r', label='l(x,u,i)')
-ax2.plot(range(len(Vf_diffs)), Vf_diffs, 'g', label='Vf(x,i)-Vf(f(x,u),i)')
-#ax2.plot(range(len(diff)), diff, 'g', label='Vf(x,i)-Vf(f(x,u),i)')
-ax2.legend()
+# fig2, ax2 = plt.subplots()
+# stage_costs = np.array(stage_costs[:-1])
+# Vf_diffs = np.array(Vf_diffs[1:])
+# diff = Vf_diffs - stage_costs
+# ax2.plot(range(len(stage_costs)), stage_costs, 'r', label='Stage cost l(x,u,i)')
+# ax2.plot(range(len(Vf_diffs)), Vf_diffs, 'g', label='Terminal cost decrease Vf(x,i)- Vf(f(x,u),i)')
+# ax2.set_xlabel('Time Step i')
+# ax2.set_ylabel('Cost')
+# ax2.set_title('Terminal cost decrease and Stage cost across time',fontname="Times New Roman Bold")
+# ax2.legend()
+# ax2.grid()
+# Vf_s = np.array(Vf_s)
+# fig3, ax3 = plt.subplots()
+# ax3.plot(range(len(Vf_s)), Vf_s, 'r', label='Terminal cost Vf(x,i)')
+# ax3.set_title('Terminal cost against time',fontname="Times New Roman Bold")
+# ax3.set_xlabel('Time Step i')
+# ax3.set_ylabel('Cost')
+# ax3.legend()
+# ax3.grid()
+# fig2.savefig('terminal_cost_decrease_stage_cost.jpg', dpi=720)
+# fig3.savefig('terminal_cost.jpg', dpi=720)
+#
+# data = {'Vf_s': Vf_s,'Vf_diffs':Vf_diffs,'stage_costs':stage_costs}
+# savemat("terminal_cost_decrease_data.mat", data)
+
 
 if save_var:
     data = {"x": real_trajectory['x'], "y":  real_trajectory['y'], "theta":  real_trajectory['theta'],
