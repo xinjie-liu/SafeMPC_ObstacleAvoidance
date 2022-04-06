@@ -24,10 +24,10 @@ class MPC():
         self.stages = forcespro.MultistageProblem(N)  # create the stages for the whole finite horizon
         self.nx = 3
         self.nu = 2
-        # self.Q = .01*np.diag([4, 4, 0.1])
-        # self.R = .001*np.eye(self.nu)
-        self.Q = 100 * np.diag([4, 40, 0.1])
-        self.R = np.eye(self.nu)/100
+        self.Q = .001*np.diag([4, 4, 0.1])
+        self.R = .001*np.eye(self.nu)
+        # self.Q = 100 * np.diag([4, 40, 0.1])
+        # self.R = np.eye(self.nu)/100
         self.P = 0 * self.Q
         self.Q_obs = 0*np.diag([4, 4, 0])
         self.set_up_solver()
@@ -101,14 +101,13 @@ class MPC():
         heading = np.arctan2((obs[1]-X1[1]),(obs[0]-X1[0])) # heading towards obstacle
         
         if heading <= xref[0,-1]+np.sign(xref[0,-1])*np.pi/2 and heading >= -xref[0,-1]:#-np.pi/4:
-            x1,y1 = start
+            x1,y1 = np.array([0,0])#np.array([2.5,2.5])
             sign = -1
         else:
-            x1,y1 = goal
+            x1,y1 = np.array([10,10])#np.array([7.5,7.5])
             sign = 1
         
-        #x1 = X1[0]
-        #y1 = X1[1]
+
         # obstacle at 5,5
         distance = np.sqrt((x1 - obs[0]) ** 2 + (y1 - obs[1]) ** 2)       
         #distance_to_goal = np.sqrt((x1 - 10) ** 2 + (y1 - 10) ** 2) 
@@ -116,7 +115,7 @@ class MPC():
         ineqA = np.zeros((self.N, self.nu+self.nx))
         ineqb = np.zeros((self.N))
         
-        safety_r = .5 # Distance to be kept between the two robots
+        safety_r = 0.45 # Distance to be kept between the two robots
 
         sin_theta = 2 * safety_r / distance
 # =============================================================================
@@ -138,7 +137,7 @@ class MPC():
 #         v = (V/np.linalg.norm(V))
 # =============================================================================
         
-        theta = sign*np.arcsin(sin_theta) + np.pi/2
+        theta = wrapAngle(sign*np.arcsin(sin_theta) + np.pi/2)
 
         rotation = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
         
@@ -200,7 +199,7 @@ from model.MPC_utils import *
 plt.close("all")
 storeConstraints = np.zeros((2,3))
 T = 10
-dt = 1e-2
+dt = 2e-2
 #Xref = traj_generate(T/dt, T)
 Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], T/dt,dt)
 obs = np.array([5,5])
@@ -211,7 +210,7 @@ x0 = np.array([1, 0., np.pi/4]) # This angle needs to be in standard notation (i
 env = Robot(x0[0], x0[1], x0[2], dt=dt)
 
 N = 10
-beta = 0
+beta = 1
 trial = 1
 # Change save_var to True if you want to save the variables to a .mat file. Change trial number
 # if you want to save multiple trials.

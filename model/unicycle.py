@@ -47,21 +47,21 @@ class Robot():
 
     def step(self, v, w):
 # =============================================================================
-        theta_dt = w
-        old_theta = self.current.theta
-        self.current.theta = self.fixAngle(self.current.theta + self.fixAngle(theta_dt * self.dt))
-        self.current.x = self.current.x + (v / (w+1e-20)) * (sin(self.current.theta) - sin(old_theta))
-        self.current.y = self.current.y + (v / (w+1e-20)) * (cos(old_theta) - cos(self.current.theta))
+#         theta_dt = w
+#         old_theta = self.current.theta
+#         self.current.theta = self.fixAngle(self.current.theta + self.fixAngle(theta_dt * self.dt))
+#         self.current.x = self.current.x + (v / (w+1e-20)) * (sin(self.current.theta) - sin(old_theta))
+#         self.current.y = self.current.y + (v / (w+1e-20)) * (cos(old_theta) - cos(self.current.theta))
 # =============================================================================
 # =============================================================================
 #        dynamic model (old one)
-#         theta_dt = w
-#         x_dt = v * cos(self.current.theta)
-#         y_dt = v * sin(self.current.theta)
-#         self.current.theta = self.fixAngle(self.current.theta + theta_dt * self.dt)
-#
-#         self.current.x = self.current.x + x_dt * self.dt
-#         self.current.y = self.current.y + y_dt * self.dt
+        theta_dt = w
+        x_dt = v * cos(self.current.theta)
+        y_dt = v * sin(self.current.theta)
+        self.current.theta = (self.current.theta + theta_dt * self.dt)
+
+        self.current.x = self.current.x + x_dt * self.dt
+        self.current.y = self.current.y + y_dt * self.dt
 
 # =============================================================================
 #         # In terms of u:
