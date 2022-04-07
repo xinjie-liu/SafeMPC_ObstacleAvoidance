@@ -183,3 +183,33 @@ legend()
 
 
 exportgraphics(figure(1),'Performance of uncostrained LQR vs MPC.jpg','Resolution',720)
+%%
+clear;
+clc;
+load("terminal_cost_decrease_data.mat");
+subplot(2,1,1);
+t = 0:1:length(stage_costs)-1;
+
+xlimit = 500;
+
+plot(t(1:xlimit),Vf_s(1:xlimit),'DisplayName',"Terminal cost $V_f(x,i)$",'LineWidth',1);
+ylabel('Cost')
+xlabel('Time step i')
+title('Terminal cost across time')
+grid on
+leg1 = legend('show');
+set(leg1, 'Interpreter','latex')
+set(gca,'fontsize',12)
+
+subplot(2,1,2);
+plot(t(1:xlimit),Vf_diffs(1:xlimit),'DisplayName',"Terminal cost decrease $V_f(x,i) - V_f(f(x,u)$,i)",'LineWidth',1);
+hold on;
+plot(t(1:xlimit),stage_costs(1:xlimit),'DisplayName',"Stage cost $\ell(x,u,i)$",'LineWidth',1);
+ylabel('Cost')
+xlabel('Time step i')
+title('Terminal cost decrease and Stage cost across time')
+grid on
+leg2 = legend('show');
+set(leg2, 'Interpreter','latex')
+set(gca,'fontsize',12)
+exportgraphics(figure(1),'Terminal_cost_decrease.jpg','Resolution',720)

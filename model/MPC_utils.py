@@ -237,18 +237,16 @@ def find_Terminal_set(c,P,K):
 def find_final_terminal_set(Ads, Bds, Q, R):
     P,K = find_P(Ads, Bds, Q, R)
     c = 100 # Start with some large c
+    polyhedron = []
+    cs = []
     for i in range(len(P)): # Iterate through all the terminal costs along the reference trajectory
         feasible = False
-        while feasible == False: # If the set is infeasible reduce c by a small factor and try again
+        while not feasible: # If the set is infeasible reduce c by a small factor and try again
             c = c/1.01
             vertices, feasible = find_Terminal_set(c, P[i], K[i])
-# =============================================================================
-#     # Test that it works:
-#     for i in range(len(P)):
-#         vertices, feasible = find_Terminal_set(c, P[i], K[i])
-#         print(feasible)
-# =============================================================================
-    return vertices,c
+        polyhedron.append(vertices)
+        cs.append(c)
+    return polyhedron,cs
 
 def plot_terminal_set(vertices):
     fig = plt.figure()
@@ -280,46 +278,30 @@ def plot_terminal_set(vertices):
     
     plt.show()
 
+# Uncomment below and run for an example of how the polyhedral terminal set
+# is plotted
 # plt.close("all")
 # dt = 1e-2
 # Q = .01*np.diag([4, 4, 0.1])
 # R = .0001*np.eye(2)
-#
-#
+# 
+# 
 # Xref = traj_generate(10000, 10)
 # #Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], 10000,dt)
-#
+# 
 # Uref = get_ref_input(Xref)
 # linear_models = linearize_model_global(Xref, Uref, dt)
 # Ads = linear_models[0][:10]
 # Bds = linear_models[1][:10]
-#
-#
-# vertices,c = find_final_terminal_set(Ads, Bds, Q, R)
-# print("Final sublevel terminal set is at c = " + str(c))
-#
-# plot = False
+# 
+# 
+# polyhedron,cs = find_final_terminal_set(Ads, Bds, Q, R)
+# #print("Final sublevel terminal set is at c = " + str(cs[-1]))
+# 
+# plot = True
+# 
+# terminalSet = -1 # Choose which set to plot:
 # if plot:
-#     plot_terminal_set(vertices)
-    
+#     plot_terminal_set(polyhedron[terminalSet])
+#     print('C = '+ str(cs[terminalSet]))
 
-# =============================================================================
-# from matplotlib.patches import Ellipse
-# 
-# delta = 45.0  # degrees
-# 
-# angles = np.arange(0, 360 + delta, delta)
-# ells = [Ellipse((1, 1), 4, 2, a) for a in angles]
-# 
-# a = plt.subplot(111, aspect='equal')
-# 
-# for e in ells:
-#     e.set_clip_box(a.bbox)
-#     e.set_alpha(0.1)
-#     a.add_artist(e)
-# 
-# plt.xlim(-2, 4)
-# plt.ylim(-1, 3)
-# 
-# plt.show()
-# =============================================================================
