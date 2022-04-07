@@ -65,12 +65,12 @@ def plot_multi_robot(real_trajectory):
         point.set_xdata(real_trajectory['x1'][i])
         point.set_ydata(real_trajectory['y1'][i])
         point.set_3d_properties(real_trajectory['z1'][i])
-        line2.set_xdata(real_trajectory['x2'][:i + 1])
-        line2.set_ydata(real_trajectory['y2'][:i + 1])
-        line2.set_3d_properties(real_trajectory['z2'][:i + 1])
-        point2.set_xdata(real_trajectory['x2'][i])
-        point2.set_ydata(real_trajectory['y2'][i])
-        point2.set_3d_properties(real_trajectory['z2'][i])
+        # line2.set_xdata(real_trajectory['x2'][:i + 1])
+        # line2.set_ydata(real_trajectory['y2'][:i + 1])
+        # line2.set_3d_properties(real_trajectory['z2'][:i + 1])
+        # point2.set_xdata(real_trajectory['x2'][i])
+        # point2.set_ydata(real_trajectory['y2'][i])
+        # point2.set_3d_properties(real_trajectory['z2'][i])
 
         # heading.set_xdata(
         #     [real_trajectory['x1'][i], real_trajectory['x1'][i] + 0.8 * np.cos(real_trajectory['theta1'][i])])
@@ -84,13 +84,15 @@ def plot_multi_robot(real_trajectory):
     real_trajectory['x1'] = np.array(real_trajectory['x1'])
     real_trajectory['y1'] = np.array(real_trajectory['y1'])
     real_trajectory['z1'] = np.array(real_trajectory['z1'])
-    real_trajectory['x2'] = np.array(real_trajectory['x2'])
-    real_trajectory['y2'] = np.array(real_trajectory['y2'])
-    real_trajectory['z2'] = np.array(real_trajectory['z2'])
+    # real_trajectory['x2'] = np.array(real_trajectory['x2'])
+    # real_trajectory['y2'] = np.array(real_trajectory['y2'])
+    # real_trajectory['z2'] = np.array(real_trajectory['z2'])
     point, = ax1.plot([real_trajectory['x1'][0]], [real_trajectory['y1'][0]], [real_trajectory['z1'][0]], 'ro',
                       label='Robot 1', markersize=6)
-    point2, = ax1.plot([real_trajectory['x2'][0]], [real_trajectory['y2'][0]], [real_trajectory['z2'][0]], 'bo',
-                      label='Robot 2', markersize=6)
+    obs, = ax1.plot(5, 5, 0, 'yo',
+                      label='Obstacle', markersize=6)
+    # point2, = ax1.plot([real_trajectory['x2'][0]], [real_trajectory['y2'][0]], [real_trajectory['z2'][0]], 'bo',
+    #                   label='Robot 2', markersize=6)
 
     # heading, = ax1.plot([real_trajectory['x1'][0], real_trajectory['x1'][0] + 0.8 * np.cos(real_trajectory['theta1'][0])], \
     #                     [real_trajectory['y1'][0], real_trajectory['y1'][0] + 0.8 * np.sin(real_trajectory['theta1'][0])],
@@ -98,15 +100,15 @@ def plot_multi_robot(real_trajectory):
 
     line, = ax1.plot([real_trajectory['x1'][0]], [real_trajectory['y1'][0]], [real_trajectory['z1'][0]], 'r',
                      label='Real Trajectory R1')
-    line2, = ax1.plot([real_trajectory['x2'][0]], [real_trajectory['y2'][0]], [real_trajectory['z2'][0]],'b',
-                     label='Real Trajectory R2')
+    # line2, = ax1.plot([real_trajectory['x2'][0]], [real_trajectory['y2'][0]], [real_trajectory['z2'][0]],'b',
+    #                  label='Real Trajectory R2')
 
     ax1.set_xlabel('x')
     ax1.set_ylabel('y')
     ax1.set_zlabel('z')
     ax1.set_title('3D animate')
-    ax1.set_xlim(-12., 12.)
-    ax1.set_ylim(-12., 12.)
+    ax1.set_xlim(-5., 10.)
+    ax1.set_ylim(-5., 10.)
     ax1.set_zlim(0., 1.)
     ax1.legend(loc='lower right')
     ax1.view_init(elev=60.)
@@ -116,9 +118,9 @@ def plot_multi_robot(real_trajectory):
                                   interval=5,
                                   repeat=False,
                                   blit=False)
-    fig.suptitle('Intersecting Trajectory Without Terminal Cost (N=3)', fontsize=14)
+    fig.suptitle('Position-space Constraint', fontsize=14)
     writervideo = animation.FFMpegWriter(fps=60)
-    #ani.save('results.mp4', writer=writervideo)
+    ani.save('results.mp4', writer=writervideo, dpi=300)
     print('Animation')
     plt.show()
     fig.savefig('results_VO_circular_3d.jpg',dpi=720)
