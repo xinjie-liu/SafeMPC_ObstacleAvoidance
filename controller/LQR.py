@@ -54,8 +54,6 @@ class MPC():
             self.stages.ineq[i]['p']['A'] = np.zeros((1,self.nx + self.nu)) # Jacobian of linear inequality
             self.stages.ineq[i]['p']['b'] = np.zeros((1,))# RHS of linear inequality
 
-            
-
             # Cost/Objective function
             # V = sum_i(z(i)*H*z(i)) + z(N)*H*z(N) -> where z(i) = [u1,u2,x1,x2] at stage/step i.
             if i == self.N - 1:
@@ -96,9 +94,6 @@ class MPC():
 
     def collision_avoidance(self, X1, xref,start,goal,obs,timestep):
         # define the hyper-plane for collision avoidance
-        
-
-        
         heading = np.arctan2((obs[1]-X1[1]),(obs[0]-X1[0])) # heading towards obstacle
         
         if heading <= xref[0,-1]+np.sign(xref[0,-1])*np.pi/2 and heading >= -xref[0,-1]:#-np.pi/4:
@@ -124,13 +119,8 @@ class MPC():
 #         if np.abs(sin_theta) > 1:
 #             sin_theta = np.sign(sin_theta)*1.
 # =============================================================================
-        
-
-        
         V = sign*np.array([x1-obs[0],y1-obs[1]])
-        
         v = (V/np.linalg.norm(V))
-        
 # =============================================================================
 #         # Position of closest point on the circle (obstacle):
 #         c = np.array([5,5]) + safety_r*np.array([x1-5,y1-5])/np.linalg.norm(np.array([5-x1,5-y1]))
@@ -138,22 +128,14 @@ class MPC():
 #         V = np.array([x1-c[0],y1-c[1]])
 #         v = (V/np.linalg.norm(V))
 # =============================================================================
-        
         theta = sign*np.arcsin(sin_theta) + np.pi/2
-
         rotation = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
-        
         n = rotation @ v
         #n = v
-        a = n[0] * (x1 + obs[0]) / 2 + n[1] * (y1 + obs[1]) / 2 
-        
-        
-
+        a = n[0] * (x1 + obs[0]) / 2 + n[1] * (y1 + obs[1]) / 2
         for i in range(self.N):
             ineqA[i] = np.array([0, 0, n[0], n[1], 0])
             ineqb[i] = a - n[0]*xref[i,0] - n[1]*xref[i,1]
-
-
         global storeConstraints
         if sign==-1:
             storeConstraints[0,:] = np.array([n[0],n[1],a])
@@ -238,19 +220,6 @@ for i in range(int(T/dt)-N):
     # mpc.theta_err = error_t[2]
     start = Xref[0,0:2]
     goal = Xref[-1,0:2]
-    # mpc.collision_avoidance(x0, Xref[i:i+N],start,goal,obs,i)
-
-# =============================================================================
-#             if (e.T@mpc.obstacle['Q'][k]@e + mpc.obstacle['l'][k].T@e <= mpc.obstacle['r'][k]) == False:
-#                 break_loop = True
-#             else:
-#                 break_loop = False
-# =============================================================================
-    #if break_loop:
-        #break
-    # Solve the MPC problem:
-    #control = mpc.control(error_t[0,:], Ads, Bds,x0,Xref[i:i+N])
-    # Extract the first control input (for error correction) and add the reference input (for trajectory tracking)
     u = K @ error_t[0,:] + Uref[i,:]
     uStore.append(u)
 
@@ -289,24 +258,18 @@ ax1.legend()
 x_error = np.array(x_error)
 y_error = np.array(y_error)
 theta_error = np.array(theta_error)
-#
-#
-#
-#
-# Save variables to .mat:
 
+#=================================================================================
+# Save variables to .mat:
 # Change save_var to True if you want to save the variables to a .mat file. Change trial number
 # if you want to save multiple trials.
-save_var = True
-
-
+save_var = False
 if save_var:
     data = {"x": real_trajectory['x'], "y":  real_trajectory['y'], "theta":  real_trajectory['theta'],
             "x_error": x_error, "y_error": y_error, "theta_error": theta_error,
             "ref_x": Xref[:,0], "ref_y": Xref[:,1], "ref_theta": Xref[:,-1],
             "uStore": uStore, "uref": Uref}
     savemat("experiment_LQR_"+str(trial)+"_data.mat", data)
-    
 plt.show()
 # animation
-# plot_single_robot(real_trajectory)
+plot_single_robot(real_trajectory)

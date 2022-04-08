@@ -30,7 +30,7 @@ class MPC():
         # self.Q = 100*np.diag([40, 40, 0.1, 40, 40, 0.1])
         # self.R = np.eye(self.nu)/100
         self.Q = 0.01*np.diag([4, 4, 0.1, 4, 4, 0.1])
-        self.R = 0.001*np.eye(self.nu)
+        self.R = 0.0001*np.eye(self.nu)
         self.P = 0 * self.Q
         self.set_up_solver()
         import MPC_Project_FORCESPRO_py
@@ -107,7 +107,6 @@ class MPC():
         # solver settings
         self.stages.codeoptions['name'] = 'MPC_Project_FORCESPRO'
         self.stages.codeoptions['printlevel'] = 2
-        self.stages.codeoptions['overwrite'] = 1
         self.stages.generateCode()
 
     def define_hyperplane(self, x1, y1, x2, y2, theta2, Uref2):
@@ -159,7 +158,7 @@ class MPC():
                 theta1 += wrapAngle(Uref1[i-1,1]*self.dt)
             sin_ = np.sin(theta1)
             cos_ = np.cos(theta1)
-            if distance < 3.5:
+            if distance < 0.9:
                 ineqA[i] = np.array([[-v[0]*cos_-v[1]*sin_, v[0]*Uref1[i,0]*sin_*self.dt-v[1]*Uref1[i,0]*cos_*self.dt, 0, 0, 0, 0, 0, 0, 0, 0],\
                                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
                 ineqb[i, 0] = v[0]*Uref1[i,0]*cos_ + v[1]*Uref1[i,0]*sin_ - a
@@ -184,23 +183,15 @@ class MPC():
         self.output = self.solver.MPC_Project_FORCESPRO_solve(self.problem)
         control = self.output[0]['output'][:self.nu]
 
-#==========================================================================================
-        # delete later
-        # for i in range(self.N):
-        #     print("predicted error of robot 1 at stage {}".format(i+1), self.output[i*(self.nx+self.nu) + self.nu], ' ', self.output[i*(self.nx+self.nu) + self.nu+1])
-        #     error_vector1 = np.array([self.output[i*(self.nx+self.nu) + self.nu], self.output[i*(self.nx+self.nu) + self.nu+1]])
-        #     print("left hand side of the constrainst: ", self.hyperplane["A"][0, 4:6] @ error_vector1)
-#===========================================================================================
         return control
 
 # #=======================================================
-plt.close("all")
 T = 10
 dt = 2e-2
 # Xref1 = traj_generate(T/dt, T)
 # Xref2 = traj_generate(T/dt, T)
 Xref1 = line_traj_generate([0.,0.,0.], [10.,10.,0.], T/dt, dt)
-Xref2 = line_traj_generate([10.,10.,0.], [0.,0.,0.], T/dt, dt)
+Xref2 = line_traj_generate([0.,10.,0.], [10.,0.,0.], T/dt, dt)
 Uref1 = get_ref_input(Xref1)
 Uref2 = get_ref_input(Xref2)
 linear_models1 = linearize_model_global(Xref1, Uref1, dt)
@@ -208,9 +199,9 @@ linear_models2 = linearize_model_global(Xref2, Uref2, dt)
 # #=========================================================
 x1 = np.array([0., 0., np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env1 = Robot(x1[0], x1[1], x1[2], dt=dt)
-x2 = np.array([10., 10., 5*np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
+x2 = np.array([0., 10., -np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env2 = Robot(x2[0], x2[1], x2[2], dt=dt)
-N = 10
+N = 5
 mpc = MPC(N)
 nx = 3 # take care: nx here refers to nx for single robot!!
 real_trajectory = {'x1': [x1[0]], 'y1': [x1[1]], 'z1': [0], 'theta1': [x1[2]], 'x2': [x2[0]], 'y2': [x2[1]], 'z2': [0], 'theta2': [x2[2]]}
@@ -221,8 +212,8 @@ x_error1 = []
 y_error1 = []
 x_error2 = []
 y_error2 = []
-Ps,_ = find_P(linear_models1[0], linear_models1[1], mpc.Q[:3,:3], mpc.R[:2,:2])
-
+P1s,_ = find_P(linear_models1[0], linear_models1[1], mpc.Q[:3,:3], mpc.R[:2,:2])
+P2s,_ = find_P(linear_models2[0], linear_models2[1], mpc.Q[3:,3:], mpc.R[2:,2:])
 for i in range(int(T/dt)-N):
 #for i in range(10):
     # Find the new linearisation (from current step to current step + N
@@ -230,8 +221,9 @@ for i in range(int(T/dt)-N):
     Bds1 = linear_models1[1][i:i+N]
     Ads2 = linear_models2[0][i:i+N]
     Bds2 = linear_models2[1][i:i+N]
-    #mpc.P = np.zeros((2*nx, 2*nx)) # set the terminal cost (only for robot 1)
-    mpc.P = block_diag(Ps[i + N - 1], 0*np.eye(nx))
+    #mpc.P = np.zeros((6,6))
+    #mpc.P = block_diag(np.zeros((nx,nx)), P2s[i + N - 1]) # set the terminal cost (only for robot 1)
+    mpc.P = block_diag(P1s[i + N - 1], P2s[i + N - 1])
     # Calculate the new errors (current pose vs reference pose)
     # robot 1
     error_t1[:,:2] = np.array([(x1[:2] - Xref1[i+k,:2]) for k in range(N)])
@@ -268,10 +260,6 @@ for i in range(int(T/dt)-N):
     state2 = env2.step(u2[0], u2[1])
     x1 = np.array([state1.x,state1.y,state1.theta])
     x2 = np.array([state2.x,state2.y,state2.theta])
-#==========================================================================
-    # print("true sin: ", np.sin(state1.theta))
-    # print("control input: ", u1)
-#==========================================================================
     # Store the xy position for plotting:
     real_trajectory['x1'].append(state1.x)
     real_trajectory['y1'].append(state1.y)
@@ -293,43 +281,35 @@ xPos1 = np.array(real_trajectory['x1'])
 yPos1 = np.array(real_trajectory['y1'])
 xPos2 = np.array(real_trajectory['x2'])
 yPos2 = np.array(real_trajectory['y2'])
-# fig1, ax1 = plt.subplots()
-# ax1.plot(xPos1, yPos1, 'r', label='robot_trajectory')
-# ax1.plot(Xref1[:, 0], Xref1[:, 1], 'g', label='reference_trajectory')
-# ax1.legend()
-# ax1.set_title('Robot1')
-# fig2, ax2 = plt.subplots()
-# ax2.plot(xPos2, yPos2, 'r', label='robot_trajectory')
-# ax2.plot(Xref2[:, 0], Xref2[:, 1], 'g', label='reference_trajectory')
-# ax1.set_title('Robot2')
-# ax2.legend()
+fig1, ax1 = plt.subplots()
+ax1.plot(xPos1, yPos1, 'r', label='robot_trajectory')
+ax1.plot(Xref1[:, 0], Xref1[:, 1], 'g', label='reference_trajectory')
+ax1.legend()
+ax1.set_title('Robot1')
+fig2, ax2 = plt.subplots()
+ax2.plot(xPos2, yPos2, 'r', label='robot_trajectory')
+ax2.plot(Xref2[:, 0], Xref2[:, 1], 'g', label='reference_trajectory')
+ax1.set_title('Robot2')
+ax2.legend()
 fig3, ax3 = plt.subplots()
-ax3.plot(xPos1, yPos1, 'r', label='Robot 1 Trajectory')
-ax3.plot(xPos2, yPos2, 'b', label='Robot 2 Trajectory')
-ax3.plot(Xref2[:, 0], Xref2[:, 1], 'g', label='Reference Trajectory')
+ax3.plot(xPos1, yPos1, 'r', label='robot1_trajectory')
+ax3.plot(xPos2, yPos2, 'b', label='robot2_trajectory')
 ax3.legend()
-#
-fig4,ax4 = plt.subplots(2)
-t = np.linspace(0,T,len(xPos1))
-ax4[0].plot(t,xPos1, 'r', label='Robot 1 X Trajectory')
-ax4[0].plot(t,xPos2, 'b', label='Robot 2 X Trajectory')
-ax4[1].plot(t,yPos1, 'r', label='Robot 1 Y Trajectory')
-ax4[1].plot(t,yPos2, 'b', label='Robot 2 Y Trajectory')
-# # plot the error
-# x_error1 = np.array(x_error1)
-# y_error1 = np.array(y_error1)
-# x_error2 = np.array(x_error2)
-# y_error2 = np.array(y_error2)
-# fig4, ax4 = plt.subplots()
-# ax4.plot(range(len(x_error1)), x_error1, 'b', label='x_error')
-# ax4.plot(range(len(y_error1)), y_error1, 'g', label='y_error')
-# ax4.set_title('Robot1')
-# ax4.legend()
-# fig5, ax5 = plt.subplots()
-# ax5.plot(range(len(x_error2)), x_error2, 'b', label='x_error')
-# ax5.plot(range(len(y_error2)), y_error2, 'g', label='y_error')
-# ax5.set_title('Robot2')
-# ax5.legend()
+# plot the error
+x_error1 = np.array(x_error1)
+y_error1 = np.array(y_error1)
+x_error2 = np.array(x_error2)
+y_error2 = np.array(y_error2)
+fig4, ax4 = plt.subplots()
+ax4.plot(range(len(x_error1)), x_error1, 'b', label='x_error')
+ax4.plot(range(len(y_error1)), y_error1, 'g', label='y_error')
+ax4.set_title('Robot1')
+ax4.legend()
+fig5, ax5 = plt.subplots()
+ax5.plot(range(len(x_error2)), x_error2, 'b', label='x_error')
+ax5.plot(range(len(y_error2)), y_error2, 'g', label='y_error')
+ax5.set_title('Robot2')
+ax5.legend()
 plt.show()
 # animation
 #plot_single_robot(real_trajectory)

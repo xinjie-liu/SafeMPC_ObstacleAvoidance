@@ -26,8 +26,8 @@ class MPC():
         self.stages = forcespro.MultistageProblem(N)  # create the stages for the whole finite horizon
         self.nx = 3
         self.nu = 2
-        self.Q = .001*np.diag([4, 4, 0.1])
-        self.R = .001*np.eye(self.nu)
+        self.Q = .01*np.diag([4, 4, 0.1])
+        self.R = .0001*np.eye(self.nu)
         # self.Q = 100 * np.diag([4, 40, 0.1])
         # self.R = np.eye(self.nu)/100
         self.P = 0 * self.Q
@@ -54,8 +54,6 @@ class MPC():
             self.stages.dims[i]['p'] = 1 # number of polytopic (linear) constraints
             self.stages.ineq[i]['p']['A'] = np.zeros((1,self.nx + self.nu)) # Jacobian of linear inequality
             self.stages.ineq[i]['p']['b'] = np.zeros((1,))# RHS of linear inequality
-
-            
 
             # Cost/Objective function
             # V = sum_i(z(i)*H*z(i)) + z(N)*H*z(N) -> where z(i) = [u1,u2,x1,x2] at stage/step i.
@@ -97,40 +95,26 @@ class MPC():
 
     def collision_avoidance(self, X1, xref,start,goal,obs,timestep):
         # define the hyper-plane for collision avoidance
-        
-
-        
         heading = np.arctan2((obs[1]-X1[1]),(obs[0]-X1[0])) # heading towards obstacle
-        
         if heading <= xref[0,-1]+np.sign(xref[0,-1])*np.pi/2 and heading >= -xref[0,-1]:#-np.pi/4:
             x1,y1 = np.array([0,0])#np.array([2.5,2.5])
             sign = -1
         else:
             x1,y1 = np.array([10,10])#np.array([7.5,7.5])
             sign = 1
-        
-
         # obstacle at 5,5
         distance = np.sqrt((x1 - obs[0]) ** 2 + (y1 - obs[1]) ** 2)       
-        #distance_to_goal = np.sqrt((x1 - 10) ** 2 + (y1 - 10) ** 2) 
-            
+        #distance_to_goal = np.sqrt((x1 - 10) ** 2 + (y1 - 10) ** 2)
         ineqA = np.zeros((self.N, self.nu+self.nx))
         ineqb = np.zeros((self.N))
-        
         safety_r = 0.45 # Distance to be kept between the two robots
-
         sin_theta = 2 * safety_r / distance
 # =============================================================================
 #         if np.abs(sin_theta) > 1:
 #             sin_theta = np.sign(sin_theta)*1.
 # =============================================================================
-        
-
-        
         V = sign*np.array([x1-obs[0],y1-obs[1]])
-        
         v = (V/np.linalg.norm(V))
-        
 # =============================================================================
 #         # Position of closest point on the circle (obstacle):
 #         c = np.array([5,5]) + safety_r*np.array([x1-5,y1-5])/np.linalg.norm(np.array([5-x1,5-y1]))
@@ -138,22 +122,14 @@ class MPC():
 #         V = np.array([x1-c[0],y1-c[1]])
 #         v = (V/np.linalg.norm(V))
 # =============================================================================
-        
         theta = wrapAngle(sign*np.arcsin(sin_theta) + np.pi/2)
-
         rotation = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
-        
         n = rotation @ v
         #n = v
-        a = n[0] * (x1 + obs[0]) / 2 + n[1] * (y1 + obs[1]) / 2 
-        
-        
-
+        a = n[0] * (x1 + obs[0]) / 2 + n[1] * (y1 + obs[1]) / 2
         for i in range(self.N):
             ineqA[i] = np.array([0, 0, n[0], n[1], 0])
             ineqb[i] = a - n[0]*xref[i,0] - n[1]*xref[i,1]
-
-
         global storeConstraints
         if sign==-1:
             storeConstraints[0,:] = np.array([n[0],n[1],a])
@@ -161,12 +137,11 @@ class MPC():
             storeConstraints[1,:] = np.array([n[0],n[1],a]) 
         self.hyperplane = {"A": ineqA, "b": ineqb}
         self.distance = distance
-
 # =============================================================================
 #         ax3.plot(xx,yy,'b')
 #         plt.show()
 # =============================================================================
-    
+
     def control(self, state, Ads, Bds,x0,xref,obs_avoidance):
         self.problem = {"xinit": -state}  # eq.c = -xinit
         # set up linearized models as equality constraints
@@ -174,7 +149,6 @@ class MPC():
         for i in range(self.N - 1):
             A = Ads[i]
             B = Bds[i]
-
             self.problem["linear_model"+str(i+1)] = np.hstack((B, A))
             if obs_avoidance:
                 self.problem["hyperplaneA"+str(i+1)] = self.hyperplane["A"][i]
@@ -194,31 +168,27 @@ from model.MPC_utils import *
 plt.close("all")
 storeConstraints = np.zeros((2,3))
 T = 10
-dt = 2e-2
+dt = 1e-2
 # Choose which trajectory you want to run (traj_generate() is sinusoidal, line_traj_generate is line).
-#Xref = traj_generate(T/dt, T)
-Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], T/dt,dt)
-
+Xref = traj_generate(T/dt, T)
+#Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], T/dt,dt)
 obs_avoidance = False # Change to True if you want to avoid the obstacle
 obs = np.array([5,5]) # Obstacle at 5,5
 Uref = get_ref_input(Xref)
 linear_models = linearize_model_global(Xref, Uref, dt)
 # #=========================================================
-x0 = np.array([0, 0., np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
+x0 = np.array([1, 0., np.pi/2]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2], dt=dt)
 # Choose horizon N, terminal cost scaling beta
 N = 10
 beta = 1
-
 # Change save_var to True if you want to save the variables to a .mat file. Change trial number
 # if you want to save multiple trials.
 trial = 1
 save_var = False
-
-
 nx = 3
 mpc = MPC(N,dt)
-real_trajectory = {'x1': [], 'y1': [], 'z1': [], 'theta1': []}
+real_trajectory = {'x': [], 'y': [], 'z': [], 'theta': []}
 uStore = []
 error_t = np.zeros((mpc.N,nx))
 x_error = []
@@ -250,7 +220,7 @@ for i in range(int(T/dt)-N):
     u = mpc.output[0:2] + Uref[i,:]
     uStore.append(u)
 
-    # a-priori check
+    # a-posteriori check
     #print('terminal cost{}: '.format(i), 0.5*error_t[0].T@Ps[i]@error_t[0])
     #print('stage cost{}: '.format(i), 0.5*error_t[0]@mpc.Q@error_t[0] + 0.5*control.T@mpc.R@control)
     terminal_cost = 0.5*error_t[0].T@Ps[i]@error_t[0]
@@ -259,7 +229,6 @@ for i in range(int(T/dt)-N):
     Vf_s.append(terminal_cost)
     Vf_diffs.append(Vf_diff)
     stage_costs.append(stage_cost)
-
     prev_terminal_cost = terminal_cost
 
     # Simulate the motion
@@ -267,21 +236,19 @@ for i in range(int(T/dt)-N):
     x0 = np.array([state.x,state.y,state.theta])
 
     # Store the xy position for plotting:
-    real_trajectory['x1'].append(state.x)
-    real_trajectory['y1'].append(state.y)
-    real_trajectory['z1'].append(0)
-    real_trajectory['theta1'].append(state.theta)
+    real_trajectory['x'].append(state.x)
+    real_trajectory['y'].append(state.y)
+    real_trajectory['z'].append(0)
+    real_trajectory['theta'].append(state.theta)
     print('current position: x: ', state.x, ', y: ', state.y)
-
 
     x_error.append(error_t[0,0])
     y_error.append(error_t[0,1])
     theta_error.append(error_t[0,2])
-    
-print(mpc)
+
 # plot the robot position
-xPos = np.array(real_trajectory['x1'])
-yPos = np.array(real_trajectory['y1'])
+xPos = np.array(real_trajectory['x'])
+yPos = np.array(real_trajectory['y'])
 fig1, ax1 = plt.subplots()
 
 #===================================================================
@@ -305,8 +272,6 @@ fig1, ax1 = plt.subplots()
 # line1 = ax1.plot(xx1,yy1,'b--',label='Constraint 1')
 # line2 = ax1.plot(xx2,yy2,'m--',label='Constraint 2')
 #=====================================================================
-
-
 line3 = ax1.plot(Xref[:, 0], Xref[:, 1], 'g', label='Reference Trajectory')
 line4 = ax1.plot(xPos, yPos, 'r',label='Real Trajectory')
 ax1.legend()
@@ -314,37 +279,8 @@ ax1.legend()
 x_error = np.array(x_error)
 y_error = np.array(y_error)
 theta_error = np.array(theta_error)
-#
-#
-#
-#
-# Save variables to .mat:
 
-# fig2, ax2 = plt.subplots()
-# stage_costs = np.array(stage_costs[:-1])
-# Vf_diffs = np.array(Vf_diffs[1:])
-# diff = Vf_diffs - stage_costs
-# ax2.plot(range(len(stage_costs)), stage_costs, 'r', label='Stage cost l(x,u,i)')
-# ax2.plot(range(len(Vf_diffs)), Vf_diffs, 'g', label='Terminal cost decrease Vf(x,i)- Vf(f(x,u),i)')
-# ax2.set_xlabel('Time Step i')
-# ax2.set_ylabel('Cost')
-# ax2.set_title('Terminal cost decrease and Stage cost across time',fontname="Times New Roman Bold")
-# ax2.legend()
-# ax2.grid()
-# Vf_s = np.array(Vf_s)
-# fig3, ax3 = plt.subplots()
-# ax3.plot(range(len(Vf_s)), Vf_s, 'r', label='Terminal cost Vf(x,i)')
-# ax3.set_title('Terminal cost against time',fontname="Times New Roman Bold")
-# ax3.set_xlabel('Time Step i')
-# ax3.set_ylabel('Cost')
-# ax3.legend()
-# ax3.grid()
-# fig2.savefig('terminal_cost_decrease_stage_cost.jpg', dpi=720)
-# fig3.savefig('terminal_cost.jpg', dpi=720)
-#
-# data = {'Vf_s': Vf_s,'Vf_diffs':Vf_diffs,'stage_costs':stage_costs}
-# savemat("terminal_cost_decrease_data.mat", data)
-
+#=====================================================================
 # This saves some variables for later plotting in MATLAB:
 if save_var:
     data = {"x": real_trajectory['x'], "y":  real_trajectory['y'], "theta":  real_trajectory['theta'],
@@ -355,4 +291,4 @@ if save_var:
     
 plt.show()
 # animation
-plot_multi_robot(real_trajectory)
+plot_single_robot(real_trajectory)
