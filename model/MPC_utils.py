@@ -250,7 +250,7 @@ def find_final_terminal_set(Ads, Bds, Q, R):
         cs.append(c)
     return polyhedron,cs
 
-def plot_terminal_set(vertices):
+def plot_terminal_set(vertices,c):
     fig = plt.figure()
     ax = plt.axes(projection='3d')
     # From https://stackoverflow.com/questions/63207496/how-to-visualize-polyhedrons-defined-by-their-vertices-in-3d-with-matplotlib-or
@@ -268,7 +268,7 @@ def plot_terminal_set(vertices):
     ax.set_xlabel('X axis')
     ax.set_ylabel('Y axis')
     ax.set_zlabel('Theta axis')
-    
+    ax.set_title('Outer approximation of the terminal set for c = ' + str(np.round(c,3)))
     
     xlim = np.max(np.abs(vertices[:,0]))
     ylim = np.max(np.abs(vertices[:,1]))
@@ -279,31 +279,31 @@ def plot_terminal_set(vertices):
     ax.axes.set_zlim3d(bottom=-zlim, top=zlim) 
     
     plt.show()
-
+    #fig.savefig('terminal_set.jpg', dpi=720)
 # Uncomment below and run for an example of how the polyhedral terminal set
 # is plotted
-# plt.close("all")
-# dt = 1e-2
-# Q = .01*np.diag([4, 4, 0.1])
-# R = .0001*np.eye(2)
-# 
-# 
-# Xref = traj_generate(10000, 10)
-# #Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], 10000,dt)
-# 
-# Uref = get_ref_input(Xref)
-# linear_models = linearize_model_global(Xref, Uref, dt)
-# Ads = linear_models[0][:10]
-# Bds = linear_models[1][:10]
-# 
-# 
-# polyhedron,cs = find_final_terminal_set(Ads, Bds, Q, R)
-# #print("Final sublevel terminal set is at c = " + str(cs[-1]))
-# 
-# plot = True
-# 
-# terminalSet = -1 # Choose which set to plot:
-# if plot:
-#     plot_terminal_set(polyhedron[terminalSet])
-#     print('C = '+ str(cs[terminalSet]))
+plt.close("all")
+dt = 1e-2
+Q = .01*np.diag([4, 4, 0.1])
+R = .001*np.eye(2)
+
+
+Xref = traj_generate(10000, 10)
+#Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], 10000,dt)
+
+Uref = get_ref_input(Xref)
+linear_models = linearize_model_global(Xref, Uref, dt)
+Ads = linear_models[0][:10]
+Bds = linear_models[1][:10]
+
+
+polyhedron,cs = find_final_terminal_set(Ads, Bds, Q, R)
+#print("Final sublevel terminal set is at c = " + str(cs[-1]))
+
+plot = True
+
+terminalSet = -1 # Choose which set to plot:
+if plot:
+    plot_terminal_set(polyhedron[terminalSet],cs[terminalSet])
+    print('C = '+ str(cs[terminalSet]))
 

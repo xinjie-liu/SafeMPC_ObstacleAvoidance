@@ -202,7 +202,7 @@ set(leg1, 'Interpreter','latex')
 set(gca,'fontsize',12)
 
 subplot(2,1,2);
-plot(t(1:xlimit),Vf_diffs(1:xlimit),'DisplayName',"Terminal cost decrease $V_f(x,i) - V_f(f(x,u)$,i)",'LineWidth',1);
+plot(t(1:xlimit),Vf_diffs(1:xlimit),'DisplayName',"Terminal cost decrease $V_f(x,i) - V_f(f(x,u),i+1)$",'LineWidth',1);
 hold on;
 plot(t(1:xlimit),stage_costs(1:xlimit),'DisplayName',"Stage cost $\ell(x,u,i)$",'LineWidth',1);
 ylabel('Cost')
