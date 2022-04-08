@@ -1,5 +1,7 @@
 """
-File containing the class definition of the Model Predictive Controller
+File containing the class definition of the Model Predictive Controller and the simulation of two robots,
+where one avoids the other using a velocity constraint. Run this script to see how it performs, and you can change
+the trajectories of the two robots by changing the line_traj_generate() parameters.
 """
 
 import numpy as np
@@ -267,8 +269,8 @@ for i in range(int(T/dt)-N):
     x1 = np.array([state1.x,state1.y,state1.theta])
     x2 = np.array([state2.x,state2.y,state2.theta])
 #==========================================================================
-    print("true sin: ", np.sin(state1.theta))
-    print("control input: ", u1)
+    # print("true sin: ", np.sin(state1.theta))
+    # print("control input: ", u1)
 #==========================================================================
     # Store the xy position for plotting:
     real_trajectory['x1'].append(state1.x)

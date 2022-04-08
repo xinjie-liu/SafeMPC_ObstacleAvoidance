@@ -1,5 +1,7 @@
 """
-File containing the class definition of the Model Predictive Controller
+File containing the class definition of the Model Predictive Controller, as well as a simulation of a single
+unicycle robot tracking a trajectory and avoiding an obstacle (set obs_avoidance to True). You can change from sinusoidal
+to line trajectory, and also re-tune the costs and horizon of the MPC controller.
 """
 
 import numpy as np
@@ -165,8 +167,7 @@ class MPC():
 #         plt.show()
 # =============================================================================
     
-    def control(self, state, Ads, Bds,x0,xref):
-        obs_avoidance = True
+    def control(self, state, Ads, Bds,x0,xref,obs_avoidance):
         self.problem = {"xinit": -state}  # eq.c = -xinit
         # set up linearized models as equality constraints
         #if np.sqrt((x0[0] - 5) ** 2 + (x0[1] - 5) ** 2) <= 2:
@@ -175,12 +176,6 @@ class MPC():
             B = Bds[i]
 
             self.problem["linear_model"+str(i+1)] = np.hstack((B, A))
-# =============================================================================
-#             Q_stacked = np.vstack((np.zeros((self.nu,self.nx+self.nu)), np.hstack((np.zeros((self.nx, self.nu)), self.Q_obs))))
-#             f_cost = np.array([[2*np.array([0,0,5,5,0])@ Q_stacked - 2*xr @ Q_stacked]])
-#            # print(f_cost)
-#             self.problem["linear_cost"+str(i+1)] = f_cost
-# =============================================================================
             if obs_avoidance:
                 self.problem["hyperplaneA"+str(i+1)] = self.hyperplane["A"][i]
                 self.problem["hyperplaneb"+str(i+1)] = self.hyperplane["b"][i]
@@ -200,20 +195,24 @@ plt.close("all")
 storeConstraints = np.zeros((2,3))
 T = 10
 dt = 2e-2
+# Choose which trajectory you want to run (traj_generate() is sinusoidal, line_traj_generate is line).
 #Xref = traj_generate(T/dt, T)
 Xref = line_traj_generate([0.,0.,0], [10.,10.,0.], T/dt,dt)
-obs = np.array([5,5])
+
+obs_avoidance = False # Change to True if you want to avoid the obstacle
+obs = np.array([5,5]) # Obstacle at 5,5
 Uref = get_ref_input(Xref)
 linear_models = linearize_model_global(Xref, Uref, dt)
 # #=========================================================
 x0 = np.array([0, 0., np.pi/4]) # This angle needs to be in standard notation (it gets wrapped later)
 env = Robot(x0[0], x0[1], x0[2], dt=dt)
-
+# Choose horizon N, terminal cost scaling beta
 N = 10
 beta = 1
-trial = 1
+
 # Change save_var to True if you want to save the variables to a .mat file. Change trial number
 # if you want to save multiple trials.
+trial = 1
 save_var = False
 
 
@@ -244,20 +243,9 @@ for i in range(int(T/dt)-N):
     start = Xref[0,0:2]
     goal = Xref[-1,0:2]
     mpc.collision_avoidance(x0, Xref[i:i+N],start,goal,obs,i)
-    for k in range(N):
-            #e = error_t[k,:2].reshape(2,1)
-            e = np.array([0,0,error_t[k,0],error_t[k,1],error_t[k,2]])
-            print(e.T @ mpc.hyperplane['A'][k] <= mpc.hyperplane['b'][k])
-# =============================================================================
-#             if (e.T@mpc.obstacle['Q'][k]@e + mpc.obstacle['l'][k].T@e <= mpc.obstacle['r'][k]) == False:
-#                 break_loop = True
-#             else:
-#                 break_loop = False
-# =============================================================================
-    #if break_loop:
-        #break
+
     # Solve the MPC problem:
-    control = mpc.control(error_t[0,:], Ads, Bds,x0,Xref[i:i+N])
+    control = mpc.control(error_t[0,:], Ads, Bds,x0,Xref[i:i+N],obs_avoidance)
     # Extract the first control input (for error correction) and add the reference input (for trajectory tracking)
     u = mpc.output[0:2] + Uref[i,:]
     uStore.append(u)
@@ -357,7 +345,7 @@ theta_error = np.array(theta_error)
 # data = {'Vf_s': Vf_s,'Vf_diffs':Vf_diffs,'stage_costs':stage_costs}
 # savemat("terminal_cost_decrease_data.mat", data)
 
-
+# This saves some variables for later plotting in MATLAB:
 if save_var:
     data = {"x": real_trajectory['x'], "y":  real_trajectory['y'], "theta":  real_trajectory['theta'],
             "x_error": x_error, "y_error": y_error, "theta_error": theta_error,

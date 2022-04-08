@@ -1,5 +1,6 @@
 """
-File containing the class definition of the Model Predictive Controller
+File containing the class definition of the unconstrained LQR controller. It solves the discrete algebraic
+Riccati equation and uses that K to follow the trajectory. Run this script if you want to see the performance.
 """
 
 import numpy as np
