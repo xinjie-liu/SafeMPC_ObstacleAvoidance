@@ -288,6 +288,7 @@ def plot_terminal_set(vertices,c):
     
     plt.show()
     #fig.savefig('terminal_set.jpg', dpi=720)
+#=================================================================================
 # Uncomment below and run for an example of how the polyhedral terminal set
 # is plotted
 
