@@ -1,10 +1,19 @@
 # MPC_final_project
-Final project of course SC42125 Model Predictive Control
+This is final project of course SC42125 Model Predictive Control by Xinjie and Vassil, we designed an MPC approach that can navigate non-holonomic mobile robots in dynamic environments.
+
+Have fun~~
+
+### :smirk:  
+#### :smirk:
+##### :smirk:
+
 ## 1. Video
+
 [our project video can be found here](https://www.youtube.com/watch?v=nYDxWkKvzZ8)
+
 ## 2. How to run the files:
 
-1. Make sure you have FORCESPRO installed and in the python PATH (tested on FORCESPRO 5.1.1).
+1. In order to run the files, please make sure you have FORCESPRO installed and in the python PATH (tested on FORCESPRO 5.1.1).
 
 2. There are multiple simulations you can run:
 
