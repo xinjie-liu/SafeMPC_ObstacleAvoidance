@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d.axes3d as p3
 from numpy.linalg import inv
 from matplotlib import animation
-from model.unicycle import Robot
+from src.model.unicycle import Robot
 import forcespro
 import get_userid
 import casadi
@@ -164,7 +164,7 @@ class MPC():
         return control
 
 # #=======================================================
-from model.MPC_utils import *
+from src.model.MPC_utils import *
 plt.close("all")
 storeConstraints = np.zeros((2,3))
 T = 10

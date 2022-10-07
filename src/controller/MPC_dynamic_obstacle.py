@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d.axes3d as p3
 from matplotlib import animation
 from scipy.linalg import block_diag
-from model.unicycle import Robot
-from model.MPC_utils import *
+from src.model.unicycle import Robot
+from src.model.MPC_utils import *
 import forcespro
 import get_userid
 import casadi

@@ -5,7 +5,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import mpl_toolkits.mplot3d.axes3d as p3
 from matplotlib import animation
-from model.MPC_utils import *
+from src.model.MPC_utils import *
 
 class State():
 

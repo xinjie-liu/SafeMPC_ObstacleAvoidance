@@ -1,4 +1,4 @@
-from model.MPC_utils import *
+from src.model.MPC_utils import *
 # Run for an example of how the polyhedral terminal set is plotted
 
 plt.close("all")
