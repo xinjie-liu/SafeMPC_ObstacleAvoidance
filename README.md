@@ -12,7 +12,7 @@ Have fun~~
 
 [our project video can be found here](https://www.youtube.com/watch?v=nYDxWkKvzZ8)
 
-[our paper (pre-print) can be found here](https://www.researchgate.net/publication/359879273_Safe_Model_Predictive_Control_Approach_for_Non-holonomic_Mobile_Robots)
+[our paper (preprint) can be found here](https://www.researchgate.net/publication/359879273_Safe_Model_Predictive_Control_Approach_for_Non-holonomic_Mobile_Robots)
 
 ## 2. How to run the files:
 
