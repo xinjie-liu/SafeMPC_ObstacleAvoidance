@@ -1,6 +1,6 @@
-# Safe Model Predictive Control Approach for Non-holonomic Mobile Robots in Dynamic Environment
+# Safe Model Predictive Control Approach for Non-holonomic Mobile Systems in Dynamic Environment
 
-This is an MPC project for motion planning & control of non-holonomic mobile robots
+This is an MPC project for motion planning & control of non-holonomic mobile systems
 
 Have fun~~
 
